@@ -1,0 +1,26 @@
+{
+  "name": "robi",
+  "version": "1.0.1",
+  "description": "Starter app for SharePoint 2013 on premise.",
+  "keywords": ["SharePoint"],
+  "author": "Stephen Matheis",
+  "license": "ISC",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stephenmatheis/robi"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "concurrently \"npx json-server --watch ./json-server/db.json --id Id\" \"npx live-server --watch=./src --open=./dev/app.html --quiet\"",
+    "reset": "node ./scripts/reset.js",
+    "depgraph": "depcruise --exclude \"^node_modules\" --output-type dot src | dot -T svg > dependencygraph.svg",
+    "build": "webpack --config=./webpack.config.js"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "json-server": "^0.16.3",
+    "live-server": "^1.2.1",
+    "webpack-cli": "^4.8.0"
+  }
+}
