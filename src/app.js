@@ -6,7 +6,6 @@
 // @START-IMPORTS
 import { Start } from './Robi/Robi.js'
 import lists from './lists.js';
-import Test from './Routes/Test/Test.js'
 import Table from './Routes/Table/Table.js'
 // @END-IMPORTS
 
@@ -19,19 +18,11 @@ Start({
         // @START-ROUTES
         // @START-Test
         {
-            path: 'Test',
-            icon: 'bs-tools',
-            go: Test
-        }
-        // @END-Test
-        , // @ROUTE
-        // @START-Table
-        {
             path: 'Table',
             icon: 'bs-card-checklist',
             go: Table
         }
-        // @END-Table
+        // @END-Test
         // @END-ROUTES
     ]
     ,
