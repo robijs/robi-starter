@@ -1,102 +1,123 @@
-import { Start } from './Core/Actions.js'
-import lists from './lists.js'
-import Home from './Routes/Home/Home.js'
+// This file may be modified programmatically.
+// If you know the API, feel free to edit it manually.
+// Just be sure to put @START and @END sigils in the right places.
+// Otherwise, changes made from the frontend may not render properly.
 
+// @START-IMPORTS
+import { Start } from './Robi/Robi.js'
+import lists from './lists.js';
+import Test from './Routes/Test/Test.js'
+import Table from './Routes/Table/Table.js'
+// @END-IMPORTS
+
+// @START
 Start({
+    lists,
+    // Must include at least one route with the same path value as settings.defaultRoute.
+    // Routes can be linked to directly with hash fragment. Ex: https://site#path.
     routes: [
+        // @START-ROUTES
+        // @START-Test
         {
-            path: 'Home',
-            hide: true,
-            go() {
-                Home();
-            }  
+            path: 'Test',
+            icon: 'bs-tools',
+            go: Test
         }
-    ],
+        // @END-Test
+        , // @ROUTE
+        // @START-Table
+        {
+            path: 'Table',
+            icon: 'bs-card-checklist',
+            go: Table
+        }
+        // @END-Table
+        // @END-ROUTES
+    ]
+    ,
     settings: {
-        dev: { // required: set local dev user props
-            user: {
-                Title: "First Last",
-                Email: "name@org.domain",
-                LoginName: "loginname",
-                Role: "Developer"
-            },
-            errorLogging: 'on',
-            // testLoading: true, // optional: (true || false), default: false
-        },
-        title: 'App', // required: enter app name
-        defaultRoute: 'Home', // required: set default #route rendered if none present
-        logo: 'dha-logo-no-label-180w.png', // required: set open sidebar logo
-        logoSmall: 'dha-logo-no-label-80w.png', // required: set logo when sidebar is collapsed
-        logoLarge: 'dha-logo-no-label-386w.png', // required: set launch logo
-        primaryColor: '#24292f', // required: set theme color, used by core components
-        primaryColorRGB: '45, 61, 80', // required: same as above, but in rgb format, used by core components
-        secondaryColor: 'white', // required: set main container background color
-        sidebarBackgroundColor: '#F8F8FC', // required: set nav background color
-        sidebarTextColor: '#24292f', // required: set nav label text color
-        defaultColor: '#24292f', // required: set text color
-        titleColor: '#1c6cbb', // required: set core Title component text color
-        defaultBorder: 'solid 1px rgba(0, 0, 0, .125)', // required: set default border style for core comoponents
-        usersFields: [ // required: set user account fields, used to create users lists on install
-            {
-                name: 'Id',
-                type: 'number'
-            },
-            {
-                name: 'Title',
-                type: 'slot'
-            },
-            {
-                name: 'LoginName',
-                type: 'slot'
-            },
-            {
-                name: 'Email',
-                type: 'slot'
-            },
-            {
-                name: 'Role',
-                type: 'slot'
-            },
-            {
-                name: 'Settings',
-                type: 'mlot'
-            }
-        ],
-        userSettings: JSON.stringify({}), // requried: set user JSON
-        userDefaultRole: 'User', // required: set default role for newly created use accounts
-        questionTypes: [ // required: define at least one questionType with title and path props
+        // @START-SETTINGS
+        // REQUIRED PROPERTIES
+        // -------------------
+        // defaultBorder: border style for core comoponents
+        // defaultColor: text color
+        // defaultRoute: route navigated to if no #path is present in URL, defaults to first path in routes array
+        // logo: open sidebar logo
+        // logoLarge: launch logo
+        // logoSmall: logo when sidebar is collapsed
+        // name: app name (AUTOPOPULATED if created by Robi)
+        // primaryColor: set theme color, used by core components
+        // primaryColorRGB: same as above, but in rgb format, used by core components
+        // questionTypes: define at least one questionType with title and path props
+        // secondaryColor: main container background color
+        // backgroundColor: nav background color
+        // theme: ('Blue' | 'Brown' | 'Gray' | 'Green' | 'Gold' | 'Magenta' | 'Orange' | 'Pink' | 'Purple' | 'Red' | 'Slate' | 'Teal')
+        // title: site title (AUTOPOPULATED if created with CREATE APP)
+        // titleColor: core Title component text color
+        // userDefaultRole: default role for newly created use accounts
+        // userSettings: new user account 'Settings' field default JSON value
+        defaultBorder: 'solid 1px rgba(0, 0, 0, .125)',
+        defaultRoute: '',
+        // logo: 'dha-logo-no-label-180w.png',
+        // logoLarge: 'dha-logo-no-label-386w.png',
+        // logoSmall: 'dha-logo-no-label-80w.png',
+        name: /* @START-name */'App'/* @END-name */,
+        questionTypes: [
             {
                 title: 'General',
                 path: 'General'
             }
         ],
-        appcontainer: '', // optional: replace default sidebar with your component (type function, typically imported from /Components/myComponent.js)
-        sidebar: '', // optional: replace default sidebar with your component (type function, typically imported from /Components/myComponent.js)
-        maincontainer: '', // optional: replace default sidebar with your component (type function, typically imported from /Components/myComponent.js)
-        mode: '', // optional: choose 'dev' || 'prod'
-        site: '', // optional: enter site, will assume dev if location.href === localhost || 127.0.0.1
-        library: '', // optional: enter src document library, defaults to 'App'
-        usersList: 'Users', // optional: override default name for 'Users' lists,
-        lists, // optional: define app lists to be created on install
-        links: [ // optional: recommend loading shared stylesheets and preloading logos
-            {
-                href: '/app.css'
+        theme: /* @START-theme */'Purple'/* @END-theme */,
+        title: /* @START-title */'Title'/* @END-title */,
+        userDefaultRole: 'User',
+        userSettings: /* @START-userSettings */JSON.stringify({ savedSearches: {} })/* @END-userSettings */,
+        // OPTIONAL PROPERTIES
+        // -------------------
+        // appcontainer: replace default sidebar with your component (type function, typically imported from /Components/myComponent.js)
+        // dev.user: local dev user props
+        // dev.user.LoginName: placeholder account props for local dev
+        // dev.testInstall: (true | false) - if true, will bring up install console and simulate app installation process 
+        // errorLogging: ('on' | 'off') - if on, sends errors to SharePoint list 'Errors' (list is created by default)
+        // library: document library where src directory lives, defaults is 'App'
+        // links: adds preload links in head for stylesheets and images
+        // maincontainer: replace default maincontainer with your component (type function, typically imported from /Components/myComponent.js)
+        // sidebar: replace default sidebar with your component (type function, typically imported from /Components/myComponent.js)
+        // usersLists: override default name for 'Users' lists
+        appcontainer: null,
+        dev: {
+            user: {
+                Title: "First Last",
+                Email: "first.mi.last.ctr@mail.mil",
+                LoginName: "0987654321@mil",
+                Role: "Developer",
+                SiteId: 1
             },
-            {
-                rel: 'preload',
-                as: 'image',
-                href: '/Images/dha-logo-no-label-40w.png'
-            },
-            {
-                rel: 'preload',
-                as: 'image',
-                href: '/Images/dha-logo-no-label-90w.png'
-            },
-            {
-                rel: 'preload',
-                as: 'image',
-                href: '/Images/dha-logo-no-label-386w.png'
-            }
-        ]
+            testInstall: false,
+        },
+        errorLogging: 'on',
+        library: '',
+        links: [
+            // {
+            //     rel: 'preload',
+            //     as: 'image',
+            //     href: '/Images/dha-logo-no-label-80w.png'
+            // },
+            // {
+            //     rel: 'preload',
+            //     as: 'image',
+            //     href: '/Images/dha-logo-no-label-180w.png'
+            // },
+            // {
+            //     rel: 'preload',
+            //     as: 'image',
+            //     href: '/Images/dha-logo-no-label-386w.png'
+            // }
+        ],
+        maincontainer: null,
+        sidebar: null,
+        usersList: 'Users'
+        // @END-SETTINGS
     }
 });
+// @END

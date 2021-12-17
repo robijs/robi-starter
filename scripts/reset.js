@@ -38,9 +38,13 @@ let db = {
 }
 
 lists.forEach(item => {
-    const { list } = item;
+    const { list, options } = item;
 
     db[list] = [];
+
+    if (options?.files) {
+        db[list + 'Files'] = [];
+    }
 });
 
 writeFile('./json-server/db.json', JSON.stringify(db), err => {

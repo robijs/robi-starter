@@ -1,5 +1,5 @@
 // Import Component from Actions. Used to create a Robi component.
-import { Component } from '../Core/Actions.js'
+import { Component } from '../Robi/Robi.js'
 
 /**
  * This is an example component. 
@@ -19,7 +19,7 @@ import { Component } from '../Core/Actions.js'
  * @param {String} param.position - Options: beforebegin, afterbegin, beforeend, afterend.
  * @returns {Object} - Returns a Robi component created with the Component action.
  */
- export default function ExampleComponent(param) {
+export default function ExampleComponent(param) {
     // Destructure param
     const {
         title,
@@ -86,11 +86,11 @@ import { Component } from '../Core/Actions.js'
         `);
     }
 
-    // Public method (attached to Robi component to be returned at end of function)
+    // Public method (attached to Robi component that's returned at end of this function)
     component.privateMethod = (param) => {
         console.log('Argument passed to example component:', param);
     }
 
-    // Return component so methods are available in calling context
+    // Return component to function that called it
     return component;
 }

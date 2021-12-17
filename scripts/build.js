@@ -1,0 +1,52 @@
+import { buildFile } from './modules/build-file-prod.js'
+
+let license = [
+    `// Copyright ${new Date().getFullYear()} Stephen Matheis`,
+    '',
+    '// Permission to use, copy, modify, and/or distribute this software for any',
+    '// purpose with or without fee is hereby granted, provided that the above',
+    '// copyright notice and this permission notice appear in all copies.' ,
+    '',
+    '// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES',
+    '// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF',
+    '// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY',
+    '// SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER',
+    '// RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF',
+    '// CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN',
+    '// CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.',
+    ''
+];
+
+try {
+    // Robi
+    await buildFile({
+        license,
+        paths: [
+            './src/Robi/Actions',
+            './src/Robi/Core',
+            './src/Robi/Models'
+        ],
+        imports: [
+            './src/Robi/Components'
+        ],
+        importFile: 'RobiUI.js',
+        file:'Robi.js'
+    });
+
+    // RobiUI
+    await buildFile({
+        license,
+        paths: [
+            './src/Robi/Components',
+        ],
+        imports: [
+            './src/Robi/Actions',
+            './src/Robi/Core',
+            './src/Robi/Models'
+        ],
+        importFile: 'Robi.js',
+        file: 'RobiUI.js'
+    });
+} catch (err) {
+    console.error(err);
+}
