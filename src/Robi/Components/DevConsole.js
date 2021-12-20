@@ -20,51 +20,53 @@ export function DevConsole(param) {
         html: /*html*/ `
             <div>
                 <div class='dev-console'>
-                    <div class='dev-console-row'>
-                        <div class='dev-console-text'>
-                            <div class='dev-console-label'>Modify ${App.get('title')}</div>
-                            <div class='dev-console-description'>Change list schemas in <code>App/src/lists.js</code> and app initialization settings in <code>App/src/app.js</code> right in the browser. Update app below to commit changes.</div>
+                    <div style='margin-bottom: 20px; background: ${App.get('backgroundColor')}; border-radius: 20px;'>
+                        <div class='dev-console-row'>
+                            <div class='dev-console-text'>
+                                <div class='dev-console-label'>Edit lists and settings</div>
+                                <div class='dev-console-description'>Edit list schemas and app settings in right in the browser.</div>
+                            </div>
+                            <div class='d-flex flex-column justify-content-center'>
+                                <div class='d-flex align-items-center ml-5'>
+                                    <button class='btn btn-robi mb-3 dev-console-button modify-lists'>Lists</button>
+                                </div>
+                                <div class='d-flex align-items-center ml-5'>
+                                    <button class='btn btn-robi dev-console-button modify-app'>Settings</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class='d-flex flex-column justify-content-center'>
-                            <div class='d-flex align-items-center ml-5'>
-                                <button class='btn btn-robi mb-3 dev-console-button modify-lists'>Modify lists</button>
+                        <div class='dev-console-row update-row'>
+                            <div class='dev-console-text'>
+                                <div class='dev-console-label'>Sync installed lists</div>
+                                <div class='dev-console-description'>Sync app with list schemas in <code>App/src/lists.js</code>.</div>
                             </div>
                             <div class='d-flex align-items-center ml-5'>
-                                <button class='btn btn-robi dev-console-button modify-app'>Edit app initialization properties</button>
+                                <button class='btn btn-robi dev-console-button update'>Sync lists</button>
                             </div>
                         </div>
-                    </div>
-                    <div class='dev-console-row update-row'>
-                        <div class='dev-console-text'>
-                            <div class='dev-console-label'>Update ${App.get('title')}</div>
-                            <div class='dev-console-description'>Sync ${App.get('title')} with list schemas defined in <code>App/src/lists.js</code>. You can choose which new lists and columns will be created and which existing lists and columns will be deleted.</div>
+                        <div class='dev-console-row'>
+                            <div class='dev-console-text'>
+                                <div class='dev-console-label'>Reset installed lists</div>
+                                <div class='dev-console-description'>Reset selected lists. All items from selected lists will be deleted.</div>
+                            </div>
+                            <div class='d-flex align-items-center ml-5'>
+                                <button class='btn btn-robi dev-console-button reset'>Choose lists to reset</button>
+                            </div>
                         </div>
-                        <div class='d-flex align-items-center ml-5'>
-                            <button class='btn btn-robi dev-console-button update'>Update ${App.get('title')}</button>
-                        </div>
-                    </div>
-                    <div class='dev-console-row'>
-                        <div class='dev-console-text'>
-                            <div class='dev-console-label'>Reset lists</div>
-                            <div class='dev-console-description'>Delete and recreate selected lists. All items from selected lists will be deleted. This can't be undone.</div>
-                        </div>
-                        <div class='d-flex align-items-center ml-5'>
-                            <button class='btn btn-robi dev-console-button reset'>Choose lists to reset</button>
-                        </div>
-                    </div>
-                    <div class='dev-console-row'>
-                        <div class='dev-console-text'>
-                            <div class='dev-console-label'>Reinstall ${App.get('title')}</div>
-                            <div class='dev-console-description'>Delete and recreate all lists. Resets all settings. All items will be deleted. This can't be undone.</div>
-                        </div>
-                        <div class='d-flex align-items-center ml-5'>
-                            <button class='btn btn-robi dev-console-button reinstall'>Remove data and reinstall ${App.get('title')}</button>
+                        <div class='dev-console-row'>
+                            <div class='dev-console-text'>
+                                <div class='dev-console-label'>Reinstall app</div>
+                                <div class='dev-console-description'>Delete and recreate all lists. Resets all settings. All items will be deleted.</div>
+                            </div>
+                            <div class='d-flex align-items-center ml-5'>
+                                <button class='btn btn-robi dev-console-button reinstall'>Remove data and reinstall</button>
+                            </div>
                         </div>
                     </div>
                     <div class='dev-console-row alert-robi-primary'>
                         <div class='dev-console-text'>
-                            <div class='dev-console-label'>Delete ${App.get('title')}</div>
-                            <div class='dev-console-description'>Delete all lists and remove all settings. All items will be deleted. This can't be undone. You will need to install the app again later.</div>
+                            <div class='dev-console-label'>Delete everything</div>
+                            <div class='dev-console-description'>Delete all lists and settings. All list items will be deleted. You can install the app again later.</div>
                         </div>
                         <div class='d-flex align-items-center ml-5'>
                             <button class='btn btn-robi-reverse dev-console-button delete'>Delete all lists and data</button>
@@ -102,9 +104,8 @@ export function DevConsole(param) {
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
-                padding: 20px 30px;
                 border-radius: 20px;
-                background: ${App.get('backgroundColor')};
+                padding: 20px 30px;
             }
 
             #id .dev-console-text {

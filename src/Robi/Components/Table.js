@@ -61,6 +61,7 @@ export async function Table(param) {
 
     const tableContainer = Container({
         display: 'block',
+        classes: ['table-container'],
         width,
         margin,
         padding,

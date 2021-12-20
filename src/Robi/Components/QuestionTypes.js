@@ -16,11 +16,7 @@ export async function QuestionTypes(param) {
     // View Title
     const viewTitle = Title({
         title: `Questions`,
-        parent,
-        date: new Date().toLocaleString('en-US', {
-            dateStyle: 'full'
-        }),
-        type: 'across'
+        parent
     });
 
     viewTitle.add();

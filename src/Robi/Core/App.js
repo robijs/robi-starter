@@ -46,7 +46,7 @@ const App = {
         }
 
         // Set colors
-        const { primary, secondary, background, color } = Themes.find(item => item.name === theme);
+        const { primary, secondary, background, color, selectedRowOpacity } = Themes.find(item => item.name === theme);
 
         // Primary
         settings.primaryColor = NameToHex(primary);
@@ -61,6 +61,9 @@ const App = {
 
         // Default color
         settings.defaultColor = color;
+
+        // Selected row opacity
+        settings.selectedRowOpacity = selectedRowOpacity;
 
         // Set all
         appSettings = settings;

@@ -31,7 +31,7 @@ export function Start(param) {
             .join(' ');
     };
 
-    // splitCameCase
+    // Split Camel Case
     String.prototype.splitCamelCase = function () {
         return this.split(/(?=[A-Z])/).join(' ');
     }

@@ -8,12 +8,12 @@ import { Component } from '../Actions/Component.js'
  */
 export function Container(param) {
     const {
-        name, html, align, background, border, borderBottom, borderLeft, borderRight, borderTop, display, flex, flexwrap, shadow, direction, height, justify, margin, padding, parent, position, radius, width, maxWidth, minWidth, overflow, overflowX, overflowY, userSelect, layoutPosition, top, bottom, left, right, zIndex
+        name, html, align, background, border, borderBottom, borderLeft, borderRight, borderTop, classes, display, flex, flexwrap, shadow, direction, height, justify, margin, padding, parent, position, radius, width, maxWidth, minWidth, overflow, overflowX, overflowY, userSelect, layoutPosition, top, bottom, left, right, zIndex
     } = param;
 
     const component = Component({
         html: /*html*/ `
-            <div class='container' data-name='${name || ''}'>${html || ''}</div>
+            <div class='container${classes ? ` ${classes?.join(' ')}` : ''}' data-name='${name || ''}'>${html || ''}</div>
         `,
         style: /*css*/ `
             #id {

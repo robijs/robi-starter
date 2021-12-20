@@ -166,6 +166,12 @@ export function AppContainer() {
                 font-weight: 500;
             }
 
+            .btn-outline-robi {
+                color: ${App.get('primaryColor')};
+                background-color: initial;
+                border-color: ${App.get('primaryColor')};
+            }
+
             .btn-light:hover {
                 color: #212529 !important;
                 background-color: #f8f9fa !important;
@@ -365,7 +371,7 @@ export function AppContainer() {
             }
 
             .robi-code-background {
-                background: #292D3E;
+                background: #1e1e1e;
             }
 
             .loading-file {
@@ -374,7 +380,7 @@ export function AppContainer() {
 
             .file-title {
                 width: 100%;
-                background-color: #292D3E;
+                background-color: #1e1e1e;
                 display: flex;
                 align-items: center;
                 padding-bottom: .75rem;
@@ -573,6 +579,38 @@ export function AppContainer() {
                 color: ${App.get('defaultColor')};
                 text-decoration: none;
                 background-color: ${App.get('primaryColor') + '20'};
+            }
+
+            /* Sortable */
+            .ui-sortable-handle {
+                cursor: grab;
+            }
+
+            .ui-sortable-helper {
+                cursor: grabbing;
+              
+            }
+
+            /* FIXME: Should these styles live here, in Table.js or DataTable.js? */
+            .table-container {
+                transition: background-color 250ms ease, padding 250ms ease, transform 250ms ease, box-shadow 150ms ease 100ms;
+                border-radius: 20px !important;
+            }
+
+            .table-container.ui-sortable-handle {
+                margin: 20px !important;
+                padding: 20px !important;
+                background: white !important;
+                box-shadow: rgb(0 0 0 / 10%) 0px 0px 16px -2px !important;
+            }
+
+            .table-container.ui-sortable-handle > div {
+                transform: scale(.95);
+            }
+
+            .table-container.ui-sortable-helper {
+                box-shadow: rgb(0 0 0 / 10%) 0px 0px 32px 0px !important;
+                transform: scale(1.05);
             }
         `,
         position: 'afterbegin',

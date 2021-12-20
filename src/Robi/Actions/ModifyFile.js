@@ -31,13 +31,12 @@ export async function ModifyFile(param) {
         `,
         classes: ['scrollbar-wide'],
         titleStyle: 'width: 100%;',
-        // headerStyle: 'border-bottom: solid 1px #676E95; padding-bottom: 0px;',
         headerStyle: 'padding-bottom: 0px;',
         footerStyle: 'border-top: solid 1px #676E95;',
         closeStyle: 'padding: 16px;',
-        // close: false,
         scrollable: true,
-        background: '#292D3E',
+        // background: '#292D3E',
+        background: '#1e1e1e',
         centered: true,
         showFooter: false,
         async addContent(modalBody) {
@@ -67,19 +66,20 @@ export async function ModifyFile(param) {
                 lineNumbers: true,
                 lineWrapping: true,
                 autoCloseBrackets: true,
+                styleActiveLine: true,
                 extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
                 foldGutter: true,
-                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                keyword: {
+                    "import": "special",
+                    "export": "export",
+                    "async": "export",
+                    "await": "export",
+                }
             });
             editor.foldCode(CodeMirror.Pos(0, 0));
             editor.setSize(0, 0);
             editor.setOption('extraKeys', {
-                // Tab(cm) {
-                //     const spaces = Array(cm.getOption("indentUnit")).join(" ");
-                //     console.log(spaces);
-
-                //     cm.replaceSelection(spaces);
-                // },
                 'Tab': 'indentMore',
                 'Shift-Tab': 'indentLess',
                 'Ctrl-/'(cm) {
@@ -92,9 +92,9 @@ export async function ModifyFile(param) {
                 async 'Ctrl-S'(cm) {
                     // TODO: only save file if changed
                     console.log('save file');
+
                     // Save file
                     await saveFile();
-
 
                     // Add changed message
                     const changedMessaage = modal.find('.changed-message');
@@ -163,7 +163,8 @@ export async function ModifyFile(param) {
             function setEditor() {
                 editor.setSize('auto', 'auto');
                 editor.setOption('viewportMargin', Infinity);
-                editor.setOption('theme', 'material-palenight');
+                // editor.setOption('theme', 'material-palenight');
+                editor.setOption('theme', 'vscode-dark');
                 editor.getDoc().setValue(value);
                 editor.focus();
 
@@ -171,7 +172,6 @@ export async function ModifyFile(param) {
 
                 // Watch for changes
                 editor.on('change', event => {
-                    // if (value === editor.doc.getValue()) {
                     if (docValue === editor.doc.getValue()) {
                         console.log('unchanged');
 
@@ -180,8 +180,6 @@ export async function ModifyFile(param) {
                         if (dot) {
                             dot.remove();
                         }
-
-                        // saveAndCloseBtn.get().disabled = true;
                     } else {
                         console.log('changed');
 
@@ -192,58 +190,11 @@ export async function ModifyFile(param) {
                                 <div class='changed-dot' style='margin-left: 15px; width: 8px; height: 8px; background: white; border-radius: 50%;'></div>
                             `);
                         }
-
-                        // saveAndCloseBtn.get().disabled = false;
                     }
                 });
 
                 // Remove .modal-body top padding
                 modalBody.style.paddingTop = '0px';
-
-                // // Save and close button
-                // const saveAndCloseBtn = BootstrapButton({
-                //     async action(event) {
-                //         // TODO: only save file if changed
-                //         await saveFile(event);
-
-                //         $(modal.get()).on('hidden.bs.modal', event => {
-                //             location.reload(true);
-                //         });
-
-                //         setTimeout(() => {
-                //             // Enable button
-                //             $(event.target)
-                //                 .removeAttr('disabled')
-                //                 .text('Saved');
-
-                //             // Close modal (DOM node will be removed on hidden.bs.modal event)
-                //             modal.close();
-                //         }, 1000);
-                //     },
-                //     classes: ['w-100'],
-                //     disabled: true,
-                //     width: '100%',
-                //     parent: modal.find('.modal-footer'),
-                //     type: 'light',
-                //     value: 'Save and close'
-                // });
-
-                // saveAndCloseBtn.add();
-
-                // const cancelBtn = BootstrapButton({
-                //     action(event) {
-                //         modal.close();
-                //     },
-                //     classes: ['w-100 mt-2'],
-                //     width: '100%',
-                //     parent: modal.find('.modal-footer'),
-                //     style: 'color: white;',
-                //     value: 'Close'
-                // });
-
-                // cancelBtn.add();
-
-                // modal.showFooter();
             }
 
             $(modal.get()).on('hide.bs.modal', checkIfSaved);
@@ -254,7 +205,6 @@ export async function ModifyFile(param) {
                 console.log('value:', value);
                 console.log('editor:', editor.doc.getValue());
 
-                // if (value === editor.doc.getValue()) {
                 if (docValue === editor.doc.getValue()) {
                     console.log('unchanged');
 
@@ -383,7 +333,6 @@ export async function ModifyFile(param) {
 
                 let currentValue = editor.getDoc().getValue();
 
-                // console.log(currentValue);
                 // TODO: Move to SetFile action
                 let setFile;
 

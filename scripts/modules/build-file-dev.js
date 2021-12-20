@@ -1,4 +1,5 @@
-import { readdir, writeFile } from 'fs/promises'
+import { writeFile } from 'fs/promises'
+import { readfiles } from './readfiles.js'
 
 export async function buildFile({ license, paths, dir, file }) {
     let output = license.join('\n');
@@ -6,7 +7,7 @@ export async function buildFile({ license, paths, dir, file }) {
 
     // Imports
     for (const path of paths) {
-        const files = await readdir(path);
+        const files = await readfiles(path);
         exportNames = exportNames.concat(files);
         
         output += files.map(file => {

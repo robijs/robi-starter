@@ -44,7 +44,6 @@ export function Sidebar({ parent, path }) {
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="${id}">
                                             <div class="grown-in-top-left">
-                                                <!-- <button class="dropdown-item add-route" type="button">Add route</button> -->
                                                 <button class="dropdown-item modify-routes" type="button">Modify routes</button>
                                                 <button class="dropdown-item reorder-routes" type="button">Reorder routes</button>
                                                 <button class="dropdown-item hide-routes" type="button">Hide routes</button>

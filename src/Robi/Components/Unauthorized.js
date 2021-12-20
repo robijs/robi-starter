@@ -11,11 +11,7 @@ export async function Unauthorized(param) {
 
     const viewTitle = Title({
         title: `403`,
-        parent,
-        date: new Date().toLocaleString('default', {
-            dateStyle: 'full'
-        }),
-        type: 'across'
+        parent
     });
 
     viewTitle.add();

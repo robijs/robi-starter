@@ -12,11 +12,7 @@ export async function Help(param) {
 
     const viewTitle = Title({
         title: `Help`,
-        parent,
-        date: new Date().toLocaleString('default', {
-            dateStyle: 'full'
-        }),
-        type: 'across'
+        parent
     });
 
     viewTitle.add();

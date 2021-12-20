@@ -22,16 +22,18 @@ export function SourceTools(param) {
                     <!-- <svg class="icon" style="font-size: 18px; fill: ${App.get('primaryColor')};">
                         <use href="#icon-code-slash"></use>
                     </svg>-->
-                    <code style='color: ${App.get('primaryColor')}; font-size: 13px; font-weight: 600;'>&lt;Edit/&gt;</code>
+                    <!-- <span style="font-family: 'Inconsolata', monospace; color: ${App.get('primaryColor')}; font-size: 15px; font-weight: 600;">&lt;Edit/&gt;</span> -->
+                    <span style="color: ${App.get('primaryColor')}; font-size: 15px; font-weight: 500;">Edit Source</span>
                 </button>
             </div>
         `,
         style: /*css*/ `
             #id {
+                z-index: 1000;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                position: fixed;
+                position: absolute;
                 top: 0px;
                 right: 0px;
                 height: 62px;

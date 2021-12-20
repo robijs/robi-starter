@@ -18,11 +18,7 @@ export async function Settings(param) {
 
     const viewTitle = Title({
         title: `Settings`,
-        parent,
-        date: new Date().toLocaleString('en-US', {
-            dateStyle: 'full'
-        }),
-        type: 'across'
+        parent
     });
 
     viewTitle.add();

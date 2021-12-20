@@ -11,11 +11,7 @@ export async function Missing(param) {
 
     const viewTitle = Title({
         title: '404',
-        parent,
-        date: new Date().toLocaleString('default', {
-            dateStyle: 'full'
-        }),
-        type: 'across'
+        parent
     });
 
     viewTitle.add();

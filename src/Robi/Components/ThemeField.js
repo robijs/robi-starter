@@ -48,6 +48,7 @@ export function ThemeField(param) {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-between;
+                max-width: 995px;
             }
 
             #id label {

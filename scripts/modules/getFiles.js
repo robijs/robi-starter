@@ -1,9 +1,10 @@
-import { readdir, readFile } from 'fs/promises'
+import { readFile } from 'fs/promises'
+import { readfiles } from './readfiles.js'
 
-export async function getFiles(path) {
+export async function getfiles(path) {
     let output = '';
 
-    const files = await readdir(path);
+    const files = await readfiles(path);
 
     for (const file of files) {
         const text = await readFile(`${path}/${file}`, 'utf8');

@@ -45,11 +45,7 @@ export async function QuestionAndReplies(param) {
                     currentPage: true
                 }
             ],
-            parent,
-            date: new Date().toLocaleString('en-US', {
-                dateStyle: 'full'
-            }),
-            type: 'across'
+            parent
         });
 
         viewTitle.add();
@@ -113,11 +109,7 @@ export async function QuestionAndReplies(param) {
                 Route(path);
             },
             parent,
-            position: 'afterbegin',
-            date: new Date().toLocaleString('en-US', {
-                dateStyle: 'full'
-            }),
-            type: 'across'
+            position: 'afterbegin'
         });
 
         viewTitle.add();

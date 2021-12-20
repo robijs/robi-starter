@@ -1,1 +1,108 @@
-{"Comments":[],"Errors":[],"Log":[],"Users":[],"Questions":[],"ReleaseNotes":[],"Roles":[{"Id":1,"Title":"Administrator"},{"Id":2,"Title":"Developer"},{"Id":3,"Title":"User"}],"Settings":[{"Id":1,"Key":"QuestionTypes","Value":"[{\"title\":\"General\",\"path\":\"General\"}]"}]}
+{
+  "Comments": [],
+  "Errors": [],
+  "Log": [
+    {
+      "Title": "First Last logged in",
+      "SessionId": null,
+      "Message": "{\"body\":\"first.mi.last.ctr@mail.mil successfully loaded Title\",\"location\":\"http://127.0.0.1:8080/dev/app.html\",\"role\":\"Developer\"}",
+      "StackTrace": "\"LaunchApp (http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js:139:25)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.57",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last"
+      },
+      "Created": "Mon, 20 Dec 2021 17:03:01 GMT",
+      "Modified": "Mon, 20 Dec 2021 17:03:01 GMT",
+      "Id": 1
+    },
+    {
+      "Title": "First Last logged in",
+      "SessionId": null,
+      "Message": "{\"body\":\"first.mi.last.ctr@mail.mil successfully loaded Title\",\"location\":\"http://127.0.0.1:8080/dev/app.html\",\"role\":\"Developer\"}",
+      "StackTrace": "\"LaunchApp (http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js:139:25)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.57",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last"
+      },
+      "Created": "Mon, 20 Dec 2021 17:03:30 GMT",
+      "Modified": "Mon, 20 Dec 2021 17:03:30 GMT",
+      "Id": 2
+    },
+    {
+      "Title": "First Last logged in",
+      "SessionId": null,
+      "Message": "{\"body\":\"first.mi.last.ctr@mail.mil successfully loaded Title\",\"location\":\"http://127.0.0.1:53023/dev/app.html\",\"role\":\"Developer\"}",
+      "StackTrace": "\"LaunchApp (http://127.0.0.1:53023/src/Robi/Actions/LaunchApp.js:139:25)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.57",
+      "Module": "http://127.0.0.1:53023/src/Robi/Actions/LaunchApp.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last"
+      },
+      "Created": "Mon, 20 Dec 2021 17:09:29 GMT",
+      "Modified": "Mon, 20 Dec 2021 17:09:29 GMT",
+      "Id": 3
+    }
+  ],
+  "Users": [
+    {
+      "Title": "First Last",
+      "Email": "first.mi.last.ctr@mail.mil",
+      "LoginName": "0987654321@mil",
+      "Role": "Developer",
+      "SiteId": 1,
+      "Settings": "{\"savedSearches\":{}}",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last"
+      },
+      "Created": "Mon, 20 Dec 2021 17:03:00 GMT",
+      "Modified": "Mon, 20 Dec 2021 17:03:00 GMT",
+      "Id": 1
+    }
+  ],
+  "Questions": [],
+  "ReleaseNotes": [],
+  "Roles": [
+    {
+      "Id": 1,
+      "Title": "Administrator"
+    },
+    {
+      "Id": 2,
+      "Title": "Developer"
+    },
+    {
+      "Id": 3,
+      "Title": "User"
+    }
+  ],
+  "Settings": [
+    {
+      "Id": 1,
+      "Key": "QuestionTypes",
+      "Value": "[{\"title\":\"General\",\"path\":\"General\"}]"
+    }
+  ],
+  "Test": []
+}

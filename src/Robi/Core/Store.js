@@ -112,7 +112,9 @@ const Store = {
         }
     },
     viewScrollTop(param) {
-        if (param) {
+        if (param == 0) {
+            store.viewScrollTop = 0;
+        } else if (param) {
             if (typeof param === 'number') {
                 store.viewScrollTop = param;
             } else {

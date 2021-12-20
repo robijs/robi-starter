@@ -401,7 +401,7 @@ export function DataTable(param) {
             }
 
             #id_wrapper tbody > tr.selected td {
-                background-color: ${App.get('primaryColor') + '10'} !important;
+                background-color: ${App.get('primaryColor') + ( App.get('selectedRowOpacity') || 10 )} !important;
                 color:  ${App.get('primaryColor')};
             }
 

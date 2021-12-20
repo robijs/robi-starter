@@ -1,5 +1,6 @@
-import { readdir, writeFile } from 'fs/promises'
-import { getFiles } from './getFiles.js'
+import { writeFile } from 'fs/promises'
+import { readfiles } from './readfiles.js'
+import { getfiles } from './getfiles.js'
 
 export async function buildFile({ license, paths, dir, imports, importFile, file }) {
     let output = license.join('\n');
@@ -8,11 +9,11 @@ export async function buildFile({ license, paths, dir, imports, importFile, file
 
     // Imports
     for (const path of imports) {
-        importNames = importNames.concat(await readdir(path)); 
+        importNames = importNames.concat(await readfiles(path)); 
     }
 
     for (const path of paths) {
-        body += await getFiles(path);
+        body += await getfiles(path);
     }
 
     output += [

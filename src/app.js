@@ -6,7 +6,7 @@
 // @START-IMPORTS
 import { Start } from './Robi/Robi.js'
 import lists from './lists.js';
-import Table from './Routes/Table/Table.js'
+import Test from './Routes/Test/Test.js'
 // @END-IMPORTS
 
 // @START
@@ -18,14 +18,13 @@ Start({
         // @START-ROUTES
         // @START-Test
         {
-            path: 'Table',
-            icon: 'bs-card-checklist',
-            go: Table
+            path: 'Test',
+            icon: 'bs-tools',
+            go: Test
         }
         // @END-Test
         // @END-ROUTES
-    ]
-    ,
+    ],
     settings: {
         // @START-SETTINGS
         // REQUIRED PROPERTIES
@@ -92,17 +91,7 @@ Start({
             // {
             //     rel: 'preload',
             //     as: 'image',
-            //     href: '/Images/dha-logo-no-label-80w.png'
-            // },
-            // {
-            //     rel: 'preload',
-            //     as: 'image',
-            //     href: '/Images/dha-logo-no-label-180w.png'
-            // },
-            // {
-            //     rel: 'preload',
-            //     as: 'image',
-            //     href: '/Images/dha-logo-no-label-386w.png'
+            //     href: '/Images/name.png'
             // }
         ],
         maincontainer: null,

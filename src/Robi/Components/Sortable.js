@@ -19,7 +19,7 @@ export function Sortable({ parent, position }) {
                 <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</div>
                 <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</div> -->
                 
-                <div class="nav ui-state-disabled">
+                <!-- <div class="nav ui-state-disabled">
                     Item 1
                 </div>
                 <div class="nav">
@@ -39,7 +39,7 @@ export function Sortable({ parent, position }) {
                 </div>
                 <div class="nav">
                     Item 7
-                </div>
+                </div> -->
             </div>
         `,
         style: /*css*/ `
