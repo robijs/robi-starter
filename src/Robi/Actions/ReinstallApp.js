@@ -1,3 +1,4 @@
+import { Alert } from '../Components/Alert.js'
 import { Modal } from '../Components/Modal.js'
 import { BootstrapButton } from '../Components/BootstrapButton.js'
 import { ProgressBar } from '../Components/ProgressBar.js'
@@ -17,6 +18,37 @@ import { CreateItem } from './CreateItem.js'
  * @param {*} event
  */
 export function ReinstallApp() {
+    if (App.get('mode') === 'dev') {
+        const modal = Modal({
+            title: false,
+            centered: true,
+            showFooter: false,
+            close: true,
+            scrollable: true,
+            async addContent(modalBody) {
+                modalBody.classList.add('install-modal');
+                
+                modalBody.insertAdjacentHTML('beforeend', /*html*/ `
+                    <h4 class='mb-3'>Dev mode instructions</h4>
+                `);
+        
+                const info = Alert({
+                    type: 'robi-secondary',
+                    text: /*html*/`
+                        <code>npm run reset</code>
+                    `,
+                    parent: modalBody
+                });
+        
+                info.add();
+            }
+        });
+
+        modal.add();
+
+        return;
+    }
+    
     const modal = Modal({
         title: false,
         disableBackdropClose: true,

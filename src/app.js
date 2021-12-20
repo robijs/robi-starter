@@ -6,7 +6,7 @@
 // @START-IMPORTS
 import { Start } from './Robi/Robi.js'
 import lists from './lists.js';
-import Test from './Routes/Test/Test.js'
+import Table from './Routes/Table/Table.js'
 // @END-IMPORTS
 
 // @START
@@ -16,15 +16,16 @@ Start({
     // Routes can be linked to directly with hash fragment. Ex: https://site#path.
     routes: [
         // @START-ROUTES
-        // @START-Test
+        // @START-Table
         {
-            path: 'Test',
-            icon: 'bs-tools',
-            go: Test
+            path: 'Table',
+            icon: 'bs-list-ul',
+            go: Table
         }
-        // @END-Test
+        // @END-Table
         // @END-ROUTES
-    ],
+    ]
+    ,
     settings: {
         // @START-SETTINGS
         // REQUIRED PROPERTIES
@@ -91,7 +92,17 @@ Start({
             // {
             //     rel: 'preload',
             //     as: 'image',
-            //     href: '/Images/name.png'
+            //     href: '/Images/dha-logo-no-label-80w.png'
+            // },
+            // {
+            //     rel: 'preload',
+            //     as: 'image',
+            //     href: '/Images/dha-logo-no-label-180w.png'
+            // },
+            // {
+            //     rel: 'preload',
+            //     as: 'image',
+            //     href: '/Images/dha-logo-no-label-386w.png'
             // }
         ],
         maincontainer: null,

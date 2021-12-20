@@ -460,12 +460,16 @@ export async function Table(param) {
                                         const newItem = await selectedForm?.onCreate(event);
 
                                         if (Array.isArray(newItem)) {
+                                            items.concat(newItem);
+
                                             newItem.forEach(item => {
                                                 table.addRow({
                                                     data: item
                                                 });
-                                            })
+                                            });
                                         } else {
+                                            items.push(newItem);
+
                                             table.addRow({
                                                 data: newItem
                                             });
@@ -492,7 +496,6 @@ export async function Table(param) {
     }
 
     // Toolbar
-    // Test
     if (toolbar || advancedSearch) {
         const tableToolbar = TableToolbar({
             options: toolbar || [],
