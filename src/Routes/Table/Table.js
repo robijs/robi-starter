@@ -19,7 +19,7 @@ export default async function Measures({ parent }) {
         parent,
         advancedSearch: true,
         toolbar: [
-               {
+            {
                 label: 'All',
                 filter(data) {
                     return data;

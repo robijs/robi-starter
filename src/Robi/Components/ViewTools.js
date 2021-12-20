@@ -1,5 +1,6 @@
 import { Component } from '../Actions/Component.js'
 import { GenerateUUID } from '../Actions/GenerateUUID.js'
+import { Modal } from './Modal.js'
 import { App } from '../Core/App.js'
 
 // @START-File
@@ -151,11 +152,15 @@ export function ViewTools(param) {
                 }
             }
 
+            /* Border */
+            #id .border {
+                border: solid 2px ${App.get('primaryColor')};
+            }
+
             /* Add table */
             #id .add-table {
                 border-radius: 20px;
                 padding: 10px;
-                border: solid 2px ${App.get('primaryColor')};
                 width: 100px;
             }
 
@@ -196,7 +201,6 @@ export function ViewTools(param) {
             #id .add-text-block {
                 border-radius: 20px;
                 padding: 10px;
-                border: solid 2px ${App.get('primaryColor')};
                 width: 100px;
                 flex: 1;
                 display: flex;
@@ -209,7 +213,6 @@ export function ViewTools(param) {
             #id .add-button {
                 border-radius: 20px;
                 padding: 10px;
-                border: solid 2px ${App.get('primaryColor')};
                 width: 100px;
                 flex: 1;
                 display: flex;
@@ -228,13 +231,28 @@ export function ViewTools(param) {
                     event.target.classList.add('scale-up');
                 }
             },
-            // {
-            //     selector: '#id .tools',
-            //     event: 'click',
-            //     listener(event) {
-            //         event.target.classList.add('scale-up');
-            //     }
-            // }
+            {
+                selector: '#id .dropdown-item',
+                event: 'click',
+                listener(event) {
+                    const modal = Modal({
+                        title: false,
+                        centered: true,
+                        showFooter: false,
+                        close: true,
+                        scrollable: true,
+                        async addContent(modalBody) {
+                            modalBody.classList.add('install-modal');
+                            
+                            modalBody.insertAdjacentHTML('beforeend', /*html*/ `
+                                <h4 class='mb-0'>Feature in progress. Please stay tuned!</h4>
+                            `);
+                        }
+                    });
+            
+                    modal.add();
+                }
+            }
         ],
         onAdd() {
             $(`#${component.get().id}`).on('hidden.bs.dropdown', function () {
