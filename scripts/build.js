@@ -24,7 +24,8 @@ try {
         paths: [
             './src/Robi/Actions',
             './src/Robi/Core',
-            './src/Robi/Models'
+            './src/Robi/Models',
+            './src/Robi/Templates'
         ],
         imports: [
             './src/Robi/Components'
@@ -42,7 +43,8 @@ try {
         imports: [
             './src/Robi/Actions',
             './src/Robi/Core',
-            './src/Robi/Models'
+            './src/Robi/Models',
+            './src/Robi/Templates'
         ],
         importFile: 'Robi.js',
         file: 'RobiUI.js'

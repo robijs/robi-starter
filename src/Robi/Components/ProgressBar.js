@@ -22,14 +22,14 @@ export function ProgressBar(param) {
             #id.loading-bar-container {
                 width: 100%;
                 margin: 1rem 0rem;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
                 border-radius: 10px;
             }
             
             #id .loading-bar-status {
                 width: 0%;
                 height: 15px;
-                background: ${primary || App.get('primaryColor')};
+                background: ${primary || 'var(--primary)'};
                 border-radius: 10px;
                 transition: width 100ms ease-in-out;
             }

@@ -22,7 +22,7 @@ export function GetSiteUsers(param) {
 
     let url;
 
-    if (App.get('mode') === 'prod') {
+    if (App.isProd()) {
         // const url = `${App.get('domain')}/_api/web/siteusers?$filter=substringof('${query.toLowerCase()}',LoginName) eq true and substringof('i%3A0%23.w',LoginName) eq true`;
         // const url = [
         //     `${App.get('site')}`,
@@ -45,7 +45,7 @@ export function GetSiteUsers(param) {
             // `&$filter=substringof('i:0e.t|dod_adfs_provider|', Account) and (substringof('${query}', Name) or substringof('${query}', WorkEmail))&$orderby=Name`
             `&$filter=substringof('${query}', Account) or (substringof('${query}', Name) or substringof('${query}', WorkEmail))&$orderby=Name`
         ].join('');
-    } else if (App.get('mode') === 'dev') {
+    } else if (App.isDev()) {
         url = `http://localhost:3000/users`;
     }
 

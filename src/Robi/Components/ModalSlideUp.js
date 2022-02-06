@@ -56,7 +56,7 @@ export function ModalSlideUp(param) {
         style: /*css*/ `
             /** Title */
             #id .modal-title {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             #id.modal {
@@ -119,7 +119,7 @@ export function ModalSlideUp(param) {
             #id .btn-secondary {
                 background: none;
                 border: solid 1px transparent;
-                color: ${App.get('defaultColor')};
+                color: var(--color);
                 font-weight: 500;
             }
 
@@ -154,13 +154,13 @@ export function ModalSlideUp(param) {
             }
 
             #id .close .icon-container:hover > .circle-fill {
-                fill: ${App.get('primaryColor')};
+                fill: var(--primary);
             }
 
             #id .close .x-circle-fill {
                 width: 1.2em;
                 height: 1.2em;
-                fill: #e9ecef;
+                fill: var(--button-background);
                 z-index: 10;
             }
 

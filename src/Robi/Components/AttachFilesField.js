@@ -55,7 +55,7 @@ export function AttachFilesField(param) {
                 margin-bottom: 4px;
                 min-height: 200px;
                 border-radius: 4px;
-                border: solid 2px ${App.get('defaultColor')};
+                border: solid 2px var(--color);
             }
 
             .drop-zone-button-container { 
@@ -66,7 +66,7 @@ export function AttachFilesField(param) {
                 cursor: pointer;
                 display: inline-block;
                 padding: 5px 10px;
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
                 color: white;
                 font-weight: bold;
                 text-align: center;
@@ -81,13 +81,13 @@ export function AttachFilesField(param) {
 
             .drag-over {
                 background: white;
-                border: solid 2px ${App.get('primaryColor')};
+                border: solid 2px var(--primary);
             }
 
             .drop-zone-preview-container .icon {
                 font-size: 4.5em;
-                stroke: ${App.get('defaultColor')};
-                fill: ${App.get('defaultColor')};
+                stroke: var(--color);
+                fill: var(--color);
             }
 
             .file-preview {
@@ -112,7 +112,7 @@ export function AttachFilesField(param) {
                 background: crimson;
                 color: white;
                 border-radius: 4px;
-                border:  ${App.get('defaultBorder')};
+                border: solid 1px var(--border-color);
             }
 
             .file-icon {

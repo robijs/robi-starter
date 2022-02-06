@@ -8,7 +8,15 @@ import { Component } from '../Actions/Component.js'
  */
 export function Alert(param) {
     const {
-        text, classes, close, margin, width, parent, position, top
+        text,
+        classes,
+        close,
+        margin,
+        width,
+        parent,
+        position,
+        top,
+        delay
     } = param;
 
     let {
@@ -37,12 +45,12 @@ export function Alert(param) {
                 margin: ${margin || '0px 0px 10px 0px'};
             }
 
-            /* #id *:not(button) {
-                color: inherit;
-            } */
-
             #id.alert-blank {
-                padding: 0px;    
+                padding: 0px;
+            }
+
+            #id.shadow {
+                box-shadow: var(--box-shadow);
             }
             
             ${
@@ -55,19 +63,17 @@ export function Alert(param) {
                 ''
             }
 
+            
             @keyframes alert-in {
                 0% {
-                    transform: translateY(-50px);
-                    /* transform: scale(0) translateY(-50px); */
-                    /* transform-origin: top left; */
+                    transform: scale(0);
+                    transform-origin: center;
                     opacity: 0;
                 }
 
                 100% {
-                    transform: translateY(0px);
-                    /* transform: scale(1) translateY(0px); */
-                    /* transform-origin: top left; */
-                    z-index: 1000;
+                    transform: scale(1);
+                    transform-origin: center;
                     opacity: 1;
                 }
             }
@@ -75,7 +81,7 @@ export function Alert(param) {
             .alert-in {
                 position: absolute;
                 top: ${top || 0}px;
-                animation: 200ms ease-in-out forwards alert-in;
+                animation: alert-in 200ms ease-in-out forwards, alert-in 200ms ease-in-out ${delay || 5000}ms reverse forwards;
             }
         `,
         parent,

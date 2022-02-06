@@ -51,7 +51,8 @@ async function min() {
             paths: [
                 './src/Robi/Actions',
                 './src/Robi/Core',
-                './src/Robi/Models'
+                './src/Robi/Models',
+                './src/Robi/Templates'
             ],
             imports: [
                 './src/Robi/Components'
@@ -70,7 +71,8 @@ async function min() {
             imports: [
                 './src/Robi/Actions',
                 './src/Robi/Core',
-                './src/Robi/Models'
+                './src/Robi/Models',
+                './src/Robi/Templates'
             ],
             importFile: 'Robi.js',
             dir: './dist/src/Robi',
@@ -82,31 +84,31 @@ async function min() {
 
         // Copy Pages
         await copy('./src/Pages', './dist/src/Pages');
-        console.log('Copied ./src/Pages to ./dist/src/Pages');
+        console.log('Copied ./src/Pages > ./dist/src/Pages');
 
         // Copy Images
         await copy('./src/Images', './dist/src/Images');
-        console.log('Copied ./src/Images to ./dist/src/Images');
+        console.log('Copied ./src/Images > ./dist/src/Images');
+
+        // Copy Lists
+        await copy('./src/Lists', './dist/src/Lists');
+        console.log('Copied ./src/Lists > ./dist/src/Lists');
 
         // Copy Libraries
         await copy('./src/Libraries', './dist/src/Libraries');
-        console.log('Copied ./src/Libraries to ./dist/src/Libraries');
+        console.log('Copied ./src/Libraries > ./dist/src/Libraries');
 
         // Copy Workers
         await copy('./src/Robi/Workers', './dist/src/Robi/Workers');
-        console.log('Copied ./src/Robi/Workers to ./dist/src/Robi/Workers');
+        console.log('Copied ./src/Robi/Workers > ./dist/src/Robi/Workers');
 
         // Copy Routes
         await copy('./src/Routes', './dist/src/Routes');
-        console.log('Copied ./src/Routes to ./dist/src/Routes');
+        console.log('Copied ./src/Routes > ./dist/src/Routes');
 
         // Copy app.js
         await copy('./src/app.js', './dist/src/app.js');
-        console.log('Copied ./src/app.js to ./dist/src/app.js')
-
-        // Copy lists.js
-        await copy('./src/lists.js', './dist/src/lists.js');
-        console.log('Copied ./src/lists.js to ./dist/src/lists.js');
+        console.log('Copied ./src/app.js > ./dist/src/app.js')
 
         // Success
         console.log('\nDone!');

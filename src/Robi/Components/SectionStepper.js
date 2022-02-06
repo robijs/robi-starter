@@ -1,6 +1,5 @@
 import { Component } from '../Actions/Component.js'
 import { Route } from '../Actions/Route.js'
-import { App } from '../Core/App.js'
 
 // TODO: If selected group is hidden, scroll container
 // @START-File
@@ -11,13 +10,36 @@ import { App } from '../Core/App.js'
  */
 export function SectionStepper(param) {
     const {
-        title, sections, selected, route, padding, parent, position
+        title, sections, selected, route, padding, parent, position, numbers, backButton
     } = param;
 
     const component = Component({
         html: /*html*/ `
             <div class='section-stepper'>
-                ${title ? /*html*/ `<div class='section-title'>${title.text}</div>` : ''}
+                <div class='title-container'>
+                    ${
+                        backButton ? /*html*/ `
+                        <button type='button' class='btn'>
+                            <div class='d-flex back-btn' style='' title='Back'>
+                                <svg class='icon' style='fill: var(--primary); font-size: 26px;'>
+                                    <use href='#icon-bs-arrow-left-cirlce-fill'></use>
+                                </svg>
+                            </div>
+                        </button>               
+                        ` : ''
+                    }
+                    ${
+                        title ? /*html*/ `
+                            <!-- <div class='section-title'>${title.text}</div> -->
+
+                            <div class='section-group title pt-0' data-path=''>
+                                <div class='section-circle' data-name='' style='opacity: 0;'>0</div>
+                                <span class='section-title' data-name=''>${title.text}</span>
+                            </div>
+                        ` : ''
+                    }
+
+                </div>
                 <div class='section-title-group'>
                     <div class='section-group-container'>
                         ${createHTML()}
@@ -32,13 +54,35 @@ export function SectionStepper(param) {
                 flex-direction: column;
                 padding: ${padding || '0px'};
                 border-radius: 10px;
-                /* overflow: auto; */
+                min-width: ${window.innerWidth > 1366 ? '200px' : '125px'};
+                transition: width 300ms, min-width 300ms;
             }
 
-            #id .section-title-group {
-                overflow: overlay;
-                /* border-radius: 10px; */
+            /* Title */
+            #id .title-container {
+                display: flex;
+                position: relative;
             }
+
+            #id .title-container .btn {
+                padding: 0px;
+                height: 37px;
+                position: absolute;
+                /* Align with prev and next view back button */
+                top: -1px;
+                left: -3px;
+            }
+
+            #id .section-title {
+                flex: 1;
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--primary);
+                /* Align baseline with view title */
+                transform: translateY(8px);
+                cursor: pointer;
+            }
+
 
             /* Buttons */
             #id .btn-secondary {
@@ -47,33 +91,15 @@ export function SectionStepper(param) {
                 border-color: transparent;
             }
 
-            /* Title */
-            /* #id .section-title {
-                font-size: 1em;
-                font-weight: 700;
-                text-align: center;
-                background: #e9ecef;
-                color: ${App.get('primaryColor')};
-                border-radius: 10px;
-                margin-bottom: 15px;
-                padding: 10px;
-                cursor: pointer;
-            } */
-
-            #id .section-title {
-                font-size: 18px;
-                font-weight: 700;
-                color: ${App.get('primaryColor')};
-                border-radius: 10px;
-                padding: 8px 20px 10px 20px; /* -2px on top to align baseline with view title */
-                cursor: pointer;
-            }
-
             /* Sections */
             #id .section-group-container {
                 font-weight: 500;
                 padding: 0px;
                 border-radius: 10px;
+            }
+
+            #id .section-title-group {
+                overflow: overlay;
             }
             
             #id .section-group {
@@ -86,29 +112,30 @@ export function SectionStepper(param) {
             }
             
             #id .section-group.selected {
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
                 color: white;
             }
 
             #id .section-group.selected * {
-                color: white;
+                color: var(--secondary);
             }
 
             /* Number */
             #id .section-circle {
-                color: ${App.get('primaryColor')};
+                min-width: 10px;
+                color: var(--primary);
+                margin-right: 10px;
             }
 
             /* Name */
             #id .section-name {
                 width: 100%;
                 white-space: nowrap;
-                font-weight: 400;
+                font-weight: 500;
             }
 
             #id .section-name-text {
                 font-size: 15px;
-                margin-left: 10px;
             }
         `,
         parent,
@@ -130,8 +157,33 @@ export function SectionStepper(param) {
                         title.action(event);
                     }
                 }
+            },
+            {
+                selector: '#id .back-btn',
+                event: 'click',
+                listener(event) {
+                    if (backButton.action) {
+                        backButton.action(event);
+                    }
+                }
             }
-        ]
+        ],
+        onAdd() {
+            // Window resize event
+            window.addEventListener('resize', event => {
+                const node = component.get();
+
+                if (window.innerWidth > 1366) {
+                    if (node && node.style) {
+                        node.style.minWidth = '200px';
+                    }
+                } else {
+                    if (node && node.style) {
+                        node.style.minWidth = '125px';
+                    }
+                }
+            });
+        }
     });
 
     function createHTML() {
@@ -144,7 +196,7 @@ export function SectionStepper(param) {
 
             html += /*html*/ `
                 <div class='section-group${name === selected ? ' selected' : ''}' data-path='${path}'>
-                    <div class='section-circle' data-name='${name}'>${index + 1}</div>
+                    ${numbers !== false ? /*html*/ `<div class='section-circle' data-name='${name}'>${index + 1}</div>` : ''}
             `;
 
             html += /*html*/ `

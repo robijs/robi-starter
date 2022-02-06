@@ -80,8 +80,8 @@ export function FilesTable(param) {
 
             .file-icon .page {
                 font-size: 2em;
-                stroke: ${App.get('defaultColor')};
-                fill: ${App.get('defaultColor')}
+                stroke: var(--color);
+                fill: var(--color)
             }
 
             .file-icon .type {
@@ -113,9 +113,9 @@ export function FilesTable(param) {
                 font-weight: bold;
                 text-align: center;
                 border-radius: 4px;
-                color: ${App.get('secondaryColor')};
-                background: ${App.get('primaryColor')};
-                border: solid 2px ${App.get('primaryColor')};
+                color: var(--secondary);
+                background: var(--primary);
+                border: solid 2px var(--primary);
             }
         `,
         parent,

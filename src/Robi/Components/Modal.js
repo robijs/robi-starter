@@ -7,7 +7,30 @@ import { App } from '../Core/App.js';
  * @param {*} param
  * @returns
  */
-export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, closeStyle, close, addContent, buttons, centered, fade, background, fullSize, showFooter, scrollable, contentPadding, parent, disableBackdropClose, position, shadow }) {
+export function Modal(param) {
+    const { 
+        title,
+        classes,
+        titleStyle,
+        headerStyle,
+        footerStyle,
+        closeStyle,
+        close,
+        addContent,
+        buttons,
+        centered,
+        fade,
+        background,
+        fullSize,
+        showFooter,
+        scrollable,
+        contentPadding,
+        parent,
+        disableBackdropClose,
+        position,
+        shadow 
+    } = param;
+    
     const component = Component({
         html: /*html*/ `
             <!-- Modal -->
@@ -20,7 +43,8 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
                             !title ?
                             /*html*/ `
                                 <button type='button' class='close ${close ? '' : 'd-none'}' style='position: absolute; right: 0px; ${closeStyle || ''}' data-dismiss='modal' aria-label='Close'>
-                                    <span class='icon-container' style='right: 20px; top: 20px;'>
+                                    <!-- <span class='icon-container' style='right: 20px; top: 20px;'> -->
+                                    <span class='icon-container'>
                                         <svg class='icon x-circle-fill'>
                                             <use href='#icon-bs-x-circle-fill'></use>
                                         </svg>
@@ -64,11 +88,11 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
         style: /*css*/ `
             /** Title */
             #id .modal-title {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             #id.modal {
-                overflow-y: overlay;
+                overflow-y: overlay; 
             }
 
             #id.modal.show {
@@ -79,7 +103,7 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
             #id .modal-content {
                 border-radius: 20px;
                 border: none;
-                background: ${background || ''};
+                background: ${background || 'var(--secondary)'};
                 padding: ${contentPadding || '0px'};
             }
 
@@ -122,7 +146,7 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
             #id .btn-secondary {
                 background: none;
                 border: solid 1px transparent;
-                color: ${App.get('defaultColor')};
+                color: var(--color);
                 font-weight: 500;
             }
 
@@ -141,6 +165,11 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
                 font-weight: 500;
                 text-shadow: unset;
                 opacity: 1;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             #id .close .icon-container {
@@ -149,6 +178,8 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
             }
 
             #id .close .circle-fill {
+                width: 20px;
+                height: 20px;
                 position: absolute;
                 fill: darkgray;
                 top: 2px;
@@ -156,14 +187,10 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
                 transition: all 300ms ease;
             }
 
-            #id .close .icon-container:hover > .circle-fill {
-                fill: ${App.get('primaryColor')};
-            }
-
             #id .close .x-circle-fill {
-                width: 1.2em;
-                height: 1.2em;
-                fill: #e9ecef;
+                width: 24px;
+                height: 24px;
+                fill: var(--button-background);
                 z-index: 10;
             }
 
@@ -211,18 +238,22 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
                 min-height: 50px;
             } */
 
+            #id .modal-dialog-scrollable .modal-body {
+                overflow-y: overlay;
+            }
+
             #id.scrollbar-wide .modal-body::-webkit-scrollbar {
-                width: 25px;
+                width: 15px;
             }
 
             #id.scrollbar-wide .modal-body::-webkit-scrollbar-thumb {
-                border: 8px solid transparent;
+                border: 4px solid transparent;
                 border-radius: 20px;
                 min-height: 75px;
             }
 
             #id.scrollbar-wide .modal-body::-webkit-scrollbar-button {
-                height: 10px;
+                height: 12px;
             }
 
             ${
@@ -239,16 +270,16 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
                 !title ?
                 /*css*/ `
                     #id .modal-body::-webkit-scrollbar {
-                        width: 25px;
+                        width: 60px;
                     }
 
                     #id .modal-body::-webkit-scrollbar-thumb {
-                        border: 8px solid transparent;
-                        border-radius: 20px;
+                        border: 27px solid transparent;
+                        border-radius: 60px;
                     }
 
                     #id .modal-body::-webkit-scrollbar-button {
-                        height: 10px;
+                        height: 30px;
                     }
                 ` : ''
             }
@@ -393,6 +424,10 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
         return $(`#${component.get().id}`);
     };
 
+    component.getHeader = () => {
+        return component.find('.modal-header');
+    };
+
     component.close = (onClose) => {
         if (onClose) {
             $(component.get()).on('hidden.bs.modal', event => {
@@ -412,6 +447,14 @@ export function Modal({ title, classes, titleStyle, headerStyle, footerStyle, cl
             component.find('.modal-dialog').classList.add('modal-dialog-scrollable');
         } else if (value === false) {
             component.find('.modal-dialog').classList.remove('modal-dialog-scrollable');
+        }
+    };
+
+    component.setTitle = (text) => {
+        const node = component.find('.modal-title');
+
+        if (node) {
+            node.innerHTML = text;
         }
     };
 

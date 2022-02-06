@@ -1,6 +1,6 @@
 import { Modal } from '../Components/Modal.js'
 import { BootstrapButton } from '../Components/BootstrapButton.js'
-import { BootstrapDropdown } from '../Components/BootstrapDropdown.js'
+import { IconField } from '../Components/IconField.js'
 import { LoadingSpinner } from '../Components/LoadingSpinner.js'
 import { Alert } from '../Components/Alert.js'
 import { SingleLineTextField } from '../Components/SingleLineTextField.js'
@@ -9,22 +9,25 @@ import { CreateFolder } from '../Actions/CreateFolder.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
 import { Wait } from './Wait.js'
+import { RouteTemplate } from '../Templates/RouteTemplate.js'
 
 // @START-File
 /**
  *
  * @param {*} param
  */
-export async function AddRoute(param) {
+export async function AddRoute(event) {
     // Show modal
     console.log('add route');
 
     const addRouteModal = Modal({
         title: false,
         scrollable: true,
+        close: true,
         async addContent(modalBody) {
             modalBody.classList.add('install-modal');
-            // addRouteModal.find('.modal-dialog').style.maxWidth = 'fit-content';
+            addRouteModal.find('.modal-dialog').style.maxWidth = 'fit-content';
+            addRouteModal.find('.modal-dialog').style.minWidth = '800px';
 
             modalBody.insertAdjacentHTML('beforeend', /*html*/ `
                 <h3 class='mb-3'>Add route</h3>
@@ -45,7 +48,10 @@ export async function AddRoute(param) {
                 onFocusout(event) {
                     const path = routeTitle.value().toTitleCase().split(' ').join('');
                     routePath.value(path);
+
                     showMessage(path);
+
+                    canEnable();
                 }
             });
 
@@ -72,33 +78,9 @@ export async function AddRoute(param) {
             routePath.add();
 
             // Route icon
-            const routeIcon = BootstrapDropdown({
-                label: 'Icon',
-                parent: modalBody, 
-                maxHeight: '150px',
-                maxWidth: '100px',
-                valueType: 'html',
-                value: /*html*/ `
-                    <div class='d-flex justify-content-center w-100' data-target='true'>
-                        <svg class='icon' style='font-size: 18px; fill: ${App.get('primaryColor')};'>
-                            <use href='#icon-bs-circle-fill'></use>
-                        </svg>
-                    </div>
-                `,
-                options: Store.get('svgdefs').getIcons().map(icon => {
-                    return {
-                        label: /*html*/ `
-                            <div class='d-flex justify-content-center w-100' data-target='true'>
-                                <svg class='icon' style='font-size: 18px; fill: ${App.get('primaryColor')};'>
-                                    <use href='#${icon}'></use>
-                                </svg>
-                            </div>
-                        `
-                    }
-                }),
-                action(event) {
-                    canEnable();
-                }
+            const routeIcon = IconField({
+                parent: modalBody,
+                icons: Store.get('svgdefs').getIcons()
             });
 
             routeIcon.add();
@@ -117,7 +99,7 @@ export async function AddRoute(param) {
                             modal.find('.modal-content').style.width = 'unset';
 
                             const loading = LoadingSpinner({
-                                message: `<span style='color: ${App.get('primaryColor')};'>Adding Route<span>`,
+                                message: `<span style='color: var(--primary);'>Adding Route<span>`,
                                 type: 'robi',
                                 classes: ['p-4'],
                                 parent: modalBody
@@ -139,10 +121,8 @@ export async function AddRoute(param) {
                     await updateApp();
                     await createRoute();
 
-                    if (App.get('mode') === 'prod') {
-                        // Wait additional 2s
-                        console.log('Waiting...');
-                        await Wait(3000);
+                    if (App.isProd()) {
+                        await Wait(5000);
                         location.reload();
                     }
 
@@ -153,7 +133,7 @@ export async function AddRoute(param) {
                         let digest;
                         let request;
 
-                        if (App.get('mode') === 'prod') {
+                        if (App.isProd()) {
                             digest = await GetRequestDigest();
                             request  = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('App/src')/Files('app.js')/$value`, {
                                 method: 'GET',
@@ -172,22 +152,23 @@ export async function AddRoute(param) {
                         let updatedContent;
 
                         // Set import
-                        const imports = content.match(/\/\/ @START-IMPORTS([\s\S]*?)\/\/ @END-IMPORTS/);
-                        const newImports = imports[1] + `import ${routePath.value()} from './Routes/${routePath.value()}/${routePath.value()}.js'\n`
-                        updatedContent = content.replace(/\/\/ @START-IMPORTS([\s\S]*?)\/\/ @END-IMPORTS/, `// @START-IMPORTS${newImports}// @END-IMPORTS`);
+                        const imports = content.match(/\/\/ @START-Imports:Routes([\s\S]*?)\/\/ @END-Imports:Routes/);
+                        const newImports = imports[1] + `import Route_${routePath.value()} from './Routes/${routePath.value()}/${routePath.value()}.js'\n`
+                        updatedContent = content.replace(/\/\/ @START-Imports:Routes([\s\S]*?)\/\/ @END-Imports:Routes/, `// @START-Imports:Routes${newImports}// @END-Imports:Routes`);
 
                         // Set routes
-                        const routes = content.match(/\/\/ @START-ROUTES([\s\S]*?)\/\/ @END-ROUTES/);
-                        const ordered = routes[1].split(', // @ROUTE');
-                        const icon = routeIcon.value().querySelector('use').href.baseVal.replace('#icon-', '');
+                        const routes = content.match(/\/\/ @START-Routes([\s\S]*?)\/\/ @END-Routes/);
+                        const ordered = routes[1].split(', // @Route');
                         // FIXME: replace hard coded spaces (4 === 1 tab) with variable that includes 4 space characters
+                        // TODO: Extract to template
                         const newRoute = [
                             ``,
                             `        // @START-${routePath.value()}`,
                             `        {`,
                             `            path: '${routePath.value()}',`,
-                            `            icon: '${icon}',`,
-                            `            go: ${routePath.value()}`,
+                            `            title: '${routeTitle.value()}',`,
+                            `            icon: '${routeIcon.value()}',`,
+                            `            go: Route_${routePath.value()}`,
                             `        }`,
                             `        // @END-${routePath.value()}`,
                             ``
@@ -197,12 +178,12 @@ export async function AddRoute(param) {
 
                         console.log('New:', ordered);
 
-                        const newRoutes = ordered.join(', // @ROUTE');
+                        const newRoutes = ordered.join(', // @Route');
 
                         console.log(newRoutes);
 
                         // TODO: Will you always need to add 8 spaces before // @END-ROUTES?
-                        updatedContent = updatedContent.replace(/\/\/ @START-ROUTES([\s\S]*?)\/\/ @END-ROUTES/, `// @START-ROUTES${newRoutes}        // @END-ROUTES`);
+                        updatedContent = updatedContent.replace(/\/\/ @START-Routes([\s\S]*?)\/\/ @END-Routes/, `// @START-Routes${newRoutes}        // @END-Routes`);
 
                         console.log('OLD\n----------------------------------------\n', content);
                         console.log('\n****************************************');
@@ -211,7 +192,7 @@ export async function AddRoute(param) {
 
                         let setFile;
 
-                        if (App.get('mode') === 'prod') {
+                        if (App.isProd()) {
                             // TODO: Make a copy of app.js first
                             // TODO: If error occurs on load, copy ${file}-backup.js to ${file}.js
                             setFile = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('App/src')/Files/Add(url='app.js',overwrite=true)`, {
@@ -235,28 +216,13 @@ export async function AddRoute(param) {
                     }
 
                     async function createRoute() {
-                        // TODO: Move to template file
-                        let contents = [
-                            `import { Title } from '../../Robi/RobiUI.js'`,
-                            ``,
-                            `export default async function Measures({ parent, pathParts, props }) {`,
-                            `    // View title`,
-                            `    const viewTitle = Title({`,
-                            `        title: /* @START-Title */'${routeTitle.value()}'/* @END-Title */,`,
-                            `        parent,`,
-                            `        date: new Date().toLocaleString('en-US', {`,
-                            `            dateStyle: 'full'`,
-                            `        }),`,
-                            `        type: 'across'`,
-                            `    });`,
-                            ``,
-                            `    viewTitle.add();`,
-                            `}`
-                        ].join('\n');
-
+                        const contents = RouteTemplate({
+                            name: routePath.value()
+                        });
+                    
                         let newFile;
 
-                        if (App.get('mode') === 'prod') {
+                        if (App.isProd()) {
                             // Create Route dir
                             await CreateFolder({
                                 path: `App/src/Routes/${routePath.value()}`

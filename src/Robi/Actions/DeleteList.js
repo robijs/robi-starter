@@ -18,7 +18,7 @@ export async function DeleteList(param) {
         updateProgressCount
     } = param;
 
-    if (App.get('mode') === 'prod') {
+    if (App.isProd()) {
         // TODO: Check if list exists first
 
         /** Get new request digest */
@@ -67,7 +67,7 @@ export async function DeleteList(param) {
                 updateProgressCount: false
             });
         }
-    } else if (App.get('mode') === 'dev') {
+    } else if (App.isDev()) {
         const options = {
             method: 'DELETE',
             headers: {

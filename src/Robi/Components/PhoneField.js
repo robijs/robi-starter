@@ -46,7 +46,7 @@ export function PhoneField(param) {
                 padding: 10px;
                 background: white;
                 border-radius: 4px;
-                border: ${App.get('defaultBorder')};
+                border: solid 1px var(--border-color);
             }
 
             #id .form-field-phone-number {
@@ -73,7 +73,7 @@ export function PhoneField(param) {
             
             /** Focused */
             #id .focused {
-                box-shadow: 0px 0px 0px 2px ${App.get('primaryColor')};
+                box-shadow: 0px 0px 0px 2px var(--primary);
                 border: solid 1px transparent;
             }
         `,

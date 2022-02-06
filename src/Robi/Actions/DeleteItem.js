@@ -18,7 +18,7 @@ export async function DeleteItem(param) {
         filter,
     } = param;
 
-    if (App.get('mode') === 'prod') {
+    if (App.isProd()) {
         /** Get item by id */
         const getItems = await Get({
             list,
@@ -44,7 +44,7 @@ export async function DeleteItem(param) {
 
             return Post(postOptions);
         }));
-    } else if (App.get('mode') === 'dev') {
+    } else if (App.isDev()) {
         const options = {
             method: 'DELETE',
             headers: {

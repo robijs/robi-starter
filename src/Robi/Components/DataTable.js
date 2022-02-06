@@ -9,8 +9,35 @@ import { App } from '../Core/App.js';
  */
 export function DataTable(param) {
     const {
-        buttonColor, headers, headerFilter, columns, buttons, cursor, checkboxes, striped, border, paging, search, info, ordering, order, rowId, addCSS, data, onRowClick, onSearch, onDraw, toolbar, fontSize, nowrap, onSelect, // How do you turn select on?  i see the event but no option to enable it;
-        onDeselect, rowCallback, createdRow, width, parent, position
+        buttonColor,
+        headers,
+        headerFilter,
+        columns,
+        buttons,
+        cursor,
+        checkboxes,
+        striped,
+        border,
+        paging,
+        search,
+        info,
+        ordering,
+        order,
+        rowId,
+        addCSS,
+        data,
+        onRowClick,
+        onSearch,
+        onDraw,
+        fontSize,
+        nowrap,
+        onSelect,
+        onDeselect,
+        rowCallback,
+        createdRow,
+        width,
+        parent,
+        position
     } = param;
 
     const component = Component({
@@ -51,8 +78,20 @@ export function DataTable(param) {
                 /* overflow-x: overlay; */
             }
 
-            #id tr {
+            #id_wrapper .table {
+                color: var(--color);
+            }
+
+            #id_wrapper tr {
                 cursor: ${cursor || 'pointer'};
+            }
+            
+            #id_wrapper tr td.dataTables_empty {
+                cursor: default;
+            }
+
+            #id_wrapper table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled) {
+                padding-right: 25px;
             }
 
             /* 
@@ -70,15 +109,14 @@ export function DataTable(param) {
                 ''}
 
             #id_wrapper .datatable-toolbar {
-                font-size: .9em;
                 padding: 0px 15px;
                 margin: 0px 0px 10px 0px;
                 width: 100%;
-                min-height: 33.33px;
                 display: flex;
                 justify-content: space-between;
                 flex-wrap: nowrap;
-                overflow: auto;
+                /* min-height: 33.33px; */
+                /* overflow: auto; */
             }
 
             #id_wrapper .datatable-toolbar .cell {
@@ -93,7 +131,7 @@ export function DataTable(param) {
 
             /* Striped */
             #id_wrapper .table-striped tbody tr:nth-of-type(odd) {
-                background-color: ${App.get('backgroundColor')};
+                background-color: var(--background);
             }
 
             #id_wrapper .table-striped tbody tr:nth-of-type(even) td {
@@ -119,13 +157,10 @@ export function DataTable(param) {
             }
 
             /** Buttons */
-            #id_wrapper .btn-group {
-                margin: 0px 10px 0px 0px;
-            }
-
             #id_wrapper .btn {
-                font-size: .9em;
-                padding: 5px 20px;
+                font-size: 13px;
+                border-radius: 10px;
+                margin-right: 10px;
             }
 
             #id_wrapper .datatable-toolbar .btn-secondary {
@@ -138,13 +173,10 @@ export function DataTable(param) {
                 box-shadow: none;
             }
 
-            #id_wrapper .datatable-toolbar .btn-secondary span {
-                color: white;
-            }
-
             /** Add Item Button */
             #id_wrapper .datatable-toolbar .add-item {
-                background: #e9ecef;
+                background: var(--button-background);
+                margin-right: 20px;
             }
 
             #id_wrapper .datatable-toolbar .add-item span {
@@ -153,14 +185,14 @@ export function DataTable(param) {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             #id_wrapper .datatable-toolbar .add-item .icon {
                 font-size: 16pt;
                 margin-right: 5px;
                 margin-left: -5px;
-                fill: ${App.get('primaryColor')};;
+                fill: var(--primary);;
             }
 
             /** Disabled Button */
@@ -172,12 +204,7 @@ export function DataTable(param) {
             /** Delete Item Button */
             #id_wrapper .datatable-toolbar .delete-item {
                 font-size: 20px;
-                background: transparent;
-                border: none;
-            }
-
-            #id_wrapper .datatable-toolbar .delete-item:hover {
-                background: #e9ecef;
+                background: ${buttonColor || 'var(--button-background)'} !important;
             }
 
             #id_wrapper .datatable-toolbar .delete-item span {
@@ -188,7 +215,7 @@ export function DataTable(param) {
             }
 
             #id_wrapper .datatable-toolbar .delete-item .icon {
-                fill: ${App.get('primaryColor')};
+                fill: var(--primary);
             }
 
             /** HTML5 Buttons */
@@ -201,54 +228,100 @@ export function DataTable(param) {
             }
 
             #id_wrapper .buttons-html5 {
-                background: ${buttonColor || '#e9ecef'} !important;
+                color: #444;
+                font-weight: 500;
+                padding: 0px;
+                flex: 1;
+                display: flex;
+            }
+
+            #id_wrapper .buttons-html5:hover {
+                background: none !important;
+            }
+
+            #id_wrapper .buttons-html5 span{
+                color: var(--color) !important;
+                display: inline-block;
+                margin: 0px 10px;
+                padding: 4px 24px;
+                flex: 1;
+                text-align: center;
+                border-radius: 8px;
+            }
+
+            #id_wrapper .buttons-html5 span:hover {
+                background-color: var(--primary-20);
+            }
+
+            #id_wrapper .buttons-html5:first-child span {
+                margin-top: 10px;
+            }
+
+            #id_wrapper .buttons-html5:last-child span {
+                margin-bottom: 10px;
+            }
+
+            /* Buttons Collection */
+            #id_wrapper .dt-button-collection {
+                width: calc(100% - 12px);
+            }
+
+            #id_wrapper .dt-button-collection .dropdown-menu {
+                top: 4px;
+                padding: 0px;
+                display: flex;
+                flex-direction: column;
+                box-shadow: rgb(0 0 0 / 10%) 0px 0px 16px -2px;
+                border: none;
+            }
+
+            #id_wrapper .buttons-collection {
+                background: ${buttonColor || 'var(--button-background)'} !important;
+                border: none;
+            }
+
+            #id_wrapper .buttons-collection span {
+                display: flex;
                 color: #444;
                 font-weight: 500;
             }
 
-            #id_wrapper .buttons-html5 span{
-                color: ${App.get('defaultColor')} !important;
+            #id_wrapper .buttons-collection span .icon {
+                font-size: 20px;
+                fill: var(--primary);
             }
 
             /** Select and Search */
-            #id_wrapper .custom-select {
-                background: ${buttonColor || '#e9ecef'} !important;
-                border-color: transparent;
-                font-weight: 500;
+            #id_wrapper .custom-select,
+            #id_wrapper input[type='search'] {
+                background: ${buttonColor || 'var(--button-background)'} !important;
+            }
+
+            #id_wrapper .dataTables_filter label {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                background: ${buttonColor || 'var(--button-background)'} !important;
+                padding-left: 10px;
+            }
+
+            #id_wrapper .dataTables_filter label:focus-within {
+                border-color: transparent !important;
+                box-shadow: 0 0 0 3px var(--primary-6b) !important;
             }
 
             #id_wrapper input[type='search'] {
-                background: ${buttonColor || '#e9ecef'} !important;
-                border-color: transparent;
-                border-radius: 8px;
-            }
-
-            #id_wrapper input[type='search']:active,
-            #id_wrapper input[type='search']:focus,
-            #id_wrapper select:focus,
-            #id_wrapper select:focus {
-                outline: none;
-            }
-
-            #id_wrapper input[type='search']:active,
-            #id_wrapper input[type='search']:focus {
+                border-color: transparent !important;
                 box-shadow: none !important;
-            }
-
-            #id_wrapper input[type='search']::-webkit-search-cancel-button {
-                -webkit-appearance: none;
-                cursor: pointer;
-                height: 16px;
-                width: 16px;
-                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill=''><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>");
             }
 
             /** Footer */
             #id_wrapper .datatable-footer {
                 padding: 0px 15px;
-                margin: 10px 0px 0px 0px;
                 width: 100%;
-                font-size: .85em;
+                font-size: 12px;
+                font-weight: 500;
                 display: flex;
                 justify-content: space-between;
             }
@@ -278,8 +351,8 @@ export function DataTable(param) {
 
             #id_wrapper .page-item.active .page-link {
                 color: white;
-                background: ${App.get('primaryColor')};;
-                border: solid 1px ${App.get('primaryColor')};
+                background: var(--primary);;
+                border: solid 1px var(--primary);
             }
 
             #id_wrapper .page-link:hover {
@@ -312,7 +385,7 @@ export function DataTable(param) {
             #id_wrapper .table-border thead th {
                 border-bottom: solid 1px rgb(${App.get('primaryColorRGB')}, .3);
                 background: rgb(${App.get('primaryColorRGB')}, .2);
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             #id_wrapper :not(.table-border) thead th {
@@ -344,14 +417,8 @@ export function DataTable(param) {
             #id_wrapper .sorting_asc::after,
             #id_wrapper .sorting_desc::before,
             #id_wrapper .sorting_desc::after {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
-
-            /* #id_wrapper .sorting::before,
-            #id_wrapper .sorting_asc::before,
-            #id_wrapper .sorting_desc::before {
-                right: .5em;
-            } */
 
             #id_wrapper .sorting::after,
             #id_wrapper .sorting_asc::after,
@@ -376,7 +443,7 @@ export function DataTable(param) {
             #id_wrapper tbody th.select-checkbox:before {
                 content: ' ';
                 margin: 0 auto;
-                border: solid 2px lightgray;
+                border: solid 2px ${App.get('prefersColorScheme') === 'dark' ? '#444' : 'lightgray' };
                 border-radius: 4px;
                 position: initial;
                 display: block;
@@ -390,7 +457,7 @@ export function DataTable(param) {
                 margin-top: -18px;
                 top: auto;
                 text-shadow: none;
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 font-weight: bolder;
                 font-size: 10pt;
             }
@@ -401,14 +468,14 @@ export function DataTable(param) {
             }
 
             #id_wrapper tbody > tr.selected td {
-                background-color: ${App.get('primaryColor') + ( App.get('selectedRowOpacity') || 10 )} !important;
-                color:  ${App.get('primaryColor')};
+                background-color: var(--selected-row) !important;
+                color:  var(--primary);
             }
 
             #id_wrapper tbody tr.selected a, 
             #id_wrapper tbody th.selected a,
             #id_wrapper tbody td.selected a {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             #id_wrapper tbody > tr.selected td:first-child {
@@ -482,17 +549,18 @@ export function DataTable(param) {
                 margin: 0px 10px;
             }
 
+            /** Dropdown menu */
+            #id_wrapper .dropdown-menu {
+                background: var(--inputBackground);
+                box-shadow: var(--box-shadow);
+            }
+
             ${addCSS || ''}
         `,
         parent,
         position,
         events: [
-            {
-                selector: `#id`,
-                event: 'click',
-                listener(event) {
-                }
-            }
+
         ],
         onAdd() {
             setData({
@@ -536,7 +604,7 @@ export function DataTable(param) {
                 <'row'
                     <'datatable-toolbar'
                         <'cell left'
-                            Bl
+                            B
                         >
                         <'cell right'
                             ${search !== false ? 'f' : ''}
@@ -559,24 +627,36 @@ export function DataTable(param) {
                     >
                 >
             `,
+            language: {
+                search: /*html*/ `
+                    <span class='filter-search-icon d-inline-flex justify-content-center align-items-center'>
+                        <svg class='icon' style='font-size: 16px; fill: #adb5bd;'>
+                            <use href='#icon-bs-search'></use>
+                        </svg>
+                    </span>
+                `
+            },
             rowId,
             processing: true,
             // responsive: true,
-            /**
-             * Testing
-             *
-             * https://datatables.net/reference/option/deferRender
-             */
-            deferRender: true,
+            deferRender: true, // https://datatables.net/reference/option/deferRender
             order: order || [[1, 'asc']],
             columns,
-            buttons: buttons || []
+            buttons: {
+                dom: {
+                  button: {
+                    className: 'btn btn-robi'
+                  }
+                },
+                buttons: buttons || []
+            }
+            // buttons: buttons || []
         };
 
         if (paging === false) {
             options.paging = false;
         } else {
-            options.pageLength = 25;
+            options.pageLength = 20;
         }
 
         if (ordering === false) {
@@ -773,6 +853,10 @@ export function DataTable(param) {
     component.getButton = (className) => {
         return component.get().closest('.dataTables_wrapper').querySelector(`button.${className}`);
     };
+
+    component.wrapper = () => {
+        return component.get().closest('.dataTables_wrapper');
+    }
 
     return component;
 }

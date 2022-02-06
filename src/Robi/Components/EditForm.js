@@ -1,6 +1,6 @@
 import { DeleteItem } from '../Actions/DeleteItem.js'
 import { UpdateItem } from '../Actions/UpdateItem.js'
-import { BootstrapDropdown } from './BootstrapDropdown.js'
+import { ChoiceField } from './ChoiceField.js'
 import { MultiChoiceField } from './MultiChoiceField.js'
 import { MultiLineTextField } from './MultiLineTextField.js'
 import { NumberField } from './NumberField.js'
@@ -13,107 +13,172 @@ import { DateField } from './DateField.js'
  * @param {*} param
  * @returns
  */
-export async function EditForm(param) {
-    const { event, fields, item, list, modal, parent, table } = param;
+export async function EditForm({ fields, item, list, parent }) {
+    if (!Array.isArray(fields)) {
+        return false;
+    }
 
-    console.log(param);
+    const components = fields.filter(field => field.name !== 'Id').map(field => {
+        const { name, display, type, validate, choices, fillIn } = field;
 
-    const components = fields
-        ?.filter(field => field.name !== 'Id')
-        ?.map(field => {
-            const { name, display, type, choices, action } = field;
+        let component = {};
 
-            let component = {};
+        switch (type) {
+            case 'slot':
+                component = SingleLineTextField({
+                    label: display || name,
+                    value: item[name],
+                    parent,
+                    onFocusout
+                });
+                break;
+            case 'mlot':
+                component = MultiLineTextField({
+                    label: display || name,
+                    value: item[name],
+                    parent,
+                    onFocusout
+                });
+                break;
+            case 'number':
+                component = NumberField({
+                    label: display || name,
+                    value: item[name],
+                    parent,
+                    onFocusout
+                });
+                break;
+            case 'choice':
+                component = ChoiceField({
+                    label: display || name,
+                    value: item[name],
+                    setWidthDelay: 200,
+                    options: choices.map(choice => {
+                        return {
+                            label: choice
+                        };
+                    }),
+                    parent,
+                    action: onFocusout 
+                });
+                break;
+            case 'multichoice':
+                component = MultiChoiceField({
+                    label: display || name,
+                    fillIn,
+                    choices,
+                    value: item[name].results,
+                    parent,
+                    validate: onFocusout
+                });
+                break;
+            case 'date':
+                component = DateField({
+                    label: display || name,
+                    value: item[name],
+                    parent,
+                    onFocusout
+                });
+                break;
+        }
 
-            switch (type) {
-                case 'slot':
-                    component = SingleLineTextField({
-                        label: display || name,
-                        value: item[name],
-                        parent
-                    });
-                    break;
-                case 'mlot':
-                    component = MultiLineTextField({
-                        label: display || name,
-                        value: item[name],
-                        parent
-                    });
-                    break;
-                case 'number':
-                    component = NumberField({
-                        label: display || name,
-                        value: item[name],
-                        parent
-                    });
-                    break;
-                case 'choice':
-                    component = BootstrapDropdown({
-                        label: display || name,
-                        value: item[name] || choices[0],
-                        setWidthDelay: 200,
-                        options: choices.map(choice => {
-                            return {
-                                label: choice
-                            };
-                        }),
-                        parent
-                    });
-                    break;
-                case 'multichoice':
-                    console.log(name);
-                    component = MultiChoiceField({
-                        label: display || name,
-                        choices,
-                        // value: item[name] || choices[0],
-                        parent
-                    });
-                    break;
-                case 'date':
-                    component = DateField({
-                        label: display || name,
-                        value: item[name],
-                        parent
-                    });
-                    break;
-            }
+        function onFocusout() {
+            return !validate ? undefined : (() => {
+                const value = component.value();
 
-            component.add();
+                console.log('validate');
+    
+                if (validate(value)) {
+                    component.isValid(true);
+                } else {
+                    component.isValid(false);
+                }
+            })();
+        }
 
-            return {
-                component,
-                field
-            };
-        });
+        component.add();
+
+        return {
+            component,
+            field
+        };
+    });
 
     return {
-        async onUpdate(event) {
+        async onUpdate() {
+            let isValid = true;
+
             const data = {};
 
-            components
-                .forEach(item => {
-                    const { component, field } = item;
-                    const { name, type } = field;
+            components.forEach(item => {
+                const { component, field } = item;
+                const { name, type, validate } = field;
 
-                    const value = component.value();
+                const value = component.value();
 
-                    switch (type) {
-                        case 'slot':
-                        case 'mlot':
-                        case 'choice':
-                            if (value) {
+                console.log(name, value);
+
+                switch (type) {
+                    case 'slot':
+                    case 'mlot':
+                    case 'choice':
+                    case 'date':
+                        if (validate) {
+                            const isValidated = validate(value);
+
+                            if (isValidated) {
                                 data[name] = value;
+                                component.isValid(true);
+                            } else {
+                                isValid = false;
+                                component.isValid(false);
                             }
-                            break;
-                        case 'number':
-                            if (value) {
-                                data[name] = parseInt(value);
-                            }
-                            break;
-                    }
-                });
+                        } else if (value) {
+                            data[name] = value;
+                        }
+                        break;
+                    case 'multichoice':
+                        if (validate) {
+                            const isValidated = validate(value);
 
-            console.log(data);
+                            if (isValidated) {
+                                data[name] = {
+                                    results: value
+                                };
+                                component.isValid(true);
+                            } else {
+                                isValid = false;
+                                component.isValid(false);
+                            }
+                        } else if (value.length) {
+                            data[name] = {
+                                results: value
+                            };
+                        }
+                        break;
+                    case 'number':
+                        if (validate) {
+                            const isValidated = validate(value);
+
+                            if (isValidated) {
+                                data[name] = value;
+                                component.isValid(true);
+                            } else {
+                                isValid = false;
+                                component.isValid(false);
+                            }
+                        } else if (value) {
+                            data[name] = parseInt(value);
+                        }
+                        break;
+                }
+            });
+
+            console.log(isValid, data);
+
+            if (!isValid) {
+                return false;
+            }
 
             const updatedItem = await UpdateItem({
                 list,
@@ -123,7 +188,7 @@ export async function EditForm(param) {
 
             return updatedItem;
         },
-        async onDelete(event) {
+        async onDelete() {
             const deletedItem = await DeleteItem({
                 list,
                 itemId: item.Id

@@ -19,7 +19,7 @@ export async function Log(param) {
         Title, Message, StackTrace, Module
     } = param;
 
-    if (App.get('mode') === 'prod') {
+    if (App.isProd()) {
         /** Get new request digest */
         const requestDigest = await GetRequestDigest();
 
@@ -38,7 +38,8 @@ export async function Log(param) {
                 Message: JSON.stringify({
                     body: Message,
                     location: location.href,
-                    role: Store.user().Role
+                    // FIXME: what should this property be instead, since users can have multiple roles?
+                    role: Store.user().Roles.results.join(', ')
                 }),
                 StackTrace: JSON.stringify(StackTrace.replace('Error\n    at ', '')),
                 Module,
@@ -55,10 +56,10 @@ export async function Log(param) {
 
         const newItem = await Post(postOptions);
 
-        console.log(`%cLog: ${Title}`, 'background: #1e1e1e; color: #fff');
+        console.log(`Log: ${Title}`);
 
         return newItem.d;
-    } else if (App.get('mode') === 'dev') {
+    } else if (App.isDev()) {
         const newLog = await CreateItem({
             list: 'Log',
             data: {
@@ -67,7 +68,7 @@ export async function Log(param) {
                 Message: JSON.stringify({
                     body: Message,
                     location: location.href,
-                    role: Store.user().Role
+                    role: Store.user().Roles.results.join(', ')
                 }),
                 StackTrace: JSON.stringify(StackTrace.replace('Error\n    at ', '')),
                 UserAgent: navigator.userAgent,
@@ -75,7 +76,7 @@ export async function Log(param) {
             }
         });
 
-        console.log(`%cLog: ${Title}`, 'background: #1e1e1e; color: #fff');
+        console.log(`Log: ${Title}`);
 
         return newLog;
     }

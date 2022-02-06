@@ -36,14 +36,6 @@
             text-decoration: none;
         }
     </style>
-
-<!--[if gte mso 9]><SharePoint:CTFieldRefs runat=server Prefix="mso:" FieldList="FileLeafRef,i3e7b0477ad24f0693a0b6cb17b27bf1,TaxCatchAllLabel,_dlc_DocId,_dlc_DocIdUrl,_dlc_DocIdPersistId,mb7b7c6cb3b94febb95b36ae1f78ffc5,ba60022a341749df97d7a0ab674012b7"><xml>
-<mso:CustomDocumentProperties>
-<mso:_dlc_DocId msdt:dt="string">K75DWSHUVDYD-33088889-195</mso:_dlc_DocId>
-<mso:_dlc_DocIdItemGuid msdt:dt="string">59d8e578-c994-4600-a55a-bdcc50c9b4c9</mso:_dlc_DocIdItemGuid>
-<mso:_dlc_DocIdUrl msdt:dt="string">https://info.health.mil/staff/analytics/cp/ModernDev/create-app/measures-library-2/_layouts/15/DocIdRedir.aspx?ID=K75DWSHUVDYD-33088889-195, K75DWSHUVDYD-33088889-195</mso:_dlc_DocIdUrl>
-</mso:CustomDocumentProperties>
-</xml></SharePoint:CTFieldRefs><![endif]-->
 </head>
 <body>
     <div class="center">

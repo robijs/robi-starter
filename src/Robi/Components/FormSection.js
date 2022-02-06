@@ -1,7 +1,6 @@
-import { Get } from '../Actions/Get.js'
 import { Style } from '../Actions/Style.js'
 import { Alert } from './Alert.js'
-import { BootstrapDropdown } from './BootstrapDropdown.js'
+import { ChoiceField } from './ChoiceField.js'
 import { Container } from './Container.js'
 import { LinksField } from './LinksField.js'
 import { MultiChoiceField } from './MultiChoiceField.js'
@@ -9,8 +8,7 @@ import { MultiLineTextField } from './MultiLineTextField.js'
 import { NumberField } from './NumberField.js'
 import { SingleLineTextField } from './SingleLineTextField.js'
 import { TaggleField } from './TaggleField.js'
-import { AttachmentsContainer } from './AttachmentsContainer.js'
-import { App } from '../Core/App.js'
+import { DropZone } from './DropZone.js'
 import { Store } from '../Core/Store.js'
 
 // @START-File
@@ -93,7 +91,7 @@ export function FormSection(param) {
         if (rowName) {
             rowContainer.append(/*html*/ `
                 <div class='mb-1'>
-                    <h6 style='color: ${App.get('defaultColor')}; font-weight: 700'>${rowName}</h6>
+                    <h6 style='color: var(--color); font-weight: 700'>${rowName}</h6>
                 </div>
             `);
         }
@@ -127,14 +125,16 @@ export function FormSection(param) {
         });
 
         rowFields?.forEach(field => {
-            const { name, label, style, component: renderComponent, description: customDescription } = field;
+            const { name, label, style, component: customComponent, description: customDescription } = field;
+            // const label = label || display || name;
             const parent = fieldRow;
             let fieldMargin = '0px';
             let component = {};
 
             // Render passed in component
-            if (renderComponent) {
-                component = renderComponent({ 
+            if (customComponent) {
+                component = customComponent({
+                    item,
                     parent,
                     formData,
                     getComponent() {
@@ -145,7 +145,7 @@ export function FormSection(param) {
             
             // If field name is Files, render drop zone
             else if (name === 'Files') {
-                component = AttachmentsContainer({
+                component = DropZone({
                     label: label || display || name,
                     description: customDescription,
                     // value: formData[name],
@@ -164,7 +164,19 @@ export function FormSection(param) {
             // Render field by type
             else {
                 const { display, description: defaultDescription, type, choices, fillIn, action } = fields?.find(item => item.name === name);
-                const description = customDescription || defaultDescription;
+                // const description = customDescription || defaultDescription;
+                
+                let description;
+
+                if (customDescription === false) {
+                    description = '';
+                } else if (customDescription) {
+                    description = customDescription;
+                } else if (defaultDescription === false) {
+                    description = '';
+                } else if (defaultDescription) {
+                    description = defaultDescription;
+                }
 
                 switch (type) {
                     case 'slot':
@@ -210,8 +222,8 @@ export function FormSection(param) {
                                 //         component.find('.form-control').insertAdjacentHTML('afterend', /*html*/ `
                                 //             <div class='dropdown-menu show' style='font-size: 13px; position: absolute; width: ${width}px; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, ${height + 5}px);'>
                                 //                 <div class='d-flex justify-content-between align-items-center mt-2 mb-2 ml-3 mr-3'>
-                                //                     <div style='color: ${App.get('primaryColor')};'>Searching for measures with similar names...</div>
-                                //                     <div class='spinner-grow spinner-grow-sm' style='color: ${App.get('primaryColor')};' role='status'></div>
+                                //                     <div style='color: var(--primary);'>Searching for measures with similar names...</div>
+                                //                     <div class='spinner-grow spinner-grow-sm' style='color: var(--primary);' role='status'></div>
                                 //                 </div> 
                                 //             </div>
                                 //         `);
@@ -236,6 +248,8 @@ export function FormSection(param) {
                         });
                         break;
                     case 'mlot':
+                        // TODO: Dark mode
+                        // TODO: Pass type or custom component instead of assuming intent by field name
                         if (name.toLowerCase() === 'tags') {
                             component = TaggleField({
                                 label: label || display || name,
@@ -254,7 +268,8 @@ export function FormSection(param) {
                                     formData[name] = component.value();
                                 }
                             });
-                        } else if (name.toLowerCase() === 'dashboardlinks' || name.toLowerCase() === 'links') { // TODO: I don't like this, assumes too much
+                        // TODO: Pass type or custom component instead of assuming intent by field name
+                        } else if (name.toLowerCase() === 'dashboardlinks' || name.toLowerCase() === 'links') {
                             component = LinksField({
                                 label: label || display || name,
                                 links: formData[name],
@@ -285,15 +300,22 @@ export function FormSection(param) {
                         component = NumberField({
                             label: label || display || name,
                             description,
+                            value: formData[name],
                             fieldMargin,
-                            parent
+                            parent,
+                            onKeyup(event) {
+                                // Set form data
+                                console.log(formData, formData[name], component.value());
+                                formData[name] = component.value();
+                            }
                         });
                         break;
                     case 'choice':
-                        component = BootstrapDropdown({
+                        component = ChoiceField({
                             label: label || display || name,
                             description,
                             value: formData[name],
+                            fillIn,
                             options: choices.map(choice => {
                                 return {
                                     label: choice
@@ -301,7 +323,7 @@ export function FormSection(param) {
                             }),
                             parent,
                             fieldMargin,
-                            action(event) {
+                            onChange() {
                                 formData[name] = component.value();
                             }
                         });
@@ -309,6 +331,7 @@ export function FormSection(param) {
                     case 'multichoice':
                         component = MultiChoiceField({
                             label: label || display || name,
+                            description,
                             choices,
                             fillIn,
                             value: formData[name]?.results,

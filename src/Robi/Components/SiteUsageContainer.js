@@ -1,148 +1,170 @@
-import { Card } from './Card.js' 
 import { DashboardBanner } from './DashboardBanner.js' 
-import { LoadingSpinner } from './LoadingSpinner.js' 
-import { SiteUsage } from './SiteUsage.js' 
+import { ChartJs } from './ChartJs.js' 
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
-import { StartAndEndOfWeek } from '../Models/StartAndEndOfWeek.js'
+import { Container } from './Container.js'
+import { Wait } from '../Robi.js'
 
+// NOTE: Add page ranking table below chart
 // @START-File
 /**
  *
  * @param {*} param
  */
-export async function SiteUsageContainer(param) {
-    const {
-        parent
-    } = param;
-
-    /** Dashboard */
-    const dashboardCard = Card({
-        title: 'Site Usage',
+export async function SiteUsageContainer({ parent }) {
+    // Card container
+    const chartCard = Container({
+        display: 'block',
+        shimmer: true,
+        background: 'var(--secondary)',
         width: '100%',
-        minHeight: '600px',
-        margin: '20px 0px 0px 0px',
         parent
     });
 
-    dashboardCard.add();
+    chartCard.add();
 
-    /** Loading Indicator */
-    const loadingIndicator = LoadingSpinner({
-        message: 'Loading site usage data',
-        type: 'robi',
-        classes: ['flex-grow-1'],
-        parent: dashboardCard
+    // Top banner
+    const topBanner = DashboardBanner({
+        data: [
+            {
+                label: 'Total Page Views',
+                hide: true
+            },
+            {
+                label: 'Unique Page Views',
+                hide: true
+            },
+            {
+                label: 'Unique Users', // NOTE: Same as Active users, making it redundant
+                hide: true
+            },
+            {
+                label: 'Unique Roles',
+                hide: true
+            }
+        ],
+        parent: chartCard
     });
 
-    loadingIndicator.add();
+    topBanner.add();
 
-    const workerPath = App.get('mode') === 'prod' ? '../' : `http://127.0.0.1:8080/src/`;
+    // Middle container
+    const middleContainer = Container({
+        background: 'var(--background)',
+        radius: '10px',
+        radius: '10px',
+        transition: 'background-color 300ms ease',
+        margin: '10px 0px',
+        parent: chartCard
+    });
 
-    /** Worker */
+    middleContainer.add();
+
+    // Chart container
+    const chartContainer = Container({
+        radius: '10px',
+        width: '100%',
+        parent: middleContainer
+    });
+
+    chartContainer.add();
+
+    // Chart
+    const chart = ChartJs({
+        parent: chartContainer
+    });
+
+    chart.add();
+
+    // Button Container
+    const buttonContainer = Container({
+        parent: middleContainer
+    });
+
+    buttonContainer.add();
+
+    // Bottom banner
+    const bottomBanner = DashboardBanner({
+        data: [
+            {
+                label: 'Most Popular Page',
+                hide: true
+            },
+            {
+                label: 'Most Active Role',
+                hide: true
+            },
+            {
+                label: 'Most Active User',
+                hide: true
+            },
+            {
+                label: 'Last used',
+                hide: true
+            }
+        ],
+        parent: chartCard
+    });
+
+    bottomBanner.add();
+
+    if (App.isDev()) {
+        await Wait(2000);
+    }
+
+    // EACH BUTTON PRESS WILL RUN CODE BELOW HERE
+    // TODO: set selectedChart and selectedData on button press like before
+
+    // Set worker path based on env mode
+    const workerPath = App.isProd() ? '../' : `http://127.0.0.1:8080/src/`;
+
+    // Initialize worker
     const worker = new Worker(`${workerPath}Robi/Workers/SiteUsage.js`, {
         type: 'module'
     });
 
+    // Send data to worker
     worker.postMessage({
         envMode: App.get('mode'),
         site: App.get('site'),
-        bannerColor: App.get('backgroundColor')
+        date: new Date(),
+        type: 'today'
     });
 
+    // Store worker so it can be terminated if user routes away
     Store.addWorker(worker);
 
+    // Receive output from worker
     worker.onmessage = event => {
-        const {
-            data
-        } = event;
+        const { data } = event;
+        const { topBannerData, bottomBannerData, chartData } = data;
 
-        // console.log(data);
-        /** Stats 1 */
-        const stats_1 = DashboardBanner({
-            data: data.stats_1,
-            padding: '0px',
-            border: 'none',
-            margin: '10px 0px 0px 0px',
-            parent: dashboardCard
+        topBanner.update(topBannerData);
+        bottomBanner.update(bottomBannerData);
+
+        setChart({
+            type: 'today',
+            data: chartData
         });
 
-        stats_1.add();
+        chartCard.shimmerOff();
 
-        /** Bar Chart */
-        const longCard = SiteUsage({
-            data: data.model,
-            parent: dashboardCard,
-            border: 'none',
-            margin: '10px 0px',
-            padding: '0px',
-            onClick(label) {
-                console.log('label:', label);
-                console.log('current selected chart:', selectedChart);
+        const node = middleContainer.get();
 
-                if (label !== selectedChart) {
-                    selectedChart = label;
-                    selectedData = data.model.chart[label];
-
-                    console.log('new selected chart:', selectedChart);
-                    console.log('new selected data:', selectedData);
-
-                    longCard.clearChart();
-
-                    const chart = addChart({
-                        card: longCard,
-                        type: selectedChart,
-                        data: selectedData
-                    });
-                } else {
-                    console.log('*** already selected ***');
-                }
-            }
-        });
-
-        longCard.add();
-
-        /** Start with type: 'week' on load */
-        let selectedChart = 'today';
-        let selectedData = data.model.chart[selectedChart];
-
-        addChart({
-            card: longCard,
-            type: selectedChart,
-            data: selectedData
-        });
-
-        /** Stats 2 */
-        const stats_2 = DashboardBanner({
-            data: data.stats_2,
-            padding: '0px',
-            border: 'none',
-            margin: '0px',
-            parent: dashboardCard
-        });
-
-        stats_2.add();
-
-        /** Remove Loading Indicator */
-        loadingIndicator.remove();
+        if (node) {
+            node.style.background = 'var(--secondary)';
+        }
     };
 
-    /** Add Chart */
-    function addChart(param) {
-        const {
-            card, type, data
-        } = param;
+    // TODO: This should live in Chart component
+    // Add chart
+    function setChart(param) {
+        const { type, data } = param;
 
-        const chart = card.getChart();
-        const max0 = Math.max(...data[0].data.map(set => set.length)); /** Largest number from Breaches */
+        const max0 = Math.max(...data[0].data.map(set => set.length)); // Largest number from dataset
         const max1 = 0;
-        // const max1 = Math.max(...data[1].data.map(set => set.length)); /** Largest number from Complaints */
-        const max = (Math.ceil((max0 + max1) / 10) || 1) * 10; /** Round sum of max numbers to the nearest multiple of 10 */
+        const max = (Math.ceil((max0 + max1) / 10) || 1) * 10; // Round sum of max numbers to the nearest multiple of 10 
 
-
-
-        // const max = (Math.round((max0 + max1) / 10) || 1 ) * 10; /** Round sum of max numbers to the nearest multiple of 10*/
-        // const max = (Math.ceil((Math.max(...data.map(item => Math.max(...item.data)))) / 10) || 1 ) * 10;
         let stepSize;
         let labels;
         let text;
@@ -194,7 +216,6 @@ export async function SiteUsageContainer(param) {
                 const sunday = startAndEndOfWeek.sunday.toLocaleString('default', options);
                 const saturday = startAndEndOfWeek.saturday.toLocaleString('default', options);
 
-                // labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
                 labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                 text = `${sunday} - ${saturday}, ${startAndEndOfWeek.sunday.getFullYear()}`;
                 break;
@@ -211,44 +232,23 @@ export async function SiteUsageContainer(param) {
                 break;
         }
 
-        card.setTitle(text);
+        chart.setTitle(text);
 
-        return new Chart(chart, {
-            type: 'bar',
+        chart.setChart({
             data: {
                 labels,
                 datasets: data.map((set, index) => {
-                    /** [0] set is purple, [1] set is blue */
                     return {
                         data: set.data.map(item => item.length),
                         label: set.label,
-                        backgroundColor: index === 0 ? `rgb(${App.get('primaryColorRGB')}, 0.2)` : 'rgb(67, 203, 255, 0.2)',
-                        borderColor: index === 0 ? `rgb(${App.get('primaryColorRGB')}, 1)` : 'rgb(67, 203, 255, 1)',
-                        // backgroundColor: index === 0 ? 'rgb(147, 112, 219, 0.2)' : 'rgb(67, 203, 255, 0.2)',
-                        // borderColor: index === 0 ? 'rgb(147, 112, 219, 1)' : 'rgb(67, 203, 255, 1)',
-                        borderWidth: 1
+                        backgroundColor: App.get('primaryColor'),
+                        hoverBackgroundColor: App.get('primaryColor'),
+                        borderWidth: 0,
+                        borderRadius: 3
                     };
                 })
             },
-            options: {
-                scales: {
-                    yAxes: [{
-                        stacked: true,
-                        ticks: {
-                            /** Set to max value in dataset */
-                            // max,
-                            min: 0,
-                            stepSize
-                        }
-                    }],
-                    xAxes: [{
-                        stacked: true,
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
+            stepSize
         });
     }
 }

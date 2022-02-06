@@ -3,14 +3,13 @@ import { Get } from '../Actions/Get.js'
 import { Route } from '../Actions/Route.js'
 import { Container } from './Container.js'
 import { DataTable } from './DataTable.js'
-import { Heading } from './Heading.js'
-import { LoadingSpinner } from './LoadingSpinner.js'
 import { Modal } from './Modal.js'
 import { EditForm } from './EditForm.js'
 import { NewForm } from './NewForm.js'
 import { TableToolbar } from './TableToolbar.js'
 import { App } from '../Core/App.js'
 import { Lists } from '../Models/Lists.js'
+import { Wait } from '../Robi.js'
 
 // @START-File
 /**
@@ -28,6 +27,8 @@ export async function Table(param) {
         checkboxes,
         createdRow,
         defaultButtons,
+        deleteButton,
+        editButton,
         editForm,
         editFormTitle,
         exportButtons,
@@ -36,21 +37,21 @@ export async function Table(param) {
         formView,
         headerFilter,
         heading,
-        headingColor,
-        headingMargin,
-        headingSize,
         list,
         margin,
         newForm,
         newFormTitle,
+        onRowClick,
         onDelete,
         openInModal,
         order,
         padding,
         parent,
+        path,
         showId,
         titleDisplayName,
         toolbar,
+        top,
         view,
         width
     } = param;
@@ -59,9 +60,15 @@ export async function Table(param) {
         buttons, fields, items
     } = param;
 
+    // App Lists
+    const lists = App.lists();
+
     const tableContainer = Container({
         display: 'block',
-        classes: ['table-container'],
+        classes: ['table-container', 'w-100'],
+        shimmer: true,
+        minHeight: '200px',
+        radius: '20px',
         width,
         margin,
         padding,
@@ -69,21 +76,6 @@ export async function Table(param) {
     });
 
     tableContainer.add();
-
-    // Heading
-    let legendHeading;
-
-    if (heading || list) {
-        legendHeading = Heading({
-            text: heading || (heading === '' ? '' : list.split(/(?=[A-Z])/).join(' ')),
-            size: headingSize,
-            color: headingColor,
-            margin: headingMargin || (toolbar ? '0px' : '0px 0px 35px 0px'),
-            parent: tableContainer
-        });
-
-        legendHeading.add();
-    }
 
     // Columns
     const headers = [];
@@ -96,25 +88,20 @@ export async function Table(param) {
         });
     }
 
-    // App Lists
-    const lists = App.lists();
-
     // Item Id
     const idProperty = 'Id';
     let formFields = [];
+    let schema;
 
     if (list) {
-        // Show loading spinner
-        const loadingSpinner = LoadingSpinner({
-            type: 'robi', 
-            message: `Loading ${list}`,
-            parent: tableContainer
-        });
-
-        loadingSpinner.add();
+        if (App.isDev()) {
+            await Wait(1000);
+        }
 
         // TODO: Only select fields from view
         items = items || await Get({
+            path,
+            top,
             list,
             select: '*,Author/Name,Author/Title,Editor/Name,Editor/Title',
             expand: `Author/Id,Editor/Id`,
@@ -122,20 +109,20 @@ export async function Table(param) {
         });
 
         // Get fields in view
-        const schema = lists.concat(Lists()).find(item => item.list === list);
+        schema = lists.concat(Lists()).find(item => item.list === list);
             
         if (view) {
-            fields = schema?.views
+            fields = fields || schema?.views
                 .find(item => item.name === view)
                 ?.fields
                 .map(name => {
                     // FIXME: Set default SharePoint Fields (won't be listed in schema)
-                    // TODO: Only set 'Name' as an option if schema.template === 101
+                    // TODO: Only set 'Name' as an option if schema?.template === 101
                     const spFields = ['Created', 'Modified', 'Author', 'Editor', 'Name'];
                     if (spFields.includes(name)) {
                         return { name };
                     } else {
-                        return schema.fields.find(field => field.name === name);
+                        return schema?.fields.find(field => field.name === name);
                     }
                 });
 
@@ -148,12 +135,12 @@ export async function Table(param) {
                         ?.fields
                         .map(name => {
                             // FIXME: Set default SharePoint Fields (won't be listed in schema)
-                            // TODO: Only set 'Name' as an option if schema.template === 101
+                            // TODO: Only set 'Name' as an option if schema?.template === 101
                             const spFields = ['Created', 'Modified', 'Author', 'Editor', 'Name'];
                             if (spFields.includes(name)) {
                                 return { name };
                             } else {
-                                return schema.fields.find(field => field.name === name);
+                                return schema?.fields.find(field => field.name === name);
                             }
                         });
                 }
@@ -163,17 +150,14 @@ export async function Table(param) {
         } else {
             // If no view, get all fields
             // FIXME: redundant
-            fields = lists.concat(Lists()).find(item => item.list === list)?.fields;
-            formFields = lists.concat(Lists()).find(item => item.list === list)?.fields;
+            fields = fields || lists.concat(Lists()).find(item => item.list === list)?.fields;
+            formFields = fields;
         }
 
         if (!fields) {
             console.log('Missing fields');
             return;
         }
-
-        // Remove loading
-        loadingSpinner.remove();
 
         [{ name: 'Id', display: 'Id', type: 'number' }]
             .concat(fields)
@@ -186,11 +170,11 @@ export async function Table(param) {
 
                 const columnOptions = {
                     data: name === titleDisplayName ? 'Title' : name,
-                    type: name === 'Id' ? 'number' : 'string',
+                    type: name === 'Id' || type === 'number' ? 'num' : 'string',
                     visible: name === 'Id' && !showId ? false : true
                 };
 
-                /** Classes */
+                // Classes
                 if (name === 'Id') {
                     columnOptions.className = 'do-not-export bold';
                     columnOptions.render = (data, type, row) => {
@@ -198,7 +182,7 @@ export async function Table(param) {
                     };
                 }
 
-                /** Render */
+                // Render
                 if (render) {
                     columnOptions.render = render;
                 }
@@ -217,13 +201,27 @@ export async function Table(param) {
                     };
                 }
 
+                // NOTE: What will break on this?
+                else if (type === 'multichoice') {
+                    columnOptions.render = (data, type, row) => {
+                        return data ? data.results.join(', ') : '';
+                    };
+                }
+
+                else if (type === 'date') {
+                    columnOptions.render = (data, type, row) => {
+                        // return data ? new Date(data).toLocaleString() : '';
+                        return data ? new Date(data.split('T')[0].replace(/-/g, '\/')).toLocaleDateString() : '';
+                    };
+                }
+
                 else if (name === 'Author') {
                     columnOptions.render = (data, type, row) => {
                         return data.Title.split(' ').slice(0, 2).join(' ');
                     };
                 }
 
-                else if (name.includes('Created') || name.includes('Date')) {
+                else if (name.includes('Created')) {
                     columnOptions.render = (data, type, row) => {
                         // return data ? new Date(data).toLocaleString() : '';
                         return data ? new Date(data).toLocaleDateString() : '';
@@ -239,165 +237,88 @@ export async function Table(param) {
                 columns.push(columnOptions);
             });
     } else {
-        /** typeof fields === 'object' */
         (Array.isArray(fields) ? fields : fields.split(','))
-            .forEach(field => {
-                const {
-                    render
-                } = field;
+        .forEach(field => {
+            const {
+                render
+            } = field;
 
-                const internalFieldName = typeof field === 'object' ? field.internalFieldName : field;
-                const displayName = typeof field === 'object' ? field.displayName : field;
-                const type = typeof field === 'object' ? field.type || 'slot' : 'slot';
+            const internalFieldName = typeof field === 'object' ? field.internalFieldName : field;
+            const displayName = typeof field === 'object' ? field.displayName : field;
+            const type = typeof field === 'object' ? field.type || 'slot' : 'slot';
 
-                headers.push(displayName);
+            headers.push(displayName);
 
-                const columnOptions = {
-                    data: internalFieldName === titleDisplayName ? 'Title' : internalFieldName,
-                    type: internalFieldName === 'Id' ? 'number' : 'string',
-                    visible: internalFieldName === 'Id' && !showId ? false : true
+            const columnOptions = {
+                data: internalFieldName === titleDisplayName ? 'Title' : internalFieldName,
+                type: internalFieldName === 'Id' ? 'number' : 'string',
+                visible: internalFieldName === 'Id' && !showId ? false : true
+            };
+
+            /** Classes */
+            if (internalFieldName === 'Id') {
+                columnOptions.className = 'do-not-export bold';
+                columnOptions.render = (data, type, row) => {
+                    return data;
                 };
+            }
 
-                /** Classes */
-                if (internalFieldName === 'Id') {
-                    columnOptions.className = 'do-not-export bold';
-                    columnOptions.render = (data, type, row) => {
-                        return data;
-                    };
-                }
+            /** Render */
+            if (render) {
+                columnOptions.render = render;
+            }
 
-                /** Render */
-                if (render) {
-                    columnOptions.render = render;
-                }
+            else if (internalFieldName.includes('Percent')) {
+                columnOptions.render = (data, type, row) => {
+                    return `${Math.round(parseFloat(data || 0) * 100)}%`;
+                };
+            }
 
-                else if (internalFieldName.includes('Percent')) {
-                    columnOptions.render = (data, type, row) => {
-                        return `${Math.round(parseFloat(data || 0) * 100)}%`;
-                    };
-                }
+            else if (type === 'mlot') {
+                columnOptions.render = (data, type, row) => {
+                    return /*html*/ `
+                    <div class='dt-mlot'>${data || ''}</data>
+                `;
+                };
+            }
 
-                else if (type === 'mlot') {
-                    columnOptions.render = (data, type, row) => {
-                        return /*html*/ `
-                        <div class='dt-mlot'>${data || ''}</data>
-                    `;
-                    };
-                }
+            else if (type === 'date') {
+                columnOptions.render = (data, type, row) => {
+                    // return data ? new Date(data).toLocaleString() : '';
+                    return data ? new Date(data.split('T')[0].replace(/-/g, '\/')).toLocaleDateString() : '';
+                };
+            }
 
-                else if (internalFieldName === 'Author') {
-                    columnOptions.render = (data, type, row) => {
-                        return data.Title;
-                    };
-                }
+            else if (internalFieldName === 'Author') {
+                columnOptions.render = (data, type, row) => {
+                    return data.Title;
+                };
+            }
 
-                else if (internalFieldName.includes('Created') || internalFieldName.includes('Date')) {
-                    columnOptions.render = (data, type, row) => {
-                        return new Date(data).toLocaleString();
-                    };
-                }
+            else if (internalFieldName.includes('Created')) {
+                columnOptions.render = (data, type, row) => {
+                    // return data ? new Date(data).toLocaleString() : '';
+                    return data ? new Date(data).toLocaleDateString() : '';
+                };
+            }
 
-                else if (internalFieldName !== 'Id') {
-                    columnOptions.render = (data, type, row) => {
-                        return typeof data === 'number' ? parseFloat(data).toLocaleString('en-US') : data;
-                    };
-                }
+            else if (internalFieldName !== 'Id') {
+                columnOptions.render = (data, type, row) => {
+                    return typeof data === 'number' ? parseFloat(data).toLocaleString('en-US') : data;
+                };
+            }
 
-                columns.push(columnOptions);
-            });
+            columns.push(columnOptions);
+        });
     }
 
-    /** Table Buttons */
-    if (defaultButtons !== false) {
-        if (!Array.isArray(buttons)) {
-            buttons = [];
-        }
-
-        if (checkboxes !== false) {
-            buttons = buttons.concat([
-                {
-                    text: /*html*/ `
-                        <svg class='icon'>
-                            <use href='#icon-bs-trash'></use>
-                        </svg>
-                    `,
-                    className: 'delete-item',
-                    name: 'delete',
-                    enabled: false,
-                    action: async function (e, dt, node, config) {
-                        const selected = table.selected();
-                        const button = tableContainer.find('.delete-item');
-                        button.disabled = true;
-                        button.innerHTML = /*html*/ `<span class="spinner-border" role="status" aria-hidden="true" style="width: 20px; height: 20px; border-width: 3px"></span>`;
-
-                        // Delete items
-                        for (let row in selected) {
-                            console.log(selected[row]);
-
-                            // Delete item
-                            await DeleteItem({
-                                list,
-                                itemId: selected[row].Id
-                            });
-
-                            // Delete Row
-                            table.removeRow(selected[row].Id);
-                        }
-
-                        if (onDelete) {
-                            await onDelete(table);
-                        }
-
-                        button.innerHTML = /*html*/ `
-                            <span>
-                                <svg class="icon">
-                                    <use href="#icon-bs-trash"></use>
-                                </svg>
-                            </span>
-                        `;
-                    }
-                }
-            ]);
-        }
-
-        if (exportButtons !== false) {
-            buttons = buttons.concat([
-                {
-                    extend: 'excelHtml5',
-                    // className: 'ml-50',
-                    exportOptions: {
-                        header: false,
-                        footer: false,
-                        columns: ':not(.do-not-export):not(.select-checkbox)'
-                    }
-                },
-                {
-                    extend: 'csvHtml5',
-                    exportOptions: {
-                        header: false,
-                        footer: false,
-                        columns: ':not(.do-not-export):not(.select-checkbox)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    orientation: 'landscape',
-                    exportOptions: {
-                        columns: ':not(.do-not-export):not(.select-checkbox)'
-                    }
-                }
-                // {
-                //     extend: 'copyHtml5',
-                //     exportOptions: {
-                //         columns: [3,4,5,6,7,8,9,10,11]
-                //     }
-                // },
-            ]);
-        }
+    // Buttons
+    if (!Array.isArray(buttons)) {
+        buttons = [];
     }
 
     if (addButton !== false) {
-        buttons.unshift({
+        buttons.push({
             text: /*html*/ `
                 <svg class='icon'>
                     <use href='#icon-bs-plus'></use>
@@ -423,7 +344,15 @@ export async function Table(param) {
                                 table
                             };
 
-                            selectedForm = newForm ? await newForm(formParam) : await NewForm(formParam);
+                            if (schema?.newForm) {
+                                // NOTE: Must pass in all fields, not just what the selected view provides
+                                formParam.fields = schema?.fields;
+                                selectedForm = await schema?.newForm(formParam);
+                            } else if (newForm) {
+                                selectedForm = await newForm(formParam);
+                            } else {
+                                selectedForm = await NewForm(formParam);
+                            }
 
                             // Set button value
                             if (selectedForm?.label) {
@@ -451,13 +380,20 @@ export async function Table(param) {
                                     value: 'Create',
                                     classes: 'btn-robi',
                                     async onClick(event) {
+                                        // Call newForm.onCreate() and wait for it to complete
+                                        const newItem = await selectedForm?.onCreate(event);
+
+                                        // TODO: Don't create item if newItem == false;
+
+                                        if (!newItem) {
+                                            console.log('Data not valid, alert user');
+                                            return;
+                                        }
+
                                         // Disable button - Prevent user from clicking this item more than once
                                         $(event.target)
                                             .attr('disabled', '')
                                             .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating');
-
-                                        // Call newForm.onCreate() and wait for it to complete
-                                        const newItem = await selectedForm?.onCreate(event);
 
                                         if (Array.isArray(newItem)) {
                                             items.concat(newItem);
@@ -495,13 +431,180 @@ export async function Table(param) {
         });
     }
 
+    if (defaultButtons !== false) {
+        if (checkboxes !== false && deleteButton !== false) {
+            buttons.push({
+                text: /*html*/ `
+                    <svg class='icon'>
+                        <use href='#icon-bs-trash'></use>
+                    </svg>
+                `,
+                className: 'delete-item',
+                name: 'delete',
+                enabled: false,
+                action: async function (e, dt, node, config) {
+                    const selected = table.selected();
+                    const button = tableContainer.find('.delete-item');
+                    button.disabled = true;
+                    button.innerHTML = /*html*/ `<span class="spinner-border" role="status" aria-hidden="true" style="width: 20px; height: 20px; border-width: 3px"></span>`;
+
+                    // Delete items
+                    for (let row in selected) {
+                        console.log(selected[row]);
+
+                        // Delete item
+                        await DeleteItem({
+                            list,
+                            itemId: selected[row].Id
+                        });
+
+                        // Delete Row
+                        table.removeRow(selected[row].Id);
+                    }
+
+                    if (onDelete) {
+                        await onDelete(table);
+                    }
+
+                    button.innerHTML = /*html*/ `
+                        <span>
+                            <svg class="icon">
+                                <use href="#icon-bs-trash"></use>
+                            </svg>
+                        </span>
+                    `;
+                }
+            });
+        }
+
+        if (exportButtons !== false) {
+            buttons.push({
+                extend: 'collection',
+                autoClose: true,
+                background: false,
+                fade: 0,
+                text: /*html*/ `
+                    <svg class="icon">
+                        <use href="#icon-bs-arrow-down-circle-fill"></use>
+                    </svg>
+                `,
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        // className: 'ml-50',
+                        exportOptions: {
+                            header: false,
+                            footer: false,
+                            columns: ':not(.do-not-export):not(.select-checkbox)'
+                        }
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            header: false,
+                            footer: false,
+                            columns: ':not(.do-not-export):not(.select-checkbox)'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        orientation: 'landscape',
+                        exportOptions: {
+                            columns: ':not(.do-not-export):not(.select-checkbox)'
+                        }
+                    }
+                    // {
+                    //     extend: 'copyHtml5',
+                    //     exportOptions: {
+                    //         columns: [3,4,5,6,7,8,9,10,11]
+                    //     }
+                    // },
+                ]
+            });
+        }
+
+        let show = true;
+
+        if (editButton !== false) {
+            buttons.push({
+                text: 'Edit',
+                className: 'btn-robi-light',
+                name: 'edit-mode',
+                action: async function (e, dt, node, config) {
+                    if (show) {
+                        e.target.innerText = 'Done';
+                        table.hide();
+                        show = false;
+
+                        console.clear();
+
+                        // Show editable table
+                        const pageData = table.DataTable().rows( {page:'current'} ).data();
+
+                        table.after(/*html*/ `
+                            <table class='w-100 editable-table'>
+                                <thead>
+                                    <tr>
+                                        ${
+                                            headers
+                                            .filter(h => h)
+                                            .map(header => {
+                                                console.log(header);
+
+                                                return /*html*/ `
+                                                    <th>${header}</th>
+                                                `;
+                                            }).join('\n')
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${
+                                        pageData.map(row => {
+                                            console.log(row);
+
+                                            return /*html*/ `
+                                                <tr>
+                                                    ${
+                                                        columns
+                                                        .filter(c => c.data)
+                                                        .map(column => {
+                                                            const { data } = column;
+
+                                                            // TODO: Add input tag based on field type
+                                                            return /*html*/ `
+                                                                <td>${row[data]}</td>
+                                                            `;
+                                                        }).join('\n')
+                                                    }
+                                                </tr>
+                                            `;
+                                        }).join('\n')
+                                    }
+                                </tbody>
+                            </table>
+                        `)
+                    } else {
+                        e.target.innerText = 'Edit';
+                        table.show();
+                        show = true;
+                        tableContainer.find('.editable-table')?.remove();
+                    }
+                }
+            });
+        }
+    }
+
     // Toolbar
     if (toolbar || advancedSearch) {
         const tableToolbar = TableToolbar({
+            heading: heading || ( heading === '' ? '' : list ? (lists.find(item => item.list === list)?.display || list.split(/(?=[A-Z])/).join(' '))  : '' ),
             options: toolbar || [],
             parent: tableContainer,
             advancedSearch,
             list,
+            newForm: schema?.newForm,
+            editForm: schema?.editForm,
             action(label) {
                 const { filter } = toolbar.find(option => option.label === label);
 
@@ -571,12 +674,12 @@ export async function Table(param) {
         tableToolbar.add();
     }
 
-    // Selected item, row, and form
+    // Currently selected item, row, and form
     let selectedItem;
     let selectedRow;
     let selectedForm;
 
-    /** Table */
+    // DataTable component
     const table = DataTable({
         headers,
         headerFilter,
@@ -591,7 +694,7 @@ export async function Table(param) {
         order: order || [[1, 'asc']], /** Sort by 1st column (hidden Id field at [0]) {@link https://datatables.net/reference/api/order()} */
         buttons,
         createdRow,
-        onRowClick(param) {
+        onRowClick: onRowClick || function (param) {
             const {
                 row, item
             } = param;
@@ -610,7 +713,13 @@ export async function Table(param) {
                     async addContent(modalBody) {
                         const formParam = { item, table, row, fields: formFields, list, modal: rowModal, parent: modalBody };
 
-                        selectedForm = editForm ? await editForm(formParam) : await EditForm(formParam);
+                        if (schema?.editForm) {
+                            selectedForm = await schema?.editForm(formParam);
+                        } else if (editForm) {
+                            selectedForm = await editForm(formParam);
+                        } else {
+                            selectedForm = await EditForm(formParam);
+                        }
 
                         if (formFooter !== false) {
                             rowModal.showFooter();
@@ -633,20 +742,24 @@ export async function Table(param) {
                                 // disabled: true,
                                 classes: 'btn-robi',
                                 async onClick(event) {
+                                    // Call newForm.onUpdate() and wait for it to complete
+                                    const updatedItem = await selectedForm?.onUpdate(event);
+
+                                    if (!updatedItem) {
+                                        console.log('Data not valid, alert user');
+
+                                        return;
+                                    }
+
                                     /** Disable button - Prevent user from clicking this item more than once */
                                     $(event.target)
                                         .attr('disabled', '')
                                         .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating');
 
-                                    // Call newForm.onUpdate() and wait for it to complete
-                                    const updatedItem = await selectedForm?.onUpdate(event);
-
-                                    if (updatedItem) {
-                                        table.updateRow({
-                                            row: selectedRow,
-                                            data: updatedItem
-                                        });
-                                    }
+                                    table.updateRow({
+                                        row: selectedRow,
+                                        data: updatedItem
+                                    });
 
                                     /** Enable button */
                                     $(event.target)
@@ -688,8 +801,6 @@ export async function Table(param) {
 
                 rowModal.add();
             }
-
-
         },
         onSelect(param) {
             const selected = table.selected();
@@ -729,6 +840,9 @@ export async function Table(param) {
     });
 
     table.add();
+
+    // Shimmer off
+    tableContainer.shimmerOff();
 
     // FIXME: This only works if selected rows are grouped together
     // TODO: Handle one or more groups of selected rows (ex: rows [1, 2, 3] and [4,5] and [8,9])
@@ -771,6 +885,23 @@ export async function Table(param) {
             row.querySelector('td:last-child').classList.remove('btrr-0', 'bbrr-0');
         });
     }
+
+    
+    // TODO: Generalize
+    // TODO: If form is modal, launch modal
+    // TODO: If form is view, Route to view
+    // Open modal
+    // if (itemId) {
+    //     const row = table.findRowById(itemId);
+
+    //     if (row) {
+    //         if (row.show) {
+    //             row.show().draw(false).node().click();
+    //         } else {
+    //             row.draw(false).node().click();
+    //         }
+    //     }
+    // }
 
     return table;
 }

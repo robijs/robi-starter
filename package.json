@@ -1,9 +1,12 @@
 {
   "name": "robi-starter",
-  "version": "1.0.0",
-  "description": "Starter app for SharePoint 2013 on premise.",
+  "version": "0.1.0",
+  "description": "Starter app made with Robi - https://github.com/robijs/robi",
   "keywords": [
-    "SharePoint"
+    "SharePoint",
+    "JavScript",
+    "framework",
+    "client-side"
   ],
   "author": "Stephen Matheis",
   "license": "ISC",
@@ -36,11 +39,9 @@
     }
   },
   "scripts": {
-    "start": "concurrently \"npx json-server --watch ./json-server/db.json --id Id\" \"node ./servers/live-server.cjs --cors --watch=./src --ignore=./src/lists.js,./src/app.js,./src/Robi/Actions,./src/Robi/Components,./src/Robi/Core,./src/Robi/Models --open=./dev/app.html --quiet\" \"node ./servers/post.js\" \"npm run watch-robi\"",
-    "dev": "concurrently \"npx json-server --watch ./json-server/db.json --id Id\" \"node ./servers/live-server.cjs --cors --watch=./src --ignore=./src/lists.js,./src/app.js --open=./dev/app.html --quiet\" \"node ./servers/post.js\" \"npm run build-dev\"",
+    "start": "concurrently \"npx json-server --watch ./json-server/db.json --id Id\" \"node ./servers/live-server.cjs --cors --watch=./src --ignore=./src/Lists,./src/app.js --open=./dev/app.html --quiet\" \"node ./servers/post.js\" \"npm run build-dev\"",
+    "prod": "concurrently \"npx json-server --watch ./json-server/db.json --id Id\" \"node ./servers/live-server.cjs --cors --watch=./src --ignore=./src/Lists,./src/app.js,./src/Robi/Actions,./src/Robi/Components,./src/Robi/Core,./src/Robi/Models --open=./dev/app.html --quiet\" \"node ./servers/post.js\" \"npm run watch-robi\"",
     "reset": "node ./scripts/reset.js",
-    "depgraph": "depcruise --exclude \"^node_modules\" --output-type dot src | dot -T svg > dependencygraph.svg",
-    "bundle": "webpack --config=./webpack.config.js",
     "build": "node ./scripts/build.js",
     "build-dev": "node ./scripts/build-dev.js",
     "build-sp": "node ./scripts/build-sp.js",

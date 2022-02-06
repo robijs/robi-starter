@@ -29,7 +29,7 @@ export function AttachFilesButton(param) {
                 font-weight: bold;
                 text-align: center;
                 border-radius: 4px;
-                color: ${App.get('secondaryColor')};
+                color: var(--secondary);
                 background: mediumseagreen;
                 border: solid 2px seagreen;
             }

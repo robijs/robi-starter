@@ -35,7 +35,10 @@ export function Authorize(param) {
 
     /** If roles property not defined on route object, return undefined */
     if (roles) {
-        if (roles.includes(role)) {
+        // if (roles.includes(role)) {
+        // TODO: Use .Roles.results instead
+        // https://stackoverflow.com/a/39893636
+        if (roles.some(r => Store.user().Roles.results.includes(r))) {
             /** Authorized if role is included in roles array */
             console.log(`${Store.user().Title} authorized to access '${view}' as a '${role}'`)
             return true;

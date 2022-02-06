@@ -10,17 +10,17 @@ import { RequestAssitanceInfo } from './RequestAssitanceInfo.js'
 export async function Help(param) {
     const { parent } = param;
 
-    const viewTitle = Title({
+    const routeTitle = Title({
         title: `Help`,
         parent
     });
 
-    viewTitle.add();
+    routeTitle.add();
 
     /** View Container */
     const viewContainer = Container({
         display: 'block',
-        margin: '20px 0px 0px 0px',
+        margin: '30px 0px 0px 0px',
         parent
     });
 

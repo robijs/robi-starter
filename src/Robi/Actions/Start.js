@@ -2,8 +2,10 @@ import { AppContainer } from '../Components/AppContainer.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
 import { AddLinks } from './AddLinks.js'
+import { GetCurrentUser } from './GetCurrentUser.js'
 import { InitializeApp } from './InitializeApp.js'
 import { LogError } from './LogError.js'
+import { SetTheme } from './SetTheme.js'
 
 // @START-File
 /**
@@ -16,11 +18,18 @@ export function Start(param) {
     } = param;
 
     const {
+        beforeInit,
         links,
+        name,
+        theme,
+        usersList
     } = settings;
 
     // Set app settings
-    App.set(param);
+    App.settings(param);
+
+    // Set theme
+    SetTheme({ name, theme });
 
     // toTitleCase string method polyfil
     String.prototype.toTitleCase = function () {
@@ -36,42 +45,40 @@ export function Start(param) {
         return this.split(/(?=[A-Z])/).join(' ');
     }
 
-    if (App.get('errorLogging') === 'on') {
-        /** Format error objects for JSON.stringify() to work properly */
-        function replaceErrors(key, value) {
-            if (value instanceof Error) {
-                var error = {};
+    /** Format error objects for JSON.stringify() to work properly */
+    function replaceErrors(key, value) {
+        if (value instanceof Error) {
+            var error = {};
 
-                Object.getOwnPropertyNames(value).forEach(function (key) {
-                    error[key] = value[key];
-                });
+            Object.getOwnPropertyNames(value).forEach(function (key) {
+                error[key] = value[key];
+            });
 
-                return error;
-            }
-
-            return value;
+            return error;
         }
 
-        /** Log errors to SharePoint list */
-        window.onerror = async (message, source, lineno, colno, error) => {
-            LogError({
-                Message: message,
-                Source: source,
-                Error: JSON.stringify(error, replaceErrors)
-            });
-        };
-
-        /** Log errors from Promises to SharePoint list */
-        window.addEventListener("unhandledrejection", event => {
-            LogError({
-                Message: event.reason.message,
-                Source: import.meta.url,
-                Error: event.reason.stack
-            });
-        });
+        return value;
     }
 
-    /** Start app on page load */
+    /** Log errors to SharePoint list */
+    window.onerror = async (message, source, lineno, colno, error) => {
+        LogError({
+            Message: message,
+            Source: source,
+            Error: JSON.stringify(error, replaceErrors)
+        });
+    };
+
+    /** Log errors from Promises to SharePoint list */
+    window.addEventListener("unhandledrejection", event => {
+        LogError({
+            Message: event.reason.message,
+            Source: import.meta.url,
+            Error: event.reason.stack
+        });
+    });
+
+    // Start app on page load
     window.onload = async () => {
         // Add links to head
         AddLinks({
@@ -87,6 +94,16 @@ export function Start(param) {
         });
 
         appContainer.add();
+
+        // Get/Set User
+        Store.user(await GetCurrentUser({
+            list: usersList
+        }));
+
+        // Before load
+        if (beforeInit) {
+            beforeInit();
+        }
 
         // Pass start param to InstallApp
         InitializeApp(param);

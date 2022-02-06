@@ -82,7 +82,7 @@ export function LinksField(param) {
                 min-height: 56px;
                 width: 100%;
                 border-radius: 10px;
-                border: 1px solid #ced4da;
+                border: 1px solid var(--border-color);
                 padding: 10px;
             }
             
@@ -99,7 +99,7 @@ export function LinksField(param) {
                 display: inline-flex;
                 border-radius: 10px;
                 padding: 5px 5px 5px 20px;
-                background: #e9ecef;
+                background: var(--button-background);
                 color: #007bff;
                 font-weight: 500;
                 font-size: 13px;
@@ -142,7 +142,7 @@ export function LinksField(param) {
             }
 
             #id .close .icon-container:hover > .circle-fill {
-                fill: ${App.get('primaryColor')};
+                fill: var(--primary);
             }
 
             #id .close .x-circle-fill {

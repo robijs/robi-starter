@@ -1,1 +1,202 @@
-{"Comments":[],"Errors":[],"Log":[],"Users":[],"Questions":[],"ReleaseNotes":[],"Roles":[{"Id":1,"Title":"Administrator"},{"Id":2,"Title":"Developer"},{"Id":3,"Title":"User"}],"Settings":[{"Id":1,"Key":"QuestionTypes","Value":"[{\"title\":\"General\",\"path\":\"General\"}]"}],"Test":[]}
+{
+  "Actions": [],
+  "Searches": [],
+  "Comments": [],
+  "Errors": [],
+  "Log": [
+    {
+      "Title": "Log in",
+      "SessionId": null,
+      "Message": "{\"body\":\"firstlast@myorg.domain successfully loaded Title\",\"location\":\"http://127.0.0.1:8080/dev/app.html\",\"role\":\"Developer\"}",
+      "StackTrace": "\"LaunchApp (http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js:112:25)\\n    at InitializeApp (http://127.0.0.1:8080/src/Robi/Actions/InitializeApp.js:57:13)\\n    at Start.window.onload (http://127.0.0.1:8080/src/Robi/Actions/Start.js:109:9)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "Created": "Sun, 06 Feb 2022 18:51:32 GMT",
+      "Modified": "Sun, 06 Feb 2022 18:51:32 GMT",
+      "Id": 1
+    },
+    {
+      "Title": "Log in",
+      "SessionId": null,
+      "Message": "{\"body\":\"firstlast@myorg.domain successfully loaded Title\",\"location\":\"http://127.0.0.1:8080/dev/app.html#Example\",\"role\":\"Developer\"}",
+      "StackTrace": "\"LaunchApp (http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js:112:25)\\n    at InitializeApp (http://127.0.0.1:8080/src/Robi/Actions/InitializeApp.js:57:13)\\n    at Start.window.onload (http://127.0.0.1:8080/src/Robi/Actions/Start.js:109:9)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "Created": "Sun, 06 Feb 2022 18:52:01 GMT",
+      "Modified": "Sun, 06 Feb 2022 18:52:01 GMT",
+      "Id": 2
+    },
+    {
+      "Title": "Route",
+      "SessionId": null,
+      "Message": "{\"body\":\"firstlast@myorg.domain routed to Settings\",\"location\":\"http://127.0.0.1:8080/dev/app.html#Settings\",\"role\":\"Developer\"}",
+      "StackTrace": "\"Route (http://127.0.0.1:8080/src/Robi/Actions/Route.js:140:29)\\n    at HTMLSpanElement.routeToView (http://127.0.0.1:8080/src/Robi/Components/Sidebar.js:1303:9)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/Route.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "Created": "Sun, 06 Feb 2022 18:52:03 GMT",
+      "Modified": "Sun, 06 Feb 2022 18:52:03 GMT",
+      "Id": 3
+    },
+    {
+      "Title": "Route",
+      "SessionId": null,
+      "Message": "{\"body\":\"firstlast@myorg.domain routed to Settings\",\"location\":\"http://127.0.0.1:8080/dev/app.html#Settings/Actions\",\"role\":\"Developer\"}",
+      "StackTrace": "\"Route (http://127.0.0.1:8080/src/Robi/Actions/Route.js:140:29)\\n    at HTMLDivElement.listener (http://127.0.0.1:8080/src/Robi/Components/SectionStepper.js:149:21)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/Route.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "Created": "Sun, 06 Feb 2022 18:52:04 GMT",
+      "Modified": "Sun, 06 Feb 2022 18:52:04 GMT",
+      "Id": 4
+    },
+    {
+      "Title": "Route",
+      "SessionId": null,
+      "Message": "{\"body\":\"firstlast@myorg.domain routed to Example\",\"location\":\"http://127.0.0.1:8080/dev/app.html#Example\",\"role\":\"Developer\"}",
+      "StackTrace": "\"Route (http://127.0.0.1:8080/src/Robi/Actions/Route.js:140:29)\\n    at HTMLSpanElement.routeToView (http://127.0.0.1:8080/src/Robi/Components/Sidebar.js:1303:9)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/Route.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "Created": "Sun, 06 Feb 2022 18:52:06 GMT",
+      "Modified": "Sun, 06 Feb 2022 18:52:06 GMT",
+      "Id": 5
+    },
+    {
+      "Title": "Log in",
+      "SessionId": null,
+      "Message": "{\"body\":\"firstlast@myorg.domain successfully loaded Title\",\"location\":\"http://127.0.0.1:8080/dev/app.html#Example\",\"role\":\"Developer\"}",
+      "StackTrace": "\"LaunchApp (http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js:112:25)\\n    at InitializeApp (http://127.0.0.1:8080/src/Robi/Actions/InitializeApp.js:57:13)\\n    at Start.window.onload (http://127.0.0.1:8080/src/Robi/Actions/Start.js:109:9)\"",
+      "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43",
+      "Module": "http://127.0.0.1:8080/src/Robi/Actions/LaunchApp.js",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "Created": "Sun, 06 Feb 2022 18:52:13 GMT",
+      "Modified": "Sun, 06 Feb 2022 18:52:13 GMT",
+      "Id": 6
+    }
+  ],
+  "Users": [
+    {
+      "Title": "First Last",
+      "Email": "firstlast@myorg.domain",
+      "LoginName": "firstlast",
+      "Roles": {
+        "results": [
+          "Developer"
+        ]
+      },
+      "SiteId": 1,
+      "Settings": "{\"searches\":{},\"actions\":[{\"Name\":\"Create SLOTs\",\"FileNames\":\"CreateSLOTItems.js\"},{\"Name\":\"Update MLOT\",\"FileNames\":\"UpdateMLOT.js\"}]}",
+      "AuthorId": 1,
+      "Author": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "EditorId": 1,
+      "Editor": {
+        "Title": "First Last",
+        "LoginName": "firstlast"
+      },
+      "Created": "Sun, 06 Feb 2022 18:51:32 GMT",
+      "Modified": "Sun, 06 Feb 2022 18:51:32 GMT",
+      "Id": 1
+    }
+  ],
+  "Questions": [],
+  "ReleaseNotes": [],
+  "Roles": [
+    {
+      "Id": 1,
+      "Title": "Administrator"
+    },
+    {
+      "Id": 2,
+      "Title": "Developer"
+    },
+    {
+      "Id": 3,
+      "Title": "User"
+    }
+  ],
+  "Settings": [
+    {
+      "Id": 1,
+      "Key": "QuestionTypes",
+      "Value": "[{\"title\":\"General\",\"path\":\"General\"}]"
+    },
+    {
+      "Id": 2,
+      "Key": "Build",
+      "Value": "1.0.0"
+    },
+    {
+      "Id": 3,
+      "Key": "Version",
+      "Value": "1.0.0"
+    }
+  ],
+  "AllTypes": [],
+  "AllTypesFiles": [],
+  "Choice": [],
+  "Date": [],
+  "MLOT": [],
+  "MulitChoice": [],
+  "Number": [],
+  "SLOT": []
+}

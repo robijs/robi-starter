@@ -5,9 +5,9 @@ import { GetRequestDigest } from './GetRequestDigest.js'
 
 // @START-File
 /**
- * Update SharePoint list field.
- * @param {Object}   param          Interface to UpdateItem() module.
- * @param {string}   param.list     SharePoint list Name.
+ * 
+ * @param {*} param 
+ * @returns 
  */
 export async function UpdateColumn(param) {
     const {

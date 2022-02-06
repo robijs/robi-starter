@@ -1,5 +1,4 @@
 import { Component } from '../Actions/Component.js'
-import { App } from '../Core/App.js';
 
 // @START-File
 /**
@@ -15,13 +14,14 @@ export function NumberField(param) {
     const component = Component({
         html: /*html*/ `
             <div>
-                <label>${label}</label>
+                <label class='field-label'>${label}</label>
                 ${description ? /*html*/ `<div class='form-field-description text-muted'>${description}</div>` : ''}
                 <input type="number" class="form-control" value="${value !== undefined ? parseFloat(value) : ''}">
             </div>
         `,
         style: /*css*/ `
             #id {
+                position: relative;
                 margin: ${fieldMargin || '0px 0px 20px 0px'};
             }
 
@@ -33,13 +33,6 @@ export function NumberField(param) {
                 font-size: 14px;
                 margin-bottom:  0.5rem;
             }
-
-            /* #id input:active,
-            #id input:focus {
-                outline: none;
-                border: solid 1px transparent;
-                box-shadow: 0px 0px 0px 1px ${App.get('primaryColor')};
-            } */
         `,
         parent: parent,
         position,
@@ -73,32 +66,31 @@ export function NumberField(param) {
         field.focus();
     };
 
-    component.addError = (param) => {
-        component.removeError();
+    component.isValid = (state) => {
+        const node = component.find('.is-valid-container');
 
-        let text = typeof param === 'object' ? param.text : param;
+        if (node) {
+            node.remove();
+        }
 
-        const html = /*html*/ `
-            <div class='alert alert-danger' role='alert'>
-                ${text}
-                ${param.button ?
-            /*html*/ ` 
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    `
-                : ''}
-            </div>
-        `;
-
-        component.find('.form-field-single-line-text').insertAdjacentHTML('beforebegin', html);
-    };
-
-    component.removeError = () => {
-        const message = component.find('.alert');
-
-        if (message) {
-            message.remove();
+        if (state) {
+            component.find('.field-label').style.color = 'seagreen';
+            component.append(/*html*/ `
+                <div class='is-valid-container d-flex justify-content-center align-items-center' style='height: 33.5px; width: 46px; position: absolute; bottom: 0px; right: -46px;'>
+                    <svg class='icon' style='fill: seagreen; font-size: 22px;'>
+                        <use href='#icon-bs-check-circle-fill'></use>
+                    </svg>
+                </div>
+            `);
+        } else {
+            component.find('.field-label').style.color = 'crimson';
+            component.append(/*html*/ `
+                <div class='is-valid-container d-flex justify-content-center align-items-center' style='height: 33.5px; width: 46px; position: absolute; bottom: 0px; right: -46px;'>
+                    <svg class='icon' style='fill: crimson; font-size: 22px;'>
+                        <use href='#icon-bs-exclamation-circle-fill'></use>
+                    </svg>
+                </div>
+            `);
         }
     };
 
@@ -106,9 +98,10 @@ export function NumberField(param) {
         const field = component.find('input');
 
         if (param !== undefined) {
+            console.log(param);
             field.value = parseFloat(param);
         } else {
-            return field.value;
+            return parseFloat(field.value) || undefined;
         }
     };
 

@@ -51,7 +51,7 @@ export function FixedToast(param) {
             }
 
             #id.robi {
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
                 box-shadow: rgb(0 0 0 / 10%) 0px 0px 16px -2px;
             }
 
@@ -68,7 +68,7 @@ export function FixedToast(param) {
             }
 
             #id.inverse-colors {
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
             }
 
             #id.inverse-colors * {

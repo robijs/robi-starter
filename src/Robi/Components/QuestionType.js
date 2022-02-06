@@ -36,7 +36,7 @@ export function QuestionType(param) {
             #id {
                 border-radius: 20px;
                 padding: 20px;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
                 cursor: pointer;
             }
 

@@ -35,7 +35,7 @@ export function AddLinks(param) {
             linkElement.setAttribute('as', as);
         }
 
-        const relativePath = App.get('mode') === 'prod' ? `${App.get('site')}/${App.get('library')}/src` : `/src/`;
+        const relativePath = App.isProd() ? `${App.get('site')}/${App.get('library')}/src` : `/src/`;
 
         // TODO: default relative path might not be right, test locally and on SP
         linkElement.setAttribute('href', `${path || relativePath}${href}`);

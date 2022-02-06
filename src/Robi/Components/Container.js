@@ -1,4 +1,5 @@
 import { Component } from '../Actions/Component.js'
+import { Shimmer } from '../Actions/Shimmer.js'
 
 // @START-File
 /**
@@ -8,8 +9,48 @@ import { Component } from '../Actions/Component.js'
  */
 export function Container(param) {
     const {
-        name, html, align, background, border, borderBottom, borderLeft, borderRight, borderTop, classes, display, flex, flexwrap, shadow, direction, height, justify, margin, padding, parent, position, radius, width, maxWidth, minWidth, overflow, overflowX, overflowY, userSelect, layoutPosition, top, bottom, left, right, zIndex
+        name,
+        html,
+        align,
+        background,
+        border,
+        borderBottom,
+        borderLeft,
+        borderRight,
+        borderTop,
+        classes,
+        display,
+        flex,
+        flexwrap,
+        shadow,
+        direction,
+        height,
+        justify,
+        margin,
+        padding,
+        parent,
+        position,
+        radius,
+        width,
+        maxHeight,
+        minHeight,
+        maxWidth,
+        minWidth,
+        overflow,
+        overflowX,
+        overflowY,
+        userSelect,
+        layoutPosition,
+        transition,
+        top,
+        bottom,
+        left,
+        right,
+        zIndex,
+        shimmer
     } = param;
+
+    let unsubscribeShimmer;
 
     const component = Component({
         html: /*html*/ `
@@ -21,13 +62,15 @@ export function Container(param) {
                 -webkit-user-select: ${userSelect || 'initial'};
                 -moz-user-select: ${userSelect || 'initial'};
                 -ms-user-select: ${userSelect || 'initial'};
-                background: ${background || 'none'};
+                background-color: ${background || 'unset'};
                 flex-wrap: ${flexwrap || 'unset'};
                 flex-direction: ${direction || 'row'};
                 justify-content: ${justify || 'flex-start'};
                 align-items: ${align || 'flex-start'};
                 height: ${height || 'unset'};
                 width: ${width || 'unset'};
+                max-height: ${maxHeight || 'unset'};
+                min-height: ${minHeight || 'unset'};
                 max-width: ${maxWidth || 'unset'};
                 min-width: ${minWidth || 'unset'};
                 margin: ${margin || '0'};
@@ -42,6 +85,9 @@ export function Container(param) {
                 flex: ${flex || 'unset'};
                 display: ${display || 'flex'};
                 /** @todo is this the best method? */
+                ${background ?
+                `background: ${background};` :
+                ''}
                 ${overflow ?
                 `overflow: ${overflow}` :
                 ''}
@@ -69,12 +115,27 @@ export function Container(param) {
                 ${right ?
                 `right: ${right};` :
                 ''}
+                ${transition ? `transition: ${transition};` : ''}
+            }
+
+            #id.robi-row {
+                width: 100%;
+                display: block;
             }
         `,
         parent,
         position,
-        events: []
+        events: [],
+        onAdd() {
+            if (shimmer) {
+                unsubscribeShimmer = Shimmer(component, { backgroundColor: background || 'var(--background)'});
+            }
+        }
     });
+
+    component.shimmerOff = () => {
+        unsubscribeShimmer.off();
+    };
 
     component.paddingOff = () => {
         component.get().style.padding = '0px';

@@ -7,7 +7,6 @@ import { Container } from '../Components/Container.js'
 import { Lists } from '../Models/Lists.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
-import lists from '../../lists.js'
 import { Route } from './Route.js'
 import { Get } from './Get.js'
 import { DeleteList } from './DeleteList.js'
@@ -20,7 +19,7 @@ import { CreateItem } from './CreateItem.js'
  * @param {*} event
  */
 export function ResetApp() {
-    if (App.get('mode') === 'dev') {
+    if (App.isDev()) {
         const modal = Modal({
             title: false,
             centered: true,
@@ -58,7 +57,7 @@ export function ResetApp() {
         async addContent(modalBody) {
             modalBody.classList.add('install-modal');
 
-            if (App.get('mode') === 'dev') {
+            if (App.isDev()) {
                 modalBody.insertAdjacentHTML('beforeend', /*html*/ `
                     <h4 class='mb-3'>Dev mode instructions</h4>
                 `);
@@ -186,7 +185,7 @@ export function ResetApp() {
                         width: '100%',
                         height: '100%',
                         radius: '10px',
-                        background: App.get('backgroundColor')
+                        background: 'var(--background)'
                     });
 
                     deleteContainer.add();
@@ -495,15 +494,15 @@ export function ResetApp() {
                     reinstallConsole.append(/*html*/ `
                         <div class='console-line'>
                             <!-- <code class='line-number'>0</code> -->
-                            <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                            <code style='color: var(--primary) !important;'>${spacers}</code>
                         </div>
                         <div class='console-line'>
                             <!-- <code class='line-number'>0</code> -->
-                            <code style='color: ${App.get('primaryColor')} !important;'>| Lists reset |</code>
+                            <code style='color: var(--primary) !important;'>| Lists reset |</code>
                         </div>
                         <div class='console-line'>
                             <!-- <code class='line-number'>0</code> -->
-                            <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                            <code style='color: var(--primary) !important;'>${spacers}</code>
                         </div>
                     `);
 

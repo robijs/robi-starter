@@ -62,13 +62,13 @@ export function DropDownMenu(param) {
             }
 
             .list-option-selected {
-                background: ${App.get('primaryColor')};
-                color: ${App.get('secondaryColor')}
+                background: var(--primary);
+                color: var(--secondary)
             }
              
             .list-option:hover {
-                background: ${App.get('primaryColor')};
-                color: ${App.get('secondaryColor')}
+                background: var(--primary);
+                color: var(--secondary)
             }
 
             /** Loading Shimmer */

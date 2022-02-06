@@ -1,4 +1,7 @@
+import { App } from '../Core/App.js'
+
 // @START-File
+// TODO: Export array instead of function?
 /**
  * @param {*} param
  * @returns
@@ -14,6 +17,32 @@ export function Lists() {
                 },
                 {
                     name: "Value",
+                    type: 'mlot'
+                }
+            ]
+        },
+        {
+            list: 'Searches',
+            fields: [
+                {
+                    name: "List",
+                    type: 'slot'
+                },
+                {
+                    name: "Searches",
+                    type: 'mlot'
+                }
+            ]
+        },
+        {
+            list: 'Actions',
+            fields: [
+                {
+                    name: "Action",
+                    type: 'slot'
+                },
+                {
+                    name: "FileNames",
                     type: 'mlot'
                 }
             ]
@@ -192,13 +221,13 @@ export function Lists() {
                     type: 'slot'
                 },
                 {
-                    name: "Role",
-                    type: 'choice',
+                    name: "Roles",
+                    type: 'multichoice',
                     choices: [
                         'Administrator',
                         'Developer',
                         'User'
-                    ]
+                    ].concat(App.get('roles') || [])
                 },
                 {
                     name: "Settings",
@@ -212,8 +241,102 @@ export function Lists() {
                         'Title',
                         'Email',
                         'LoginName',
-                        'Role'
+                        'Roles'
                     ]
+                }
+            ]
+        },
+        {
+            list: 'Feedback',
+            display: 'Feedback',
+            options: {
+                files: true
+            },
+            fields: [
+                {
+                    name: 'Summary',
+                    display: 'Summary',
+                    type: 'slot'
+                },
+                {
+                    name: 'Description',
+                    display: 'Description',
+                    type: 'mlot'
+                },
+                {
+                    name: 'Notes',
+                    display: 'Notes',
+                    type: 'mlot'
+                },
+                {
+                    name: 'Status',
+                    display: 'Status',
+                    value: 'Submitted',
+                    type: 'choice',
+                    choices: [
+                        'Submitted',
+                        'Cancelled',
+                        'Completed',
+                        'In Progress',
+                        'Next Revision',
+                        'On Hold',
+                        'Awaiting Feedback'
+                    ]
+                },
+                {
+                    name: 'RequestedDate',
+                    display: 'Requested Date',
+                    type: 'date'
+                },
+                {
+                    name: 'DueDate',
+                    display: 'Due Date',
+                    type: 'date'
+                },
+                {
+                    name: 'CompletedDate',
+                    display: 'Completed Date',
+                    type: 'date'
+                },
+                {
+                    name: 'RequestedBy',
+                    display: 'RequestedBy',
+                    type: 'SLOT'
+                },
+                {
+                    name: 'URL',
+                    display: 'URL',
+                    type: 'slot'
+                },
+                {
+                    name: 'Section',
+                    display: 'Area, Form, or Section',
+                    type: 'slot'
+                },
+                {
+                    name: 'SessionId',
+                    display: 'Session ID',
+                    type: 'slot'
+                },
+                {
+                    name: 'UserAgent',
+                    display: 'User Agent',
+                    type: 'mlot'
+                },
+                {
+                    name: 'LocalStorage',
+                    display: 'Local Storage',
+                    type: 'mlot'
+                },
+                {
+                    name: 'SessionStorage',
+                    display: 'Session Storage',
+                    type: 'mlot'
+                },
+                {
+                    name: 'Logs',
+                    display: 'Logs',
+                    type: 'mlot'
                 }
             ]
         }

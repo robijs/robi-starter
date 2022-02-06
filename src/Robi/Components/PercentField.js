@@ -70,7 +70,7 @@ export function PercentField(param) {
             #id input:focus {
                 outline: none;
                 border: solid 1px transparent;
-                box-shadow: 0px 0px 0px 1px ${App.get('primaryColor')};
+                box-shadow: 0px 0px 0px 1px var(--primary);
             }
         `,
         parent: parent,

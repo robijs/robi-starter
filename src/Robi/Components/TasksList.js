@@ -83,7 +83,7 @@ export function TasksList(param) {
             }
 
             #id .select-all-title {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 font-weight: 500;
                 padding: 5px 0px;
             }
@@ -136,7 +136,7 @@ export function TasksList(param) {
 
             #id .add-an-item:focus,
             #id .add-an-item:active {
-                border-bottom: solid 2px ${App.get('primaryColor')};
+                border-bottom: solid 2px var(--primary);
             }
 
             /** Placeholder */

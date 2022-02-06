@@ -17,8 +17,8 @@ export function NameField(param) {
     /*
         <!--<div class='dropdown-menu show' style='position: absolute; width: ${width}px; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, ${height + 5}px);'>
             <div class='d-flex justify-content-between align-items-center mt-2 mb-2 ml-3 mr-3'>
-                <div style='color: ${App.get('primaryColor')};'>Searching...</div>
-                <div class='spinner-grow spinner-grow-sm' style='color: ${App.get('primaryColor')};' role='status'></div>
+                <div style='color: var(--primary);'>Searching...</div>
+                <div class='spinner-grow spinner-grow-sm' style='color: var(--primary);' role='status'></div>
             </div> 
         </div> -->
     */
@@ -34,8 +34,8 @@ export function NameField(param) {
                     <div class='dropdown-menu'>
                         <!-- Show search spinner by -->
                         <div class='d-flex justify-content-between align-items-center mt-2 mb-2 ml-3 mr-3'>
-                            <div style='color: ${App.get('primaryColor')};'>Searching...</div>
-                            <div class='spinner-grow spinner-grow-sm' style='color: ${App.get('primaryColor')}; font-size: 13px;' role='status'></div>
+                            <div style='color: var(--primary);'>Searching...</div>
+                            <div class='spinner-grow spinner-grow-sm' style='color: var(--primary); font-size: 13px;' role='status'></div>
                         </div> 
                         <!-- <a href='javascript:void(0)' class='dropdown-item' data-path=''>
                             <span class='searching'>
@@ -68,12 +68,10 @@ export function NameField(param) {
                 margin-bottom: 4px;
                 margin-right: 20px;
                 min-height: 36px;
-                /* max-width: 300px; */
                 min-width: 300px;
                 padding: 5px 10px;
                 background: white;
                 border-radius: 4px;
-                border: ${App.get('defaultBorder')};
             }
 
             #id .form-field-name::-webkit-search-cancel-button {
@@ -88,7 +86,7 @@ export function NameField(param) {
             #id .form-field-name:focus {
                 outline: none;
                 border: solid 1px transparent;
-                box-shadow: 0px 0px 0px 2px ${App.get('primaryColor')};
+                box-shadow: 0px 0px 0px 2px var(--primary);
             }
 
             /** Errors */
@@ -163,8 +161,8 @@ export function NameField(param) {
                     /** Reset list */
                     menu.innerHTML = /*html*/ `
                         <div class='d-flex justify-content-between align-items-center mt-2 mb-2 ml-3 mr-3'>
-                            <div style='color: ${App.get('primaryColor')}; font-size: 13px;'>Searching...</div>
-                            <div class='spinner-grow spinner-grow-sm' style='color: ${App.get('primaryColor')};' role='status'></div>
+                            <div style='color: var(--primary); font-size: 13px;'>Searching...</div>
+                            <div class='spinner-grow spinner-grow-sm' style='color: var(--primary);' role='status'></div>
                         </div>
                         <!-- <a href='javascript:void(0)' class='dropdown-item' data-path=''>
                             <span class='searching'>

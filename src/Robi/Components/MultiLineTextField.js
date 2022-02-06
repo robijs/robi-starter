@@ -1,3 +1,4 @@
+import { App } from '../Core/App.js'
 import { Component } from '../Actions/Component.js'
 
 // @START-File
@@ -14,13 +15,14 @@ export function MultiLineTextField(param) {
     const component = Component({
         html: /*html*/ `
             <div class='form-field'>
-                ${label ? /*html*/ `<label>${label}${optional ? /*html*/ `<span class='optional'><i>Optional</i></span>` : ''}</label>` : ''}
+                ${label ? /*html*/ `<label class='field-label'>${label}${optional ? /*html*/ `<span class='optional'><i>Optional</i></span>` : ''}</label>` : ''}
                 ${description ? /*html*/ `<div class='form-field-description text-muted'>${description}</div>` : ''}
                 ${readOnly ? /*html*/ `<div class='form-field-multi-line-text readonly'>${value || placeHolder}</div>` : /*html*/ `<div class='form-field-multi-line-text editable' contenteditable='true'>${value || ''}</div>`}
             </div>
         `,
         style: /*css*/ `
             #id.form-field {
+                position: relative;
                 margin: ${fieldMargin || '0px 0px 20px 0px'};
                 width: inherit;
             }
@@ -35,22 +37,21 @@ export function MultiLineTextField(param) {
             }
 
             #id .form-field-multi-line-text {
-                color: #495057; /* Bootstrap@4.5.2 input color */
+                color: var(--color);
                 margin-top: 2px;
                 margin-bottom: 4px;
                 padding: 0.375rem 0.75rem;
             }
 
             #id .form-field-multi-line-text > * {
-                color: #495057; /* Bootstrap@4.5.2 input color */
+                color: var(--color);
             }
 
             #id .form-field-multi-line-text.editable {
                 min-height: ${minHeight || `200px`};
                 width: ${width || 'unset'};
-                background: white;
                 border-radius: 4px;
-                border: 1px solid #ced4da;
+                border: 1px solid var(--border-color);
             }
 
             #id .form-field-multi-line-text.editable:active,
@@ -100,6 +101,34 @@ export function MultiLineTextField(param) {
         const field = component.find('.form-field-multi-line-text');
 
         field.focus();
+    };
+
+    component.isValid = (state) => {
+        const node = component.find('.is-valid-container');
+
+        if (node) {
+            node.remove();
+        }
+
+        if (state) {
+            component.find('.field-label').style.color = 'seagreen';
+            component.append(/*html*/ `
+                <div class='is-valid-container d-flex justify-content-center align-items-center' style='height: 33.5px; width: 46px; position: absolute; bottom: 0px; right: -46px;'>
+                    <svg class='icon' style='fill: seagreen; font-size: 22px;'>
+                        <use href='#icon-bs-check-circle-fill'></use>
+                    </svg>
+                </div>
+            `);
+        } else {
+            component.find('.field-label').style.color = 'crimson';
+            component.append(/*html*/ `
+                <div class='is-valid-container d-flex justify-content-center align-items-center' style='height: 33.5px; width: 46px; position: absolute; bottom: 0px; right: -46px;'>
+                    <svg class='icon' style='fill: crimson; font-size: 22px;'>
+                        <use href='#icon-bs-exclamation-circle-fill'></use>
+                    </svg>
+                </div>
+            `);
+        }
     };
 
     component.value = (param, options = {}) => {

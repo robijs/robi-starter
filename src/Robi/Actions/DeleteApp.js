@@ -15,7 +15,7 @@ import { DeleteList } from './DeleteList.js'
  * @param {*} event 
  */
 export function DeleteApp() {
-    if (App.get('mode') === 'dev') {
+    if (App.isDev()) {
         const modal = Modal({
             title: false,
             centered: true,
@@ -138,7 +138,7 @@ export function DeleteApp() {
                         width: '100%',
                         height: '100%',
                         radius: '10px',
-                        background: App.get('backgroundColor')
+                        background: 'var(--background)'
                     });
 
                     deleteContainer.add();
@@ -277,15 +277,15 @@ export function DeleteApp() {
                     deleteConsole.append(/*html*/ `
                         <div class='console-line'>
                             <!-- <code class='line-number'>0</code> -->
-                            <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                            <code style='color: var(--primary) !important;'>${spacers}</code>
                         </div>
                         <div class='console-line'>
                             <!-- <code class='line-number'>0</code> -->
-                            <code style='color: ${App.get('primaryColor')} !important;'>| '${App.get('name')}' deleted |</code>
+                            <code style='color: var(--primary) !important;'>| '${App.get('name')}' deleted |</code>
                         </div>
                         <div class='console-line'>
                             <!-- <code class='line-number'>0</code> -->
-                            <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                            <code style='color: var(--primary) !important;'>${spacers}</code>
                         </div>
                     `);
 

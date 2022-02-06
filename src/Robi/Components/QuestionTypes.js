@@ -13,14 +13,6 @@ import { LoadingSpinner } from './LoadingSpinner.js'
 export async function QuestionTypes(param) {
     const { parent } = param;
 
-    // View Title
-    const viewTitle = Title({
-        title: `Questions`,
-        parent
-    });
-
-    viewTitle.add();
-
     // View Container
     const container = Container({
         display: 'block',

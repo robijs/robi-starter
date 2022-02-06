@@ -10,49 +10,58 @@ import { App } from '../Core/App.js'
  */
 export function MultiChoiceField(param) {
     const {
-        label, description, choices, value, fillIn, parent, position, width, fieldMargin, onChange
+        choices,
+        description,
+        fieldMargin,
+        fillIn,
+        label,
+        onChange,
+        parent,
+        position,
+        validate,
+        value
     } = param;
 
     const component = Component({
         html: /*html*/ `
             <div class='form-field'>
-                ${label ? /*html*/ `<label>${label}</label>` : ''}
+                ${label ? /*html*/ `<label class='field-label'>${label}</label>` : ''}
                 ${description ? /*html*/ `<div class='form-field-description text-muted'>${description}</div>` : ''}
-                <div>
-                    ${choices.map(choice => {
-            const id = GenerateUUID();
+                <div class='checkbox-container'>
+                    ${
+                        choices.map(choice => {
+                            const id = GenerateUUID();
 
-            return /*html*/ `
+                            return /*html*/ `
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="${id}" data-label='${choice}' ${value?.includes(choice) ? 'checked' : ''}>
                                     <label class="custom-control-label" for="${id}">${choice}</label>
                                 </div>
-                                <!-- <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="${id}">
-                                    <label class="custom-control-label" for="${id}">${choice}</label>
-                                </div> -->
                             `;
-        }).join('\n')}
-                    ${fillIn ?
-                (() => {
-                    const id = GenerateUUID();
-                    // FIXME: this wil probably break if fill in choice is the same as one of the choices
-                    const otherValue = value?.find(item => !choices.includes(item));
+                        }).join('\n')
+                    }
+                    ${
+                        fillIn ?
+                        (() => {
+                            const id = GenerateUUID();
+                            // FIXME: this wil probably break if fill in choice is the same as one of the choices
+                            const otherValue = value ? value.find(item => !choices.includes(item)) : '';
 
-                    return /*html*/ `
+                            return /*html*/ `
                                 <div class="custom-control custom-checkbox d-flex align-items-center">
                                     <input type="checkbox" class="custom-control-input other-checkbox" id="${id}" data-label='Other' ${otherValue ? 'checked' : ''}>
                                     <label class="custom-control-label d-flex align-items-center other-label" for="${id}">Other</label>
                                     <input type='text' class='form-control ml-2 Other' value='${otherValue || ''}' list='autocompleteOff' autocomplete='new-password'>
                                 </div>
                             `;
-                })() :
-                ''}
+                        })() : ''
+                    }
                 </div>
             </div>
         `,
         style: /*css*/ `
             #id.form-field {
+                position: relative;
                 margin: ${fieldMargin || '0px 0px 20px 0px'};
                 width: inherit;
             }
@@ -71,25 +80,10 @@ export function MultiChoiceField(param) {
                 font-weight: 400;
                 white-space: nowrap;
             }
-
-            #id .custom-control-input:checked ~ .custom-control-label::before {
-                color: #fff;
-                border-color: ${App.get('primarColor')};
-                background-color: ${App.get('primarColor')};
-            }
-
-            #id .custom-control-input:focus~.custom-control-label::before {
-                box-shadow: 0 0 0 0.2rem ${App.get('primarColor') + '6b'} !important;
-            }
             
-            #id .custom-control-input:focus:not(:checked)~.custom-control-label::before {
-                border-color: ${App.get('primarColor') + '6b'}  !important;
+            #id .checkbox-container {
+                border-radius: 10px;
             }
-            
-            /* #id .other-label.custom-control-label::before,
-            #id  .other-label.custom-control-label::after {
-                top: .5rem;
-            } */
         `,
         parent: parent,
         position,
@@ -97,7 +91,17 @@ export function MultiChoiceField(param) {
             {
                 selector: '#id .custom-control-input',
                 event: 'change',
-                listener: onChange
+                listener(event) {
+                    console.log(event.target.checked);
+
+                    if (validate) {
+                        validate();
+                    }
+
+                    if (onChange) {
+                        onChange(event);
+                    }
+                }
             },
             {
                 selector: '#id .Other',
@@ -119,21 +123,57 @@ export function MultiChoiceField(param) {
                 selector: '#id .Other',
                 event: 'keyup',
                 listener(event) {
-                    if (event.target.value) {
+                    if (event.target.value && onChange) {
                         onChange(event);
+                    }
+                }
+            },
+            {
+                selector: '#id .Other',
+                event: 'focusout',
+                listener(event) {
+                    if (validate) {
+                        validate(event);
                     }
                 }
             }
         ],
     });
 
+    component.isValid = (state) => {
+        const node = component.find('.is-valid-container');
+
+        if (node) {
+            node.remove();
+        }
+
+        if (state) {
+            component.find('.field-label').style.color = 'seagreen';
+            component.append(/*html*/ `
+                <div class='is-valid-container d-flex justify-content-center align-items-center' style='height: 33.5px; width: 46px; position: absolute; bottom: 0px; right: -46px;'>
+                    <svg class='icon' style='fill: seagreen; font-size: 22px;'>
+                        <use href='#icon-bs-check-circle-fill'></use>
+                    </svg>
+                </div>
+            `);
+        } else {
+            component.find('.field-label').style.color = 'crimson';
+            component.append(/*html*/ `
+                <div class='is-valid-container d-flex justify-content-center align-items-center' style='height: 33.5px; width: 46px; position: absolute; bottom: 0px; right: -46px;'>
+                    <svg class='icon' style='fill: crimson; font-size: 22px;'>
+                        <use href='#icon-bs-exclamation-circle-fill'></use>
+                    </svg>
+                </div>
+            `);
+        }
+    };
+
     component.value = (param, options = {}) => {
         const checked = component.findAll('.custom-control-input:not(.other-checkbox):checked');
-
         const results = [...checked].map(node => node.dataset.label);
+        const other = component.find('.custom-control-input.other-checkbox:checked');
 
-        if (fillIn) {
-            // console.log(component.find('.Other').value);
+        if (fillIn && other) {
             results.push(component.find('.Other').value);
         }
 

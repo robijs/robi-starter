@@ -13,11 +13,11 @@ import { Store } from '../Core/Store.js'
  *
  * @param {*} param
  */
-export async function QuestionAndReplies(param) {
-    const { parent, path, itemId } = param;
+export async function QuestionAndReplies({ parent, path, itemId, title }) {
+    title.remove();
 
     /** View Title */
-    let viewTitle;
+    let routeTitle;
 
     /** Check local storage for questionTypes */
     let questionTypes = localStorage.getItem(`${App.get('name').split(' ').join('-')}-questionTypes`);
@@ -30,7 +30,7 @@ export async function QuestionAndReplies(param) {
         console.log('questionTypes not in local storage. Adding...');
 
         /** Set temporary title  */
-        viewTitle = Title({
+        routeTitle = Title({
             title: 'Question',
             breadcrumb: [
                 {
@@ -48,7 +48,7 @@ export async function QuestionAndReplies(param) {
             parent
         });
 
-        viewTitle.add();
+        routeTitle.add();
 
         const questionTypesResponse = await Get({
             list: 'Settings',
@@ -64,8 +64,8 @@ export async function QuestionAndReplies(param) {
 
     function setTitle(items) {
         /** If View Tile exists, remove from DOM */
-        if (viewTitle) {
-            viewTitle.remove();
+        if (routeTitle) {
+            routeTitle.remove();
         }
 
         /** Parse types */
@@ -75,7 +75,7 @@ export async function QuestionAndReplies(param) {
         const currentType = types.find(item => item.path === path);
 
         /** Set new title with drop down options */
-        viewTitle = Title({
+        routeTitle = Title({
             title: 'Question',
             breadcrumb: [
                 {
@@ -112,7 +112,7 @@ export async function QuestionAndReplies(param) {
             position: 'afterbegin'
         });
 
-        viewTitle.add();
+        routeTitle.add();
     }
 
     /** View Container */
@@ -154,7 +154,7 @@ export async function QuestionAndReplies(param) {
 
     const question = questions.find(question => question.Id === itemId);
 
-    viewTitle.updateDropdown({
+    routeTitle.updateDropdown({
         name: 'loading-questions',
         replaceWith: {
             name: question.Title,

@@ -9,9 +9,11 @@ export async function buildFile({ license, paths, dir, imports, importFile, file
 
     // Imports
     for (const path of imports) {
-        importNames = importNames.concat(await readfiles(path)); 
+        importNames = importNames.concat(await readfiles(path));
     }
 
+    // FIXME: Don't add files from src/Robi/Templates yet, will trip false positive below
+    // EX: Title() is only  found in RouteTemplate.
     for (const path of paths) {
         body += await getfiles(path);
     }
@@ -22,14 +24,22 @@ export async function buildFile({ license, paths, dir, imports, importFile, file
         importNames
         .filter(file => {
             const name = file.replace('.js', '')
+            // Ex: AddRoute();
             const asFunc = body.search(RegExp(`\\b${name}\\b\\(`, 'g'));
+            // Ex: AddRoute.method()
             const asObj = body.search(RegExp(`\\b${name}\\b\\.`, 'g'));
+            // Ex: const obj = { func: AddRoute };
+            const asArg = body.search(RegExp(`\\b: ${name}\\b`, 'g'));
+            // Ex: const obj = {func:AddRoute};
+            const asArgNoSpace = body.search(RegExp(`\\b:${name}\\b`, 'g')); 
 
             // console.log(name);
             // console.log(RegExp(`\\b${name}\\b\\(`, 'g'), asFunc);
             // console.log(RegExp(`\\b${name}\\b\\.`, 'g'), asObj);
+            // console.log(RegExp(`\\b: ${name}\\b`, 'g'), asArg);
+            // console.log(RegExp(`\\b:${name}\\b`, 'g')), asArgNoSpace);
 
-            if (asFunc !== -1 || asObj !== -1) {
+            if (asFunc !== -1 || asObj !== -1 || asArg !== -1 || asArgNoSpace !== -1) {
                 return file;
             }
         })

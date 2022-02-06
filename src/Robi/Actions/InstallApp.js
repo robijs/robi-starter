@@ -133,7 +133,7 @@ export function InstallApp(param) {
                     width: '100%',
                     height: '100%',
                     radius: '20px',
-                    background: App.get('backgroundColor')
+                    background: 'var(--background)'
                 });
 
                 installContainer.add();
@@ -456,7 +456,7 @@ export function InstallApp(param) {
                             Title: response.d.Title,
                             Email: response.d.Email,
                             LoginName: response.d.LoginName.split('|')[2],
-                            Role: 'Developer',
+                            Roles: {results : ['Developer']},
                             Settings: App.get('userSettings')
                         }
                     });
@@ -541,15 +541,15 @@ export function InstallApp(param) {
                 installConsole.append(/*html*/ `
                     <div class='console-line'>
                         <!-- <code class='line-number'>0</code> -->
-                        <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                        <code style='color: var(--primary) !important;'>${spacers}</code>
                     </div>
                     <div class='console-line'>
                         <!-- <code class='line-number'>0</code> -->
-                        <code style='color: ${App.get('primaryColor')} !important;'>| '${App.get('name')}' installed | Build 1.0.0 | Version 1.0.0 |</code>
+                        <code style='color: var(--primary) !important;'>| '${App.get('name')}' installed | Build 1.0.0 | Version 1.0.0 |</code>
                     </div>
                     <div class='console-line'>
                         <!-- <code class='line-number'>0</code> -->
-                        <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                        <code style='color: var(--primary) !important;'>${spacers}</code>
                     </div>
                 `);
 

@@ -18,15 +18,15 @@ export function Timer(param) {
                 <h5 class='mb-0'>Run action</h5>
                 <div class='stopwatch' id='stopwatch'>00:00:00</div>
                 <button class='btn btn-robi-success start'>Start</button>
-                <button class='btn btn-robi-reverse stop'>Stop</button>
-                <button class='btn btn-robi reset'>Reset</button>
+                <button class='btn btn-robi stop'>Stop</button>
+                <button class='btn btn-robi-light reset'>Reset</button>
             </div>
         `,
         style: /*css*/ `
             #id {
                 padding: 20px;
                 border-radius: 20px;
-                background: ${App.get('backgroundColor')}
+                background: var(--background)
             }
             
             .stopwatch {

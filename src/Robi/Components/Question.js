@@ -43,10 +43,11 @@ export function Question(param) {
                     ${buildFooter(lastReply)}
                 </div>
                     ${
-                        Author.Name.split('|').at(-1) === Store.user().LoginName ?
+                        // Author.Name on LaunchPad, Author.LoginName on CarePoint
+                        ( Author.Name ? Author.Name.split('|').at(-1) : Author.LoginName.split('|').at(-1) ) === Store.user().LoginName ?
                         /*html*/ `
                             <div class='edit-button-container'>
-                                <button type='button' class='btn btn-robi edit'>Edit question</button>
+                                <button type='button' class='btn btn-robi-light edit'>Edit</button>
                             </div>
                         ` : ''
                     }
@@ -65,7 +66,7 @@ export function Question(param) {
             }
 
             #id .card {
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
                 border: none;
                 border-radius: 20px;
             }
@@ -80,10 +81,6 @@ export function Question(param) {
                 font-weight: 400;
             }
 
-            /* #id .card-footer .card-text {
-                font-size: 13px;
-            } */
-
             #id .question-card-body {
                 padding: 1.75rem;
             }
@@ -96,7 +93,11 @@ export function Question(param) {
             #id .edit-button-container {
                 display: flex;
                 justify-content: flex-end;
-                margin: 20px 0px;
+                margin-bottom: 20px;
+            }
+
+            #id .edit-button-container .btn {
+                font-size: 15px;
             }
 
             /** Replies */
@@ -115,14 +116,13 @@ export function Question(param) {
                 justify-content: center;
                 height: 30px;
                 width: 30px;
-                cursor: pointer;
                 margin: 5px;
                 padding: 5px;
                 font-weight: bold;
                 text-align: center;
                 border-radius: 50%;
                 color: white;
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
             }
 
             #id .reply-count-value * {

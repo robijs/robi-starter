@@ -78,15 +78,28 @@ export async function CreateList(param) {
         // console.log(getList);
     }
 
+    const data = {
+        __metadata: {
+            'type': `SP.List`,
+        },
+        'BaseTemplate': template || 100,
+        'Title': list
+    }
+
+    // Turn on major versions by default
+    if (options) {
+        const { versioning } = options;
+
+        if (versioning === false) {
+            data.EnableVersioning = false;
+        } else {
+            data.EnableVersioning = true;
+        }
+    }
+
     const postOptions = {
         url: `${App.get('site')}${web ? `/${web}` : ''}/_api/web/lists`,
-        data: {
-            __metadata: {
-                'type': `SP.List`,
-            },
-            'BaseTemplate': template || 100,
-            'Title': list
-        },
+        data,
         headers: {
             "Content-Type": "application/json;odata=verbose",
             "Accept": "application/json;odata=verbose",

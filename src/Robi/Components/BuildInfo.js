@@ -1,32 +1,31 @@
 import { Get } from '../Actions/Get.js'
-import { Card } from './Card.js'
+import { Container } from './Container.js'
 import { LoadingSpinner } from './LoadingSpinner.js' 
 import { SingleLineTextField } from './SingleLineTextField.js'
+import { UpgradeAppButton } from './UpgradeAppButton.js'
 
 // @START-File
 /**
  *
  * @param {*} param
  */
-export async function BuildInfo(param) {
-    const {
-        parent,
-    } = param;
-
-    const accountInfoCard = Card({
-        title: 'Build',
+export async function BuildInfo({ parent }) {
+    const card = Container({
         width: '100%',
-        margin: '20px 0px 0px 0px',
+        direction: 'column',
+        padding: '0px 20px',
+        margin: '0px 0px 40px 0px',
+        height: '100px',
         parent
     });
 
-    accountInfoCard.add();
+    card.add();
+
     // Show loading
     const loadingIndicator = LoadingSpinner({
         message: 'Loading robi build',
         type: 'robi',
-        margin: '40px 0px',
-        parent
+        parent: card
     });
 
     loadingIndicator.add();
@@ -45,8 +44,7 @@ export async function BuildInfo(param) {
         label: 'Version',
         value: appSettings.find(item => item.Key === 'Version')?.Value,
         readOnly: true,
-        fieldMargin: '10px 0px 0px 0px',
-        parent: accountInfoCard
+        parent: card
     });
 
     nameField.add();
@@ -56,10 +54,16 @@ export async function BuildInfo(param) {
         label: 'Build',
         value: appSettings.find(item => item.Key === 'Build')?.Value,
         readOnly: true,
-        fieldMargin: '0px 0px 0px 0px',
-        parent: accountInfoCard
+        fieldMargin: '0px 0px 20px 0px',
+        parent: card
     });
 
     accountField.add();
+
+    const upgrade = UpgradeAppButton({
+        parent
+    });
+
+    upgrade.add();
 }
 // @END-File

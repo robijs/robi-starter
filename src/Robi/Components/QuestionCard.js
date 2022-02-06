@@ -76,7 +76,7 @@ export function QuestionCard(param) {
                 width: 100%;
                 margin: ${margin || '0px'};
                 cursor: pointer;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
                 border: none;
                 border-radius: 20px;
             }

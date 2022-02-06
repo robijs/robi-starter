@@ -1,4 +1,5 @@
 import { App } from '../Core/App.js'
+import { Store } from '../Core/Store.js'
 import { GetRequestDigest } from './GetRequestDigest.js'
 import { Wait } from './Wait.js'
 
@@ -7,13 +8,13 @@ import { Wait } from './Wait.js'
  *
  * @param {*} param
  */
-export async function HideRoutes({ routes }) {
-    console.log(routes);
+export async function HideRoutes({ paths }) {
+    // console.log(paths);
 
     let digest;
     let request;
 
-    if (App.get('mode') === 'prod') {
+    if (App.isProd()) {
         digest = await GetRequestDigest();
         request  = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${App.get('library')}/src')/Files('app.js')/$value`, {
             method: 'GET',
@@ -27,38 +28,44 @@ export async function HideRoutes({ routes }) {
         request = await fetch(`http://127.0.0.1:8080/src/app.js`);
         await Wait(1000);
     }
-    let value = await request.text();
 
-    const allRoutes = value.match(/\/\/ @START-ROUTES([\s\S]*?)\/\/ @END-ROUTES/);
-    const routeObjects = allRoutes[1].split(', // @ROUTE');
+    const value = await request.text();
 
-    // Add hide property
-    console.log(routeObjects);
-    const newRoutes = routeObjects.map(route => {
-        const [ query, path ] = route.match(/path: '([\s\S]*?)',/);
+    const newRoutes = paths.map(item => {
+        const { path, hide } = item;
+        const route = Store.routes().filter(r => !r.ignore).find(r => r.path === path);
 
-        if (routes.includes(path)) {
-            console.log(path);
-            console.log('hide route');
-            
-            // FIXME: will it always been 12 spaces?
-            // FIXME: can we guarentee that this search is alawys unique?
-            route = route.replace(`path: '${path}',`, `path: '${path}',\n            hide: true,`);
+        if (route) {
+            const { title, icon } = route;
+
+            return [
+                // `        `,
+                `        // @START-${path}`,
+                `        {`,
+                ... hide ? [`            hide: true,`] : [],
+                `            path: '${path}',`,
+                `            title: '${title}',`,
+                `            icon: '${icon}',`,
+                `            go: Route_${path}`,
+                `        }`,
+                `        // @END-${path}`,
+                // `        `
+            ].join('\n');
         }
+    }).join('\n        , // @Route\n');
 
-        return route;
-    }).join(', // @ROUTE');
+    // console.log(newRoutes);
 
-    const updated = value.replace(/\/\/ @START-ROUTES([\s\S]*?)\/\/ @END-ROUTES/, `// @START-ROUTES${newRoutes}// @END-ROUTES`);
+    const updated = value.replace(/\/\/ @START-Routes([\s\S]*?)\/\/ @END-Routes/, `// @START-Routes\n${newRoutes}\n        // @END-Routes`);
 
-    console.log('OLD\n----------------------------------------\n', value);
-    console.log('\n****************************************');
-    console.log('NEW\n----------------------------------------\n', updated);
-    console.log('\n****************************************');
+    // console.log('OLD\n----------------------------------------\n', value);
+    // console.log('\n****************************************');
+    // console.log('NEW\n----------------------------------------\n', updated);
+    // console.log('\n****************************************');
 
     let setFile;
 
-    if (App.get('mode') === 'prod') {
+    if (App.isProd()) {
         // TODO: Make a copy of app.js first
         // TODO: If error occurs on load, copy ${file}-backup.js to ${file}.js
         setFile = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${App.get('library')}/src')/Files/Add(url='app.js',overwrite=true)`, {
@@ -78,6 +85,6 @@ export async function HideRoutes({ routes }) {
         await Wait(1000);
     }
 
-    console.log('Saved:', setFile);
+    // console.log('Saved:', setFile);
 }
 // @END-File

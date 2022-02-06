@@ -17,14 +17,14 @@ export async function UpdateItem(param) {
         list, itemId, select, expand, data, wait
     } = param;
 
-    console.log(`List: ${list}, Item: ${itemId}, Data:`, data);
+    // console.log(`List: ${list}, Item: ${itemId}, Data:`, data);
 
     // Exit if no data passed in
     if (Object.getOwnPropertyNames(data).length === 0) {
         return;
     }
 
-    if (App.get('mode') === 'prod') {
+    if (App.isProd()) {
         // Get item by id
         const getItem = await Get({
             list,
@@ -72,7 +72,7 @@ export async function UpdateItem(param) {
         const body = data;
 
         body.EditorId = body.EditorId || App.get('dev').user.SiteId;
-        body.Editor = body.Editor || { Title: App.get('dev').user.Title };
+        body.Editor = body.Editor || { Title: App.get('dev').user.Title, LoginName: App.get('dev').user.LoginName };
 
         const date = new Date().toUTCString();
         body.Modified = date;

@@ -1,12 +1,15 @@
 import { Component } from '../Actions/Component.js'
 import { UpdateItem } from '../Actions/UpdateItem.js'
+import { CustomNewForm } from '../Actions/CustomNewForm.js'
+import { CustomEditForm } from '../Actions/CustomEditForm.js'
+import { ModifyForm } from '../Actions/ModifyForm.js'
 import { Alert } from './Alert.js'
 import { BootstrapButton } from './BootstrapButton.js'
 import { Modal } from './Modal.js'
 import { SingleLineTextField } from './SingleLineTextField.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
-import { GenerateUUID } from '../Robi.js';
+import { GenerateUUID, Lists } from '../Robi.js';
 
 // @START-File
 // TODO: Compute advanced search container and row heights in onAdd()
@@ -19,6 +22,7 @@ export function TableToolbar(param) {
     const {
         advancedSearch,
         action,
+        heading,
         list,
         options,
         parent,
@@ -27,17 +31,41 @@ export function TableToolbar(param) {
     } = param;
 
     const listInfo = App.lists().find(item => item.list === list);
-    let userSettings = JSON.parse(Store.user().Settings);
-    let savedSearches = userSettings.savedSearches[list] || [];
-
-    console.log(savedSearches);
     
+    let userSettings = JSON.parse(Store.user().Settings);
+    let searches = userSettings.searches[list] || [];
     let open = false;
     let loaded;
 
     const component = Component({
         html: /*html*/ `
-            <div class='btn-toolbar' role='toolbar'>
+            <div class='btn-toolbar w-100' role='toolbar'>
+                <div class='text'>${heading}</div>
+                ${
+                    listInfo?.options?.menu !== false && Store.user().Roles.results.includes('Developer') ?
+                    (() => {
+                        const id = GenerateUUID();
+
+                        return /*html*/ `
+                            <div class='edit-table'>
+                                <button class='btn' type='button' id='${id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>•••</button>
+                                <div class='dropdown-menu' aria-labelledby='${id}'>
+                                    <div class='grow-in-top-left'>
+                                        <button class='dropdown-item new-form' type='button'>New Form</button>
+                                        <button class='dropdown-item edit-form' type='button'>Edit Form</button>
+                                        <button class='dropdown-item fields' type='button'>Form Sections</button>
+                                        <div class='dropdown-divider'></div>
+                                        <button class='dropdown-item views' type='button'>Views</button>
+                                        <div class='dropdown-divider'></div>
+                                        <button class='dropdown-item fields' type='button'>Fields</button>
+                                        <div class='dropdown-divider'></div>
+                                        <button class='dropdown-item settings' type='button' style='color: var(--primary);'>Settings</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    })() : ''
+                }
                 ${
                     advancedSearch ? 
                     /*html*/ `
@@ -54,19 +82,19 @@ export function TableToolbar(param) {
                         const id = GenerateUUID();
 
                         return /*html*/ `
-                            <div class='search-container search-container-grow height-0 opacity-0 pt-0 pb-0'>
+                            <div class='search-container search-container-grow height-0 opacity-0 pt-0 pb-0 mt-2'>
                                 ${searchRow(GenerateUUID())}
                                 <!-- Buttons -->
                                 <div class='d-flex justify-content-end run-search-container pt-2'>
                                     <div class='d-flex justify-content-start load-search-container' style='flex: 2;'>
-                                        <button type='button' class='btn btn-robi-light' id="${id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Load</button>
-                                        <div class="dropdown-menu" aria-labelledby="${id}">
-                                            <div class="grown-in-top-left saved-search-menu">
+                                        <button type='button' class='btn btn-robi-light' id='${id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Load</button>
+                                        <div class='dropdown-menu' aria-labelledby='${id}'>
+                                            <div class='grow-in-top-left saved-search-menu'>
                                                 ${
-                                                    savedSearches.length ? savedSearches.map(search => {
+                                                    searches.length ? searches.map(search => {
                                                         const { name } = search;
 
-                                                        return /*html*/ `<button class="dropdown-item load-search" type="button">${name}</button>`;
+                                                        return /*html*/ `<button class='dropdown-item load-search' type='button'>${name}</button>`;
                                                     }).join('\n') : 
                                                     /*html*/ `
                                                         <div style='font-size: 13px; padding: .25rem 1.5rem;'>No saved searches</div>
@@ -93,8 +121,9 @@ export function TableToolbar(param) {
                 margin-bottom: 10px;
             }
 
-            #id .btn-group {
-                margin-bottom: 10px;
+            #id .text {
+                font-size: 20px;
+                font-weight: 700;
             }
 
             #id .btn {
@@ -107,41 +136,37 @@ export function TableToolbar(param) {
             }
 
             #id .ask-a-question {
-                background: #e9ecef;
-                color: ${App.get('primaryColor')};
+                background: var(--button-background);
+                color: var(--primary);
                 font-weight: 500;
             }
             
             #id .search-questions {
-                background: #e9ecef !important;
+                background: var(--button-background) !important;
                 border-color: transparent;
                 border-radius: 8px;
                 min-width: 250px;
                 min-height: 35px;
             }
 
-            #id .btn-robi-primary {
-                color: white;
-                background: ${App.get('primaryColor')};
-            }
-
             #id .btn-outline-robi-primary {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 background-color: initial;
-                border-color: ${App.get('primaryColor')};
+                border-color: var(--primary);
             }
 
             /* Search */
             #id .advanced-search {
+                width: 126px;
                 transition: 300ms opacity ease;
-                margin-bottom: 10px;
+                text-align: right;
             }
 
             #id .search-container {
                 border-radius: 20px;
                 width: 100%;
                 padding: 20px;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
                 transition: opacity 300ms ease, padding 300ms ease, height 300ms ease;
                 height: 123px;
                 overflow: hidden;
@@ -159,6 +184,10 @@ export function TableToolbar(param) {
                 height: 0px !important;
             }
 
+            #id .custom-select {
+                background: var(--inputBackground);
+            }
+
             /* Load menu */
             #id .dropdown-menu {
                 background: transparent;
@@ -167,25 +196,15 @@ export function TableToolbar(param) {
                 padding: none;
             }
 
-            @keyframes grown-in-top-left {
-                from {
-                    transform: scale(0);
-                    transform-origin: top left;
-                    opacity: 0;
-                }
-                to {
-                    transform: scale(1);
-                    transform-origin: top left;
-                    opacity: 1;
-                }
+            /* Edit table */
+            #id .edit-table {
+                flex: 1;
             }
 
-            .grown-in-top-left {
-                animation: 150ms ease-in-out forwards grown-in-top-left;
-                background: white;
-                border-radius: 10px;
-                box-shadow: rgb(0 0 0 / 10%) 0px 0px 16px -2px;
-                padding: .5rem;
+            #id .edit-table .btn {
+                font-size: 16px;
+                cursor: pointer;
+                color: var(--primary);
             }
         `,
         parent,
@@ -196,13 +215,13 @@ export function TableToolbar(param) {
                 event: 'click',
                 listener(event) {
                     // Deselect all options
-                    const currentSelected = component.find('.filter.btn-robi-primary');
-                    currentSelected.classList.remove('btn-robi-primary');
+                    const currentSelected = component.find('.filter.btn-robi-reverse');
+                    currentSelected.classList.remove('btn-robi-reverse');
                     currentSelected.classList.add('btn-outline-robi-primary');
 
                     // Select clicked button
                     this.classList.remove('btn-outline-robi-primary');
-                    this.classList.add('btn-robi-primary');
+                    this.classList.add('btn-robi-reverse');
 
                     action(this.innerText);
                 }
@@ -219,7 +238,7 @@ export function TableToolbar(param) {
                         }, 0);
                     } else {
                         open = true;
-                        event.target.innerText = 'Close search'
+                        event.target.innerText = 'Close'
                         setTimeout(() => {
                             component.find('.search-container').classList.remove('height-0', 'opacity-0', 'pt-0', 'pb-0');
                         }, 0);
@@ -256,6 +275,33 @@ export function TableToolbar(param) {
                         event.preventDefault();
 
                         runSearch(component.find('.run-search'));
+                    }
+                }
+            },
+            // Edit table
+            {
+                selector: `#id .edit-table .new-form`,
+                event: 'click',
+                listener(event) {
+                    const { newForm, display, fields } = App.list(list) || Lists().find(item => item.list === list);
+
+                    if (newForm) {
+                        ModifyForm({ list, display, fields, form: newForm, type: 'New' });
+                    } else {
+                        CustomNewForm({ list, display, fields });
+                    }
+                }
+            },
+            {
+                selector: `#id .edit-table .edit-form`,
+                event: 'click',
+                listener(event) {
+                    const { editForm, display, fields } = App.list(list) || Lists().find(item => item.list === list);
+
+                    if (editForm) {
+                        ModifyForm({ list, display, fields, form: editForm, type: 'Edit'  });
+                    } else {
+                        CustomEditForm({ list, display, fields });
                     }
                 }
             }
@@ -337,12 +383,12 @@ export function TableToolbar(param) {
                         return;
                     }
 
-                    console.log('Update Store.user().Settings.savedSearches');
+                    console.log('Update Store.user().Settings.searches');
 
                     // Disable button
                     saveSearchBtn.get().disabled = true;
                     saveSearchBtn.get().innerHTML = /*html*/ `
-                        <span class="spinner-border" role="status" aria-hidden="true" style="width: 20px; height: 20px; border-width: 3px"></span> Saving search
+                        <span class='spinner-border' role='status' aria-hidden='true' style='width: 20px; height: 20px; border-width: 3px'></span> Saving search
                     `;
 
                     // Get rows
@@ -367,25 +413,25 @@ export function TableToolbar(param) {
                         }
                     });
 
-                    if (savedSearches.map(search => search.name).includes(searchName.value())) {
+                    if (searches.map(search => search.name).includes(searchName.value())) {
                         console.log('update existing search')
                         // Update existing search
-                        savedSearches.find(item => item.name === searchName.value()).filters = filters;
+                        searches.find(item => item.name === searchName.value()).filters = filters;
 
-                        console.log(savedSearches);
+                        console.log(searches);
                     } else {
                         console.log('add new search')
                         // Add search
-                        savedSearches.push({
+                        searches.push({
                             name: searchName.value(),
                             filters: rows
                         });
 
-                        console.log(savedSearches);
+                        console.log(searches);
                     }
 
-                    // Replace user Settings[list].savedSearches
-                    userSettings.savedSearches[list] = savedSearches;
+                    // Replace user Settings[list].searches
+                    userSettings.searches[list] = searches;
                     const Settings = JSON.stringify(userSettings);
                     Store.user().Settings = Settings;
 
@@ -398,7 +444,7 @@ export function TableToolbar(param) {
                     });
 
                     // Update saved search menu
-                    component.find('.saved-search-menu').innerHTML = savedSearches.map(search => {
+                    component.find('.saved-search-menu').innerHTML = searches.map(search => {
                         const { name } = search;
 
                         return /*html*/ `<button class="dropdown-item load-search" type="button">${name}</button>`;
@@ -414,7 +460,7 @@ export function TableToolbar(param) {
 
                 // Show message if path already exists
                 function showMessage(value) {
-                    if (savedSearches.map(search => search.name).includes(value)) {
+                    if (searches.map(search => search.name).includes(value)) {
                         // Show message
                         if (!pathExists) {
                             pathExists = Alert({
@@ -438,7 +484,7 @@ export function TableToolbar(param) {
 
                 // Check if all fields are filled out and path doesn't already exist
                 function canEnable() {
-                    if ( searchName.value() !== '' && !savedSearches.map(search => search.name).includes(searchName.value()) ) {
+                    if ( searchName.value() !== '' && !searches.map(search => search.name).includes(searchName.value()) ) {
                         saveSearchBtn.enable();
                     } else {
                         saveSearchBtn.disable();
@@ -470,7 +516,7 @@ export function TableToolbar(param) {
 
                 const deleteSearchBtn = BootstrapButton({
                     async action() {
-                        console.log('Update Store.user().Settings.savedSearches');
+                        console.log('Update Store.user().Settings.searches');
     
                         // Disable button
                         deleteSearchBtn.get().disabled = true;
@@ -478,12 +524,12 @@ export function TableToolbar(param) {
                             <span class="spinner-border" role="status" aria-hidden="true" style="width: 20px; height: 20px; border-width: 3px"></span> Deleting search
                         `;
     
-                        // Find loaaded search by name and remove from savedSearches
-                        const searchToDelete = savedSearches.find(search => search.name === loaded);
-                        savedSearches.splice(savedSearches.indexOf(searchToDelete), 1);
+                        // Find loaaded search by name and remove from searches
+                        const searchToDelete = searches.find(search => search.name === loaded);
+                        searches.splice(searches.indexOf(searchToDelete), 1);
 
-                        // Replace user Settings[list].savedSearches
-                        userSettings.savedSearches[list] = savedSearches;
+                        // Replace user Settings[list].searches
+                        userSettings.searches[list] = searches;
                         const Settings = JSON.stringify(userSettings);
                         Store.user().Settings = Settings
     
@@ -496,7 +542,7 @@ export function TableToolbar(param) {
                         });
     
                         // Update saved search menu
-                        component.find('.saved-search-menu').innerHTML = savedSearches.map(search => {
+                        component.find('.saved-search-menu').innerHTML = searches.map(search => {
                             const { name } = search;
     
                             return /*html*/ `<button class="dropdown-item load-search" type="button">${name}</button>`;
@@ -581,7 +627,7 @@ export function TableToolbar(param) {
         // Add removeRow button
         button.insertAdjacentHTML('beforebegin', /*html*/ `
             <button type="button" class="btn btn-robi p-1 ml-2 remove-row">
-                <svg class="icon" style="font-size: 22px; fill: ${App.get('primaryColor')}"><use href="#icon-bs-dash-circle-fill"></use></svg>
+                <svg class="icon" style="font-size: 22px; fill: var(--primary)"><use href="#icon-bs-dash-circle-fill"></use></svg>
             </button>
         `);
         component.find(`.search-row[data-rowid='${id}'] .remove-row`).addEventListener('click', () => removeRow(id, newId));
@@ -609,7 +655,7 @@ export function TableToolbar(param) {
         const button = component.find(`.search-row[data-rowid='${btnRowId}'] .remove-row`);
         button.insertAdjacentHTML('beforebegin', /*html*/ `
             <button type="button" class="btn btn-robi p-1 ml-2 add-row">
-                <svg class="icon" style="font-size: 22px; fill: ${App.get('primaryColor')}"><use href="#icon-bs-plus"></use></svg>
+                <svg class="icon" style="font-size: 22px; fill: var(--primary)"><use href="#icon-bs-plus"></use></svg>
             </button>
         `);
         component.find(`.search-row[data-rowid='${btnRowId}'] .add-row`).addEventListener('click', addRow);
@@ -653,7 +699,7 @@ export function TableToolbar(param) {
                 <input type="text" class="form-control w-auto" style='flex: 2;' placeholder="value" data-field='value'>
                 <!-- Add row -->
                 <button type='button' class='btn btn-robi p-1 ml-2 add-row'>
-                    <svg class="icon" style="font-size: 22px; fill: ${App.get('primaryColor')};"><use href="#icon-bs-plus"></use></svg>
+                    <svg class="icon" style="font-size: 22px; fill: var(--primary);"><use href="#icon-bs-plus"></use></svg>
                 </button>
             </div>
         `;
@@ -661,7 +707,7 @@ export function TableToolbar(param) {
 
     function loadSearch(event) {
         const searchName = event.target.innerText;
-        const filters = savedSearches.find(search => search.name == searchName)?.filters;
+        const filters = searches.find(search => search.name == searchName)?.filters;
 
         // Set loaded
         loaded = searchName;
@@ -744,7 +790,7 @@ export function TableToolbar(param) {
                     }
                     <!-- Add row -->
                     <button type='button' class='btn btn-robi p-1 ml-2 ${operator ? 'remove-row' : 'add-row'}'>
-                        <svg class="icon" style="font-size: 22px; fill: ${App.get('primaryColor')};"><use href="#icon-${operator ? 'bs-dash-circle-fill' : 'bs-plus'}"></use></svg>
+                        <svg class="icon" style="font-size: 22px; fill: var(--primary);"><use href="#icon-${operator ? 'bs-dash-circle-fill' : 'bs-plus'}"></use></svg>
                     </button>
                 </div>
             `
@@ -803,7 +849,7 @@ export function TableToolbar(param) {
         return options.map((option, index) => {
             const { label } = option;
             return /*html*/ `
-                <button type='button' class='btn ${index === 0 ? 'btn-robi-primary' : 'btn-outline-robi-primary'} filter'>${label}</button>
+                <button type='button' class='btn ${index === 0 ? 'btn-robi-reverse' : 'btn-outline-robi-primary'} filter'>${label}</button>
             `;
         }).join('\n');
     }

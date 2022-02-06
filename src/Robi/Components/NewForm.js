@@ -1,22 +1,24 @@
 import { CreateItem } from '../Actions/CreateItem.js'
-import { BootstrapDropdown } from './BootstrapDropdown.js'
+import { ChoiceField } from './ChoiceField.js'
 import { DateField } from './DateField.js'
 import { MultiLineTextField } from './MultiLineTextField.js'
+import { MultiChoiceField } from './MultiChoiceField.js'
 import { NumberField } from './NumberField.js'
 import { SingleLineTextField } from './SingleLineTextField.js' 
 
 // @START-File
 /**
- *
+ * 
  * @param {*} param
- * @returns
+ * @returns 
  */
-export async function NewForm(param) {
-    const { event, fields, list, modal, parent, table } = param;
+export async function NewForm({ fields, list, parent }) {
+    if (!Array.isArray(fields)) {
+        return false;
+    }
 
-    const fieldsToCreate = fields?.filter(field => field.name !== 'Id');
-    const components = fieldsToCreate?.map((field, index) => {
-        const { name, display, type, choices, action } = field;
+    const components = fields.filter(field => field.name !== 'Id').map(field => {
+        const { name, display, type, value, validate, choices, fillIn } = field;
 
         let component = {};
 
@@ -24,40 +26,72 @@ export async function NewForm(param) {
             case 'slot':
                 component = SingleLineTextField({
                     label: display || name,
-                    parent
+                    value,
+                    parent,
+                    onFocusout
                 });
                 break;
             case 'mlot':
                 component = MultiLineTextField({
                     label: display || name,
-                    parent
+                    value,
+                    parent,
+                    onFocusout
                 });
                 break;
             case 'number':
                 component = NumberField({
                     label: display || name,
-                    parent
+                    value,
+                    parent,
+                    onFocusout
                 });
                 break;
             case 'choice':
-                component = BootstrapDropdown({
+                component = ChoiceField({
                     label: display || name,
-                    value: choices[0],
+                    value,
                     options: choices.map(choice => {
                         return {
                             label: choice
                         };
                     }),
-                    parent
+                    parent,
+                    action: onFocusout 
+                });
+                break;
+            case 'multichoice':
+                component = MultiChoiceField({
+                    label: display || name,
+                    value,
+                    fillIn,
+                    choices,
+                    parent,
+                    validate: onFocusout
                 });
                 break;
             case 'date':
                 component = DateField({
                     label: display || name,
-                    value: '',
-                    parent
+                    value,
+                    parent,
+                    onFocusout
                 });
                 break;
+        }
+
+        function onFocusout() {
+            return !validate ? undefined : (() => {
+                const value = component.value();
+
+                console.log('validate');
+    
+                if (validate(value)) {
+                    component.isValid(true);
+                } else {
+                    component.isValid(false);
+                }
+            })();
         }
 
         component.add();
@@ -69,33 +103,80 @@ export async function NewForm(param) {
     });
 
     return {
-        async onCreate(event) {
+        async onCreate() {
+            let isValid = true;
+
             const data = {};
 
-            components
-                .forEach(item => {
-                    const { component, field } = item;
-                    const { name, type } = field;
+            components.forEach(item => {
+                const { component, field } = item;
+                const { name, type, validate } = field;
 
-                    const value = component.value();
+                const value = component.value();
 
-                    switch (type) {
-                        case 'slot':
-                        case 'mlot':
-                        case 'choice':
-                            if (value) {
+                console.log(name, value);
+
+                switch (type) {
+                    case 'slot':
+                    case 'mlot':
+                    case 'choice':
+                    case 'date':
+                        if (validate) {
+                            const isValidated = validate(value);
+
+                            if (isValidated) {
                                 data[name] = value;
+                                component.isValid(true);
+                            } else {
+                                isValid = false;
+                                component.isValid(false);
                             }
-                            break;
-                        case 'number':
-                            if (value) {
-                                data[name] = parseInt(value);
-                            }
-                            break;
-                    }
-                });
+                        } else if (value) {
+                            data[name] = value;
+                        }
+                        break;
+                    case 'multichoice':
+                        if (validate) {
+                            const isValidated = validate(value);
 
-            console.log(data);
+                            if (isValidated) {
+                                data[name] = {
+                                    results: value
+                                };
+                                component.isValid(true);
+                            } else {
+                                isValid = false;
+                                component.isValid(false);
+                            }
+                        } else if (value.length) {
+                            data[name] = {
+                                results: value
+                            };
+                        }
+                        break;
+                    case 'number':
+                        if (validate) {
+                            const isValidated = validate(value);
+
+                            if (isValidated) {
+                                data[name] = value;
+                                component.isValid(true);
+                            } else {
+                                isValid = false;
+                                component.isValid(false);
+                            }
+                        } else if (value) {
+                            data[name] = parseInt(value);
+                        }
+                        break;
+                }
+            });
+
+            console.log(isValid, data);
+
+            if (!isValid) {
+                return false;
+            }
 
             const newItem = await CreateItem({
                 list,

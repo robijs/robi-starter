@@ -24,6 +24,16 @@ export async function SendEmail(param) {
         From, To, CC, Subject, Body
     } = param;
 
+    if (!To.length) {
+        console.log('No recipients');
+
+        return;
+    }
+
+    if (App.isDev()) {
+        return;
+    }
+
     const requestDigest = await GetRequestDigest();
     const headers = {
         "Accept": "application/json;odata=verbose",
@@ -39,7 +49,7 @@ export async function SendEmail(param) {
             },
             From: From,
             To: {
-                results: [To]
+                results: To
             },
             CC: {
                 results: CC || []

@@ -36,13 +36,13 @@ export function QuestionsToolbar(param) {
             }
 
             #id .ask-a-question {
-                background: #e9ecef;
-                color: ${App.get('primaryColor')};
+                background: var(--button-background);
+                color: var(--primary);
                 font-weight: 500;
             }
             
             #id .search-questions {
-                background: #e9ecef !important;
+                background: var(--button-background) !important;
                 border-color: transparent;
                 border-radius: 8px;
                 min-width: 250px;
@@ -51,13 +51,13 @@ export function QuestionsToolbar(param) {
 
             #id .btn-robi-primary {
                 color: white;
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
             }
 
             #id .btn-outline-robi-primary {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 background-color: initial;
-                border-color: ${App.get('primaryColor')};
+                border-color: var(--primary);
             }
 
             /* #id .btn-outline-robi-primary:active {

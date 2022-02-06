@@ -9,7 +9,20 @@ import { App } from '../Core/App.js';
  */
 export function Title(param) {
     const {
-        back, title, width, subTitle, subTitleColor, breadcrumb, dropdownGroups, maxTextWidth, route, padding, margin, parent, position, action
+        back,
+        title,
+        width,
+        subTitle,
+        subTitleColor,
+        breadcrumb,
+        dropdownGroups,
+        maxTextWidth,
+        route,
+        padding,
+        margin,
+        parent,
+        position,
+        action
     } = param;
 
     const component = Component({
@@ -21,7 +34,7 @@ export function Title(param) {
                         /*html*/ `
                             <div class='d-flex justify-content-center align-items-center' style='width: 62px; height: 35.59px; position: absolute; left: -62px; cursor: pointer;'>
                                 <div class='d-flex justify-content-center align-items-center back-btn' style='' title='Back'>
-                                    <svg class='icon' style='fill: ${App.get('primaryColor')}; font-size: 26px;'>
+                                    <svg class='icon' style='fill: var(--primary); font-size: 26px;'>
                                         <use href='#icon-bs-arrow-left-cirlce-fill'></use>
                                     </svg>
                                 </div>
@@ -55,6 +68,7 @@ export function Title(param) {
             }
 
             #id .title-subtitle {
+                width: 100%;
                 position: relative;
                 display: flex;
                 flex-direction: row;
@@ -71,22 +85,23 @@ export function Title(param) {
             }
 
             #id.title h2 {
+                width: 100%;
                 font-size: 1.1rem;
                 font-weight: 500;
                 margin: 0px;
-                color: ${subTitleColor || App.get('defaultColor')};
+                color: ${subTitleColor || 'var(--color)'};
             }
 
             #id.title .title-date {
                 font-size: 13px;
                 font-weight: 500;
-                /* color: ${App.get('primaryColor')}; */
+                /* color: var(--primary); */
                 color: #70767c;
                 margin: 0px;
             }
 
             #id.title .title-date * {
-                /* color: ${App.get('primaryColor')}; */
+                /* color: var(--primary); */
                 color: #70767c;
             }
 
@@ -100,14 +115,14 @@ export function Title(param) {
             }
 
             #id.across h2 {
-                margin: 0px 20px;
+                margin-left: 20px;
             }
 
             /* a, spacer */
             #id a:not(.alert-link),
             #id ._breadcrumb-spacer,
             #id ._breadcrumb {
-                color: ${App.get('primaryColor')}
+                color: var(--primary)
             }
 
             /** Breadcrumb */
@@ -117,7 +132,7 @@ export function Title(param) {
 
             #id .route {
                 cursor: pointer;
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             #id .current-page {
@@ -149,7 +164,7 @@ export function Title(param) {
             }
 
             #id .nav-pills .show > .nav-link {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 background-color: initial;
             }
 
@@ -159,7 +174,7 @@ export function Title(param) {
 
             #id .no-menu .dropdown-toggle,
             #id .no-menu .nav-pills .show > .nav-link {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             #id .no-menu .dropdown-toggle::after {
@@ -293,7 +308,7 @@ export function Title(param) {
         }
     };
 
-    component.setDisplayText = (text) => {
+    component.setTitle = (text) => {
         const title = component.find('h1');
 
         title.innerHTML = text;

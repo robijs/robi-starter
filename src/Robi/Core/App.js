@@ -1,19 +1,17 @@
-import { HexToHSL } from '../Actions/HexToHSL.js'
-import { HexToRGB } from '../Actions/HexToRGB.js'
-import { NameToHex } from '../Actions/NameToHex.js'
-import { Themes } from '../Models/Themes.js'
-
 // @START-File
 let appSettings = {};
 let appLists;
 
 const App = {
+    list(name) {
+        return appLists.find(item => item.list === name);
+    },
     lists() {
         return appLists;
     },
-    set(param) {
+    settings(param) {
         const { lists, routes, settings } = param;
-        const { library, defaultRoute, theme } = settings;
+        const { library, defaultRoute } = settings;
 
         // Set lists
         appLists = lists;
@@ -37,38 +35,36 @@ const App = {
 
             settings.site = location.href.split(library || '/App/')[0];
         } else {
-            settings.site = 'http://localhost';
+            settings.site = 'http://localhost:8080/dev/app.html';
         }
 
         // Set default route
         if (!defaultRoute) {
-            settings.defaultRoute = routes.map(route => route.path)[0];
+            settings.defaultRoute = routes.filter(r => !r.hide).map(route => route.path)[0];
         }
-
-        // Set colors
-        const { primary, secondary, background, color, selectedRowOpacity } = Themes.find(item => item.name === theme);
-
-        // Primary
-        settings.primaryColor = NameToHex(primary);
-        settings.primaryColorRGB = HexToRGB(settings.primaryColor);
-        settings.primaryColorHSL = HexToHSL(settings.primaryColor);
-
-        // Secondary
-        settings.secondaryColor = secondary;
-
-        // Background
-        settings.backgroundColor = background;
-
-        // Default color
-        settings.defaultColor = color;
-
-        // Selected row opacity
-        settings.selectedRowOpacity = selectedRowOpacity;
 
         // Set all
         appSettings = settings;
     },
     get(prop) {
+        return appSettings[prop];
+    },
+    isDev() {
+        if (App.get('mode') === 'dev') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    isProd() {
+        if (App.get('mode') == 'prod') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    set(prop, value) {
+        appSettings[prop] = value;
         return appSettings[prop];
     }
 }

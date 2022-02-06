@@ -9,12 +9,30 @@ import { App } from '../Core/App.js';
  */
 export function Card(param) {
     const {
-        title, fontSize, description, titleColor, titleWeight, titleBorder, titleBackground, background, padding, margin, minWidth, minHeight, parent, width, position, radius, action
+        action,
+        background,
+        classes,
+        description,
+        margin,
+        maxHeight,
+        maxWidth,
+        minHeight,
+        minWidth,
+        padding,
+        parent,
+        position,
+        radius,
+        title,
+        titleBackground,
+        titleBorder,
+        titleColor,
+        titleWeight,
+        width
     } = param;
 
     const component = Component({
         html: /*html*/ `
-            <div class='round-card'>
+            <div class='round-card ${classes ? classes.join(' ') : ''}'>
                 ${title ? /*html*/ `<div class='round-card-title'>${title}</div>` : ''}
                 ${description ? /*html*/ `<div class='mt-2 round-card-description'>${description}</div>` : ''}
             </div>
@@ -23,14 +41,15 @@ export function Card(param) {
             #id.round-card {
                 display: inline-flex;
                 flex-direction: column;
-                background: ${background || 'white'};
+                background: ${background ||'var(--secondary)'};
                 padding: ${padding || '20px'};
                 margin: ${margin || '0px'};
                 min-width: ${minWidth || 'initial'};
                 min-height: ${minHeight || 'initial'};
+                max-width: ${maxWidth || 'initial'};
+                max-height: ${maxHeight || 'initial'};
                 width: ${width || 'initial'};
                 border-radius: ${radius || '10px'};
-                /* border: ${App.get('defaultBorder')}; */
                 border: none;
                 cursor: ${action ? 'pointer' : 'initial'};
             }
@@ -41,9 +60,9 @@ export function Card(param) {
                 padding: 10px 20px; /** FIXME: will break with passed in padding  */
                 font-weight: ${titleWeight || '700'};
                 background: ${titleBackground || 'inherit'}; /** FIXME: Experimental */ /* alternate color: #d0d0d04d */
-                border-radius: 10px 10px 0px 0px;
-                color: ${titleColor || App.get('defaultColor')};
-                border-bottom: ${titleBorder || App.get('defaultBorder')};
+                border-radius: 20px 20px 0px 0px;
+                color: ${titleColor || 'var(--color)'};
+                border-bottom: ${titleBorder || `solid 1px var(--border-color)`};
             }
 
             #id .round-card-description {

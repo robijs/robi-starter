@@ -56,7 +56,7 @@ export function Comments(param) {
                 width: ${width || '100%'};
                 max-height: 80vw;
                 padding-bottom: 20px;
-                /* border-bottom: solid 2px ${App.get('primaryColor')}; */
+                /* border-bottom: solid 2px var(--primary); */
             }
 
             .comments-border {
@@ -70,7 +70,7 @@ export function Comments(param) {
                 height: 40px;
                 border-radius: 50%;
                 margin: 5px 5px 5px 0px;
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
                 display: grid;
                 place-content: center;
             }
@@ -100,7 +100,7 @@ export function Comments(param) {
                 height: 2px;
                 flex: 1;
                 margin-top: 7px;
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
             }
 
             /* New Comment */
@@ -126,9 +126,9 @@ export function Comments(param) {
             #id .new-comment:active,
             #id .new-comment:focus{
                 outline: none;
-                border-left: solid 1px ${App.get('primaryColor')};
-                border-top: solid 1px ${App.get('primaryColor')};
-                border-bottom: solid 1px ${App.get('primaryColor')};
+                border-left: solid 1px var(--primary);
+                border-top: solid 1px var(--primary);
+                border-bottom: solid 1px var(--primary);
             }
 
             #id .new-comment-button-container,
@@ -142,9 +142,9 @@ export function Comments(param) {
             #id .new-comment:active ~ .new-comment-button-container,
             #id .new-comment:focus ~ .new-comment-button-container {
                 border-radius: 0px 4px 4px 0px;
-                border-right: solid 1px ${App.get('primaryColor')};
-                border-top: solid 1px ${App.get('primaryColor')};
-                border-bottom: solid 1px ${App.get('primaryColor')};
+                border-right: solid 1px var(--primary);
+                border-top: solid 1px var(--primary);
+                border-bottom: solid 1px var(--primary);
             }
 
             /* Button */
@@ -157,7 +157,7 @@ export function Comments(param) {
                 text-align: center;
                 border-radius: 4px;
                 color: white;
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
             }
 
             #id .new-comment-button .icon {

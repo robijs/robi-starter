@@ -9,11 +9,7 @@ import { Store } from '../Core/Store.js'
  * @param {*} param
  * @returns
  */
-export function QuestionCards(param) {
-    const {
-        parent, path, questions
-    } = param;
-
+export function QuestionCards({ parent, path, questions }) {
     if (typeof parent === 'object' && parent.empty) {
         parent.empty();
     }

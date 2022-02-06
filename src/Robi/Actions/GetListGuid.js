@@ -24,8 +24,8 @@ export async function GetListGuid(param) {
     if (response) {
         const data = await response.json();
 
-        if (data && data.d) {
-            return data.d;
+        if (data && data.d && data.d.Id) {
+            return data.d.Id;
         }
     }
 }

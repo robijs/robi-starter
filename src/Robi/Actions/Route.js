@@ -1,6 +1,6 @@
 import { ViewContainer } from '../Components/ViewContainer.js'
-import { SourceTools } from '../Components/SourceTools.js'
 import { ViewTools } from '../Components/ViewTools.js'
+import { Title } from '../Components/Title.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
 import { History } from './History.js'
@@ -14,9 +14,7 @@ import { Log } from './Log.js'
  * @returns
  */
 export function Route(path = App.get('defaultRoute'), options = {}) {
-    const {
-        scrollTop
-    } = options;
+    const { scrollTop, title } = options;
 
     // Get references to core app components
     const appContainer = Store.get('appcontainer');
@@ -71,25 +69,17 @@ export function Route(path = App.get('defaultRoute'), options = {}) {
         component: sidebar
     });
 
-    // FIXME: Experimental.
-    // Trying to solve the problem where components are
-    // added to the current view after the user routes away from 
-    // the view the component is added from.
-    // 
-    // This only happens when a fetch request begins when 
-    // a view is first routed to but is aborted if the user
-    // routes away before the request can finish.
-    // Components created and added later are still 'running'
-    // in the background.
-    // 
-    // Most views use Store.get('maincontainer') as their parent.
-    // This means components will still be added because they're
-    // finding the new maincontainer for that view.
+    // View container
     const viewContainer = ViewContainer({
         parent: mainContainer,
     });
 
     viewContainer.add();
+
+    Store.add({
+        name: 'viewcontainer',
+        component: viewContainer
+    });
 
     // Check route path
     const pathAndQuery = path.split('?');
@@ -105,28 +95,38 @@ export function Route(path = App.get('defaultRoute'), options = {}) {
         return;
     }
 
-    // Add source tools
-    if (route.type !== 'system' && Store.user().Role === 'Developer') {
-        const srcTools = SourceTools({
-            route,
-            parent: viewContainer
-        });
-
-        srcTools.add();
-
+    // Add tools
+    if (route.type !== 'system' && Store.user().Roles.results.includes('Developer')) {
         const viewTools = ViewTools({
             route,
             parent: viewContainer
         });
 
         viewTools.add();
+
+        Store.add({
+            name: 'viewtools',
+            component: viewTools
+        });
     }
 
-    // Set browswer history state
+    // Route title
+    let viewTitle;
+
+    if (title !== false) {
+        viewTitle = Title({
+            title: route.title,
+            parent: viewContainer,
+            margin: '0px 0px 30px 0px'
+        });
+
+        viewTitle.add();
+    }
+
+    // Set browswer history state and window title
     History({
         url: `${location.href.split('#')[0]}${(path) ? `#${path}` : ''}`,
-        title: `${App.get('title')}${(path) ? ` - ${pathAndQuery[0]}` : ''}`
-        // title: `${App.title}${(path) ? ` - ${path}` : ''}`
+        title: `${App.get('title')}${(path) ? ` > ${route.title || pathParts.join(' > ')}` : ''}`
     });
 
     sidebar.selectNav(route.path);
@@ -148,6 +148,8 @@ export function Route(path = App.get('defaultRoute'), options = {}) {
 
     // Render selected route's go method
     route.go({
+        title: viewTitle,
+        route,
         parent: viewContainer,
         pathParts,
         props: queryStringToObject(path.split('?')[1]),

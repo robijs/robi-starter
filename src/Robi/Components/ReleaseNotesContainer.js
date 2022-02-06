@@ -1,9 +1,8 @@
 import { Get } from '../Actions/Get.js'
 import { Alert } from './Alert.js'
 import { Card } from './Card.js'
-import { FoldingCube } from './FoldingCube.js'
 import { ReleaseNotes } from './ReleaseNotes.js'
-import { App } from '../Core/App.js'
+import { LoadingSpinner } from './LoadingSpinner.js'
 
 // @START-File
 /**
@@ -12,23 +11,23 @@ import { App } from '../Core/App.js'
  */
 export async function ReleaseNotesContainer(param) {
     const {
-        parent, margin
+        parent, margin, padding, title
     } = param;
 
     const releaseNotesCard = Card({
-        title: 'Release Notes',
+        title: title !== '' ? 'Release Notes' : '',
         width: '100%',
-        margin: margin || '20px 0px 0px 0px',
+        margin: margin || '0px',
+        padding: padding || undefined,
         parent
     });
 
     releaseNotesCard.add();
 
     /** Loading Indicator */
-    //TODO: replace with loading spinner
-    const loadingIndicator = FoldingCube({
-        label: 'Loading release notes',
-        margin: '40px 0px',
+    const loadingIndicator = LoadingSpinner({
+        message: 'Loading release notes',
+        type: 'robi',
         parent: releaseNotesCard
     });
 
@@ -43,9 +42,9 @@ export async function ReleaseNotesContainer(param) {
 
     if (releaseNotes?.length === 0) {
         const alertInfo = Alert({
-            text: 'Release notes haven\'t been published for any version yet.',
-            type: 'robi-secondary',
-            margin: '20px 0px 0px 0px',
+            text: 'None',
+            type: 'robi-primary',
+            // margin: '10px 0px 0px 0px',
             parent: releaseNotesCard
         });
 

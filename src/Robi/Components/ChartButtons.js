@@ -7,30 +7,28 @@ import { App } from '../Core/App.js';
  * @param {*} param
  * @returns
  */
-export function SiteUsage(param) {
+export function ChartButtons(param) {
     const {
-        border, margin, padding, data, parent, position, onClick
+        margin, padding, data, parent, position, onClick
     } = param;
 
     const {
         visits,
     } = data;
 
-    const screenWidth = window.screen.width;
-    const chartWidth = screenWidth > 1500 ? 740 : 500;
-
     const component = Component({
         html: /*html*/ `
-            <div class='dashboard-long-card'>
+            <div class='chart-container'>
                 <!-- Chart -->
-                <div class='dashboard-long-card-container'>
-                    <div class='dashboard-long-card-chart-title'></div>
-                    <div class='dashboard-long-card-chart-container'>
-                        <canvas class="myChart" width="${chartWidth}" height="275"></canvas>
+                <div class='chart' style='flex: 4;'>
+                    <div class='chart-title'></div>
+                    <div class='chart-canvas'>
+                        <canvas class="myChart" height='300'></canvas>
                     </div>
                 </div>
                 <!-- Text -->
-                <div class='dashboard-long-card-container'>
+                <div class='chart' style='flex: 1'>
+                    <div class='visits-label'>Visits</div>
                     ${createInfoGroup('Today', 'today')}
                     ${createInfoGroup('This Week', 'week')}
                     ${createInfoGroup('This Month', 'month')}
@@ -42,16 +40,14 @@ export function SiteUsage(param) {
             #id {
                 margin: ${margin || '20px'};
                 padding: ${padding || '10px'};
-                background: white;
+                background: var(--secondary);
                 border-radius: 4px;
-                border: ${border || App.get('defaultBorder')};
                 display: flex;
-                /* flex: 1; */
                 overflow: auto;
             }
 
             /** Left/Right Containers */
-            #id .dashboard-long-card-container {
+            #id .chart {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -59,41 +55,49 @@ export function SiteUsage(param) {
             }
 
             /** Text */
+            #id .visits-label {
+                text-align: center;
+                font-weight: 700;
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+
             #id .info-group {
                 cursor: pointer;
                 margin: 5px 0px;
             }
 
-            #id .dashboard-long-card-info {
+            #id .chart-container-info {
                 display: flex;
                 justify-content: space-between;
                 font-size: 1.1em;
             }
 
-            #id .dashboard-long-card-info.smaller {
+            #id .chart-container-info.smaller {
                 font-size: .8em;
             }
 
-            #id .dashboard-long-card-info-label {
+            #id .chart-container-info-label {
                 font-weight: 500;
-                margin-right: 30px;             
+                margin-right: 30px;
             }
 
             /** Chart */
-            #id .dashboard-long-card-chart-container {
+            #id .chart-canvas {
+                position: relative;
                 margin-right: 15px;
                 margin-bottom: 15px;
             }
 
-            #id .dashboard-long-card-chart-title {
+            #id .chart-title {
                 margin-top: 15px;
-                color: ${App.get('defaultColor')};
+                color: var(--color);
                 font-size: 1.1em;
-                font-weight: 500;
+                font-weight: 700;
                 text-align: center;
             }
 
-            /** Label - mimic bootstrap input */
+            /** Label */
             #id .info-group {
                 display: flex;
                 justify-content: space-between;
@@ -112,6 +116,32 @@ export function SiteUsage(param) {
                 width: 70px;
                 text-align: center;
                 font-weight: 700;
+            }
+
+            /* Testing Placeholder shimmer */
+            .shimmer {
+               background: #f6f7f8;
+               background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+               background-repeat: no-repeat;
+               background-size: 800px 104px; 
+               display: inline-block;
+               position: relative; 
+               
+               -webkit-animation-duration: 1s;
+               -webkit-animation-fill-mode: forwards; 
+               -webkit-animation-iteration-count: infinite;
+               -webkit-animation-name: placeholderShimmer;
+               -webkit-animation-timing-function: linear;
+            }
+             
+             @-webkit-keyframes placeholderShimmer {
+                0% {
+                    background-position: -468px 0;
+                }
+               
+                100% {
+                    background-position: 468px 0; 
+                }
             }
         `,
         parent,
@@ -141,17 +171,15 @@ export function SiteUsage(param) {
     }
 
     component.setTitle = (text) => {
-        const title = component.find('.dashboard-long-card-chart-title');
+        const title = component.find('.chart-title');
 
         title.innerText = text;
     };
 
     component.clearChart = () => {
-        const chartContainer = component.find('.dashboard-long-card-chart-container');
+        const chartContainer = component.find('.chart-canvas');
 
-        console.log('clear chart:', chartWidth);
-
-        chartContainer.innerHTML = /*html*/ `<canvas class="myChart" width="${chartWidth}" height="275"></canvas>`;
+        chartContainer.innerHTML = /*html*/ `<canvas class="myChart" height='300'></canvas>`;
     };
 
     component.getChart = () => {

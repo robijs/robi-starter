@@ -1,6 +1,11 @@
-export function componentTemplate({ name }) {
+export function componentTemplate({ name, type}) {
     return [
-        `import { Component } from '../Robi.js'`,
+        `// This file may be edited programmatically.`,
+        `// If you know the API, feel free to make changes by hand.`,
+        `// Just be sure to put @START and @END sigils in the right places.`,
+        `// Otherwise, changes made from the front end may not render properly.`,
+        ``,
+        (type === 'r' ? `import { Component } from '../Actions/Component.js'` : `import { Component } from '../Robi.js'`),
         ``,
         `// @START-File`,
         `/**`,

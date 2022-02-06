@@ -32,6 +32,7 @@ export function UpgradeAppButton(param) {
         style: /*css*/ `
             #id {
                 padding: 0px;
+                width: 100%;
             }
             
             #id .alert {
@@ -49,7 +50,7 @@ export function UpgradeAppButton(param) {
             #id .dev-console {
                 width: 100%;
                 /* padding: 40px; */
-                /* border: solid 2px ${App.get('primaryColor')}; */
+                /* border: solid 2px var(--primary); */
                 border-radius: 20px;
                 display: flex;
                 flex-direction: column;
@@ -61,7 +62,7 @@ export function UpgradeAppButton(param) {
                 justify-content: space-between;
                 padding: 20px 30px;
                 border-radius: 20px;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
             }
 
             #id .dev-console-text {
@@ -116,14 +117,14 @@ export function UpgradeAppButton(param) {
                     const modal = Modal({
                         title: false,
                         disableBackdropClose: true,
+                        close: true,
                         async addContent(modalBody) {
                             modalBody.classList.add('install-modal');
 
                             // Show loading
                             modalBody.insertAdjacentHTML('beforeend', /*html*/ `
-                                <div class='loading-spinner w-100 d-flex flex-column justify-content-center align-items-center'>
-                                    <div class="mb-2" style='font-weight: 600; color: darkgray'>Upgrade Robi</div>
-                                    <div class="spinner-grow" style='color: darkgray' role="status"></div>
+                                <div class='alert alert-robi-primary mb-0'>
+                                    Comming soon. Stay tuned!
                                 </div>
                             `);
                         },

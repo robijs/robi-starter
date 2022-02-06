@@ -1,4 +1,3 @@
-import { Title } from './Title.js'
 import { Alert } from './Alert.js'
 
 // @START-File
@@ -6,19 +5,10 @@ import { Alert } from './Alert.js'
  * 
  * @param {*} param 
  */
-export async function Unauthorized(param) {
-    const { parent } = param;
-
-    const viewTitle = Title({
-        title: `403`,
-        parent
-    });
-
-    viewTitle.add();
-
+export async function Unauthorized({ parent }) {
     const alertBanner = Alert({
-        type: 'warning',
-        text: `Sorry! You don't have access to this page. Please select a different option from the menu on the left.`,
+        type: 'robi-primary',
+        text: `Sorry! You don't have access to that page.`,
         parent,
         margin: '20px 0px 0px 0px'
     });

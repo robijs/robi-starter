@@ -1,5 +1,4 @@
 import { Component } from '../Actions/Component.js'
-import { App } from '../Core/App.js'
 
 // @START-File
 /**
@@ -32,13 +31,13 @@ export function Heading(param) {
             #id .text {
                 font-size: ${size || '1.25em'};
                 font-weight: ${weight || '500'};
-                color: ${color || App.get('defaultColor')};
+                color: ${color || 'var(--color)'};
                 margin: 0px;
                 text-align: ${align || 'left'};
             }
 
             #id .text * {
-                color: ${color || App.get('defaultColor')};
+                color: ${color || 'var(--color)'};
             }
         `,
         parent: parent,

@@ -3,8 +3,27 @@
 <html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 <head>
     <meta charset="utf-8">
+    <meta name="color-scheme" content="light dark">
     <title></title>
-    <meta name="description" content="">
+    <style>
+        :root {
+            --body-dark: #151515;
+            --body-light: white;
+        }
+
+        @media (prefers-color-scheme: light) {
+            html {
+                background-color: var(--body-light);
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: var(--body-dark);
+            }
+        }
+    </style>
+    <meta name="description" content="Robi">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../Images/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,14 +31,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&display=swap" rel="preload" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../Libraries/lib.css">
-
-<!--[if gte mso 9]><SharePoint:CTFieldRefs runat=server Prefix="mso:" FieldList="FileLeafRef,i3e7b0477ad24f0693a0b6cb17b27bf1,TaxCatchAllLabel,_dlc_DocId,_dlc_DocIdUrl,_dlc_DocIdPersistId,mb7b7c6cb3b94febb95b36ae1f78ffc5,ba60022a341749df97d7a0ab674012b7"><xml>
-<mso:CustomDocumentProperties>
-<mso:_dlc_DocId msdt:dt="string">K75DWSHUVDYD-33088889-194</mso:_dlc_DocId>
-<mso:_dlc_DocIdItemGuid msdt:dt="string">8eb4da68-6041-4640-bcde-19ea07b49970</mso:_dlc_DocIdItemGuid>
-<mso:_dlc_DocIdUrl msdt:dt="string">https://info.health.mil/staff/analytics/cp/ModernDev/create-app/measures-library-2/_layouts/15/DocIdRedir.aspx?ID=K75DWSHUVDYD-33088889-194, K75DWSHUVDYD-33088889-194</mso:_dlc_DocIdUrl>
-</mso:CustomDocumentProperties>
-</xml></SharePoint:CTFieldRefs><![endif]-->
 </head>
 <body>
     <div id="app"></div>

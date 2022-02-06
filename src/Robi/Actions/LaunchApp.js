@@ -1,5 +1,3 @@
-import { Data } from './Data.js'
-import { GetCurrentUser } from './GetCurrentUser.js'
 import { GenerateUUID } from './GenerateUUID.js'
 import { SetSessionStorage } from './SetSessionStorage.js'
 import { Route } from './Route.js'
@@ -12,6 +10,7 @@ import { Modal } from '../Components/Modal.js'
 import { ReleaseNotesContainer } from '../Components/ReleaseNotesContainer.js'
 import { Routes } from '../Core/Routes.js'
 import { Store } from '../Core/Store.js'
+import { Feedback } from '../Components/Feedback.js'
 
 // @START-File
 /**
@@ -20,35 +19,17 @@ import { Store } from '../Core/Store.js'
  */
 export async function LaunchApp(param) {
     const {
-        routes, sidebar, settings
+        releaseNotes, routes, settings
     } = param;
 
     const {
-        title, logo, usersList, beforeLoad, preLoadLists, svgSymbols, sessionStorageData, sidebarDropdown
+        title, svgSymbols, sessionStorageData, sidebar, maincontainer, allowFeedback
     } = settings;
 
     /** Set sessions storage */
     SetSessionStorage({
         sessionStorageData
     });
-
-    /** Get list items */
-    const data = await Data(preLoadLists);
-
-    if (data) {
-        /** Add list items to store */
-        preLoadLists.forEach((param, index) => {
-            const {
-                list
-            } = param;
-
-            Store.add({
-                type: 'list',
-                list,
-                items: data[index]
-            });
-        });
-    }
 
     /** Load svg definitions */
     const svgDefs = SvgDefs({
@@ -61,11 +42,6 @@ export async function LaunchApp(param) {
         name: 'svgdefs',
         component: svgDefs
     });
-
-    /** Get AD user and Users list item properties */
-    Store.user(await GetCurrentUser({
-        list: usersList
-    }));
 
     /** Get current route */
     const path = location.href.split('#')[1];
@@ -85,12 +61,10 @@ export async function LaunchApp(param) {
     // Get app container
     const appContainer = Store.get('appcontainer');
 
-    /** Sidebar Component */
+    /** Sidebar */
     const sidebarParam = {
-        logo,
         parent: appContainer,
-        path,
-        sidebarDropdown
+        path
     };
 
     const sidebarComponent = sidebar ? sidebar(sidebarParam) : Sidebar(sidebarParam);
@@ -103,9 +77,11 @@ export async function LaunchApp(param) {
     sidebarComponent.add();
 
     /** Main Container */
-    const mainContainer = MainContainer({
+    const mainContainerParam = {
         parent: appContainer
-    });
+    };
+
+    const mainContainer = maincontainer ? maincontainer(mainContainerParam) : MainContainer(mainContainerParam);
 
     Store.add({
         name: 'maincontainer',
@@ -114,17 +90,13 @@ export async function LaunchApp(param) {
 
     mainContainer.add();
 
-    /** Run callback defined in settings Before first view loads */
-    if (beforeLoad) {
-        await beforeLoad();
-    }
-
     /** Show App Container */
     appContainer.show('flex');
 
     /** Generate Session Id */
     const sessionId = GenerateUUID();
 
+    // TODO: Use GetLocal();
     /** Format Title for Sessin/Local Storage keys */
     const storageKeyPrefix = settings.title.split(' ').join('-');
 
@@ -133,8 +105,9 @@ export async function LaunchApp(param) {
 
     /** Log in*/
     try {
+        // TODO: Standarize LOG and ERROR format
         Log({
-            Title: `${Store.user().Title || 'User'} logged in`,
+            Title: `Log in`,
             Message: `${Store.user().Email || 'User'} successfully loaded ${title}`,
             StackTrace: new Error().stack,
             Module: import.meta.url
@@ -143,47 +116,90 @@ export async function LaunchApp(param) {
         console.error(error);
     }
 
+    if (allowFeedback) {
+        Feedback();
+    }
+
     /** Run current route on page load */
     Route(path, {
         log: false
     });
 
-    /** Check Local Storage for release notes */
-    const isReleaseNotesDismissed = localStorage.getItem(`${storageKeyPrefix}-releaseNotesDismissed`);
+    if (releaseNotes) {
+        const { show, version, title, message } = releaseNotes;
 
-    if (!isReleaseNotesDismissed) {
-        /** Release Notes */
-        const releaseNotes = FixedToast({
-            type: 'robi',
-            title: `New version ${'0.1.0'}`,
-            message: `View release notes`,
-            bottom: '20px',
-            right: '10px',
-            action(event) {
-                const modal = Modal({
-                    fade: true,
-                    background: settings.secondaryColor,
-                    centered: true,
-                    close: true,
-                    addContent(modalBody) {
-                        ReleaseNotesContainer({
-                            margin: '0px',
-                            parent: modalBody,
-                        });
-                    },
-                    parent: appContainer
-                });
+        const isDismissed = localStorage.getItem(`${storageKeyPrefix}-releaseNotesDismissed-${version}`);
 
-                modal.add();
-            },
-            onClose(event) {
-                /** Set Local Storage */
-                localStorage.setItem(`${storageKeyPrefix}-releaseNotesDismissed`, 'true');
-            },
-            parent: appContainer
-        });
-
-        releaseNotes.add();
+        if (show && !isDismissed) {
+            const toast = FixedToast({
+                type: 'robi',
+                title,
+                message,
+                bottom: '20px',
+                right: '10px',
+                action(event) {
+                    const modal = Modal({
+                        fade: true,
+                        background: settings.secondaryColor,
+                        centered: true,
+                        close: true,
+                        addContent(modalBody) {
+                            ReleaseNotesContainer({
+                                margin: '0px',
+                                parent: modalBody,
+                            });
+                        },
+                        parent: appContainer
+                    });
+    
+                    modal.add();
+                },
+                onClose(event) {
+                    localStorage.setItem(`${storageKeyPrefix}-releaseNotesDismissed-${version}`, 'true');
+                },
+                parent: appContainer
+            });
+    
+            toast.add();
+        }
     }
+
+    // /** Check Local Storage for release notes */
+    // const isReleaseNotesDismissed = localStorage.getItem(`${storageKeyPrefix}-releaseNotesDismissed`);
+
+    // if (!isReleaseNotesDismissed) {
+    //     /** Release Notes */
+    //     const releaseNotes = FixedToast({
+    //         type: 'robi',
+    //         title: `New version ${'0.1.0'}`,
+    //         message: `View release notes`,
+    //         bottom: '20px',
+    //         right: '10px',
+    //         action(event) {
+    //             const modal = Modal({
+    //                 fade: true,
+    //                 background: settings.secondaryColor,
+    //                 centered: true,
+    //                 close: true,
+    //                 addContent(modalBody) {
+    //                     ReleaseNotesContainer({
+    //                         margin: '0px',
+    //                         parent: modalBody,
+    //                     });
+    //                 },
+    //                 parent: appContainer
+    //             });
+
+    //             modal.add();
+    //         },
+    //         onClose(event) {
+    //             /** Set Local Storage */
+    //             localStorage.setItem(`${storageKeyPrefix}-releaseNotesDismissed`, 'true');
+    //         },
+    //         parent: appContainer
+    //     });
+
+    //     releaseNotes.add();
+    // }
 }
 // @END-File

@@ -1,4 +1,3 @@
-import { HSLDarker } from '../Actions/HSLDarker.js'
 import { Component } from '../Actions/Component.js'
 import { App } from '../Core/App.js'
 
@@ -8,29 +7,41 @@ import { App } from '../Core/App.js'
  * @returns
  */
 export function AppContainer() {
+    const cancelButton = `background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' style='fill: ${App.get('prefersColorScheme') === 'dark' ? 'darkgray' : 'darkgray' };'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>");`
+
     const component = Component({
         name: 'appcontainer',
         html: /*html*/ `
             <div class='appcontainer'></div>
         `,
         style: /*css*/ `
+            /* Override html prefers-color-scheme media query in app.aspx */
+            /* TODO: Move to style or css file that loads sooner */
+            html {
+                background: var(--secondary);
+            }
+
             .appcontainer {
                 display: none;
-                background: ${App.get('secondaryColor')};
+                background: var(--secondary);
             }
             
             *, ::after, ::before {
                 box-sizing: border-box;
+            }
+
+            .appcontainer,
+            .appcontainer {
+                transition: background-color 300ms;
             }
             
             body {
                 padding: 0px;
                 margin: 0px;
                 box-sizing: border-box;
-                background: ${App.get('secondaryColor')};
                 overflow: hidden;
-                font-family: ${App.fontFamily || ` -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`};
-                color: ${App.get('defaultColor')};
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+                color: var(--color);
             }
             
             body::-webkit-scrollbar { 
@@ -47,7 +58,7 @@ export function AppContainer() {
             }
             
             ::-webkit-scrollbar-thumb {
-                background: lightgray;
+                background: var(--scrollbar);
                 width: 8px;
                 height: 8px;
                 border: 3px solid transparent;
@@ -92,19 +103,20 @@ export function AppContainer() {
 
             /* Links */
             a:hover {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 text-decoration: underline;
             }
             
             a {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 text-decoration: none;
                 background-color: transparent;
             }
 
             /* Code */
             code {
-                color: ${App.get('primaryColor')};
+                font-size: 1em;
+                color: var(--primary);
             }
 
             /* Button */
@@ -115,6 +127,11 @@ export function AppContainer() {
             .btn {
                 font-size: 14px;
                 border-radius: 10px;
+                color: var(--color);
+            }
+
+            .btn:hover {
+                color: var(--color);
             }
 
             .btn:focus,
@@ -140,36 +157,36 @@ export function AppContainer() {
 
             .btn-robi-reverse,
             .btn-robi-reverse:hover {
-                background: ${App.get('primaryColor')};
-                color: white !important;
+                background: var(--primary);
+                color: var(--secondary) !important;
                 font-weight: 500;
             }
 
             .btn-robi,
             .btn-robi:hover {
-                color: ${App.get('primaryColor')};
-                background: #e9ecef;
+                color: var(--primary);
+                background: var(--button-background);
                 font-weight: 500;
             }
 
             .btn-robi-success,
             .btn-robi-success:hover {
                 color: seagreen;
-                background: #e9ecef;
+                background: var(--button-background);
                 font-weight: 500;
             }
 
             .btn-robi-light,
             .btn-robi-light:hover {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 background: inherit;
                 font-weight: 500;
             }
 
             .btn-outline-robi {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 background-color: initial;
-                border-color: ${App.get('primaryColor')};
+                border-color: var(--primary);
             }
 
             .btn-light:hover {
@@ -198,14 +215,14 @@ export function AppContainer() {
 
             .btn-subtle-primary {
                 color: royalblue !important;
-                border-color: ${App.get('backgroundColor')} !important;
-                background-color: ${App.get('backgroundColor')} !important;
+                border-color: var(--background) !important;
+                background-color: var(--background) !important;
             }
 
             .btn-subtle-primary:hover {
                 color: royalblue !important;
-                border-color: ${App.get('backgroundColor')} !important;
-                background-color: ${App.get('backgroundColor')} !important;
+                border-color: var(--background) !important;
+                background-color: var(--background) !important;
             }
 
             .btn-success {
@@ -260,11 +277,16 @@ export function AppContainer() {
                 border-color: seagreen !important;
             }
 
-            /* Forms*/
+            /* Cards */
+            .card-footer {
+                border-top: solid 1px var(--border-color);
+            }
+
+            /* Form Controls */
             .form-field {
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
+                /* justify-content: space-between; */
             }
 
             .form-field .form-field-description {
@@ -273,9 +295,27 @@ export function AppContainer() {
 
             .form-control,
             .form-field-multi-line-text.editable,
-            .btn.dropdown-toggle,
-            .input-group-text {
+            .btn.dropdown-toggle {
                 font-size: 13px !important;
+                background: var(--inputBackground);
+            }
+
+            .input-group-text {
+                background: var(--background);
+                font-size: 13px !important;
+            }
+
+            .form-control,
+            .form-field-multi-line-text.editable,
+            .input-group-text {
+                border: 1px solid var(--border-color);
+            }
+
+            .form-control:focus,
+            .form-field-multi-line-text.editable:focus,
+            .btn.dropdown-toggle:focus {
+                border: 1px solid var(--border-color);
+                background: var(--inputBackground);
             }
 
             .form-control,
@@ -286,6 +326,7 @@ export function AppContainer() {
             }
 
             .input-group .input-group-text {
+                color: var(--color);
                 border-radius: 10px 0px 0px 10px !important;
             }
 
@@ -294,16 +335,49 @@ export function AppContainer() {
             }
 
             .form-control:not(.dataTables_length .custom-select):focus,
-            .custom-select:not(.dataTables_length .custom-select):focus {
-                border-color: transparent !important;
-                box-shadow: 0 0 0 3px ${App.get('primaryColor') + '6b'} !important;
-            }
-
+            .custom-select:not(.dataTables_length .custom-select):focus,
             .form-field-multi-line-text.editable:focus,
             .btn.dropdown-toggle:focus {
                 border-color: transparent !important;
-                box-shadow: 0 0 0 4px ${App.get('primaryColor') + '6b'} !important;
+                box-shadow: 0 0 0 3px var(--primary-6b) !important;
             }
+
+            .custom-select,
+            .cusomt-select:focus,
+            .form-control,
+            .form-control:focus {
+                color: var(--color);
+            }
+
+            .custom-select {
+                background: var(--inputBackground) !important;
+                border-color: var(--border-color);
+            }
+
+            input[type='search'] {
+                background: var(--button-background) !important;
+                border-color: transparent;
+            }
+
+            input[type='search']:active,
+            input[type='search']:focus,
+            select:focus,
+            select:focus {
+                outline: none;
+            }
+
+            input[type='search']:active,
+            input[type='search']:focus {
+                box-shadow: none !important;
+            }
+
+            input[type='search']::-webkit-search-cancel-button {
+                -webkit-appearance: none;
+                cursor: pointer;
+                height: 16px;
+                width: 16px;
+                ${cancelButton};
+            }            
 
             /* Alert */
             .alert {
@@ -327,30 +401,44 @@ export function AppContainer() {
             }
 
             .alert-robi-primary {
-                background: ${App.get('primaryColor') + '20'} !important;
-                color: hsl(${HSLDarker(App.get('primaryColorHSL'), 5)}) !important;
+                background: var(--primary-20) !important;
+                color: var(--primary-hsl-5) !important;
             }
 
             .alert-robi-primary *:not(.btn) {
-                color: hsl(${HSLDarker(App.get('primaryColorHSL'), 5)}) !important;
+                color: var(--primary-hsl-5) !important;
             }
 
             .alert-robi-primary-high-contrast {
-                background: ${App.get('primaryColor') + '19'} !important;
-                color: hsl(${HSLDarker(App.get('primaryColorHSL'), 10)}) !important;
+                background: var(--primary-19) !important;
+                color: var(--primary-hsl-10) !important;
             }
 
             .alert-robi-primary-high-contrast *:not(.btn) {
-                color: hsl(${HSLDarker(App.get('primaryColorHSL'), 10)}) !important;
+                color: var(--primary-hsl-10) !important;
+            }
+
+            .alert-robi-reverse {
+                background: var(--primary) !important;
+                color: var(--secondary) !important;
             }
 
             .alert-robi-secondary {
-                background: ${App.get('backgroundColor')} !important;
-                color: ${App.get('defaultColor')} !important;
+                background: var(--background) !important;
+                color: var(--color) !important;
             }
 
             .alert-robi-secondary *:not(.btn) {
-                color: ${App.get('defaultColor')} !important;
+                color: var(--color) !important;
+            }
+
+            .alert-robi-primary hr,
+            .alert-robi-primary-high-contrast hr {
+                border-top: 1px solid var(--primary-30);
+            }
+
+            .alert-robi-secondary hr {
+                border-top: 1px solid var(--background-HSL-5);
             }
             
             /** Badge */
@@ -360,7 +448,7 @@ export function AppContainer() {
 
             /* Text */
             .text-robi {
-                color: ${App.get('primaryColor')} !important;
+                color: var(--primary) !important;
             }
 
             /** Code mirror */
@@ -421,11 +509,11 @@ export function AppContainer() {
                 width: 100%;
                 height: 100%;
                 overflow: overlay;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
             }
 
             .console * {
-                color: ${App.get('defaultColor')} !important;
+                color: var(--color) !important;
             }
 
             .console::-webkit-scrollbar {
@@ -454,7 +542,7 @@ export function AppContainer() {
                 border-radius: 10px;
                 padding: 10px 15px;
                 border: none;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
                 color: white !important;
                 animation: fade-in-bottom 200ms ease-in-out forwards;
             };
@@ -537,26 +625,40 @@ export function AppContainer() {
             /* Switches */
             .custom-control-input:checked ~ .custom-control-label::before {
                 color: #fff;
-                border-color: ${App.get('primaryColor')};
-                background-color: ${App.get('primaryColor')};
+                border-color: var(--primary);
+                background-color: var(--primary);
             }
 
             .custom-control-input:focus ~ .custom-control-label::before {
-                box-shadow: 0 0 0 4px ${App.get('primaryColor') + '6b'} !important;
+                box-shadow: 0 0 0 4px var(--primary-6b) !important;
             }
 
             .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-                border-color: ${App.get('primaryColor') + '6b'};
+                border-color: var(--primary-6b);
             }
             
             .custom-control-input:active {
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
             }
 
             /* Dropdown */
+            .dropdown-toggle {
+                min-height: 33.5px;
+                min-width: 160px;
+                font-size: 13px;
+                border-radius: 0.125rem 0px;
+                border: 1px solid var(--border-color);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
             .dropdown-menu {
+                background: var(--inputBackground);
                 margin: .125rem;
                 padding: .125rem;
+                border: solid 1px var(--border-color);
+                background: var(--inputBackground);
             }
             
             .scroll-container {
@@ -564,6 +666,7 @@ export function AppContainer() {
             }
 
             .dropdown-item {
+                color: var(--color);
                 cursor: pointer;
                 font-size: 13px;
                 border-radius: 8px;
@@ -576,41 +679,76 @@ export function AppContainer() {
 
             .dropdown-item:focus,
             .dropdown-item:hover {
-                color: ${App.get('defaultColor')};
+                color: var(--color);
                 text-decoration: none;
-                background-color: ${App.get('primaryColor') + '20'};
+                background-color: var(--primary-20);
             }
 
             /* Sortable */
             .ui-sortable-handle {
-                cursor: grab;
+                cursor: grab !important;
             }
 
             .ui-sortable-helper {
-                cursor: grabbing;
-              
+                cursor: grabbing !important;
             }
 
-            /* FIXME: Should these styles live here, in Table.js or DataTable.js? */
-            .table-container {
-                transition: background-color 250ms ease, padding 250ms ease, transform 250ms ease, box-shadow 150ms ease 100ms;
+            /* Row */
+            .robi-row {
+                transition: background-color 250ms ease, padding 250ms ease, margin 250ms ease, transform 250ms ease, box-shadow 250ms ease;
                 border-radius: 20px !important;
             }
 
-            .table-container.ui-sortable-handle {
-                margin: 20px !important;
+            .robi-row.ui-sortable-handle {
+                margin: 20px 0px !important;
                 padding: 20px !important;
-                background: white !important;
-                box-shadow: rgb(0 0 0 / 10%) 0px 0px 16px -2px !important;
+                background: var(--secondary) !important;
+                box-shadow: 0px 0px 0px 2px var(--primary) !important;
             }
 
-            .table-container.ui-sortable-handle > div {
-                transform: scale(.95);
-            }
-
-            .table-container.ui-sortable-helper {
-                box-shadow: rgb(0 0 0 / 10%) 0px 0px 32px 0px !important;
+            .robi-row.ui-sortable-helper {
+                box-shadow: var(--sort-shadow) !important;
                 transform: scale(1.05);
+            }
+
+            /* Menu */
+            .grow-in-top-left,
+            .grow-in-center {
+                background: var(--inputBackground);
+                box-shadow: var(--box-shadow);
+            }
+
+            @keyframes grown-in-top-left {
+                from {
+                    transform: scale(0);
+                    transform-origin: top left;
+                    opacity: 0;
+                }
+                to {
+                    transform: scale(1);
+                    transform-origin: top left;
+                    opacity: 1;
+                }
+            }
+            
+            .dt-button-collection {
+                animation: 150ms ease-in-out forwards grown-in-top-left;
+            }
+
+            .grow-in-top-left {
+                animation: 150ms ease-in-out forwards grown-in-top-left;
+                border-radius: 10px;
+                padding: .5rem;
+            }
+
+            .grow-in-center {
+                border-radius: 20px;
+                padding: 10px;
+                display: flex;
+            }
+
+            .dropdown-divider {
+                border-color: var(--border-color);
             }
         `,
         position: 'afterbegin',

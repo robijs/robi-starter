@@ -1,5 +1,4 @@
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
 import { LoadingSpinner } from '../Components/LoadingSpinner.js'
 import { GetRequestDigest } from './GetRequestDigest.js'
 import { App } from '../Core/App.js'
@@ -16,7 +15,7 @@ export async function ModifyFile(param) {
 
     const modal = Modal({
         title: /*html*/ `
-            <div class='file-title'>
+            <div class='file-title' style='user-select: none;'>
                 <span class='file-title-text d-flex'>
                     <span class='file-icon-container'>
                         <svg class='icon file-icon file-icon-js'>
@@ -64,17 +63,16 @@ export async function ModifyFile(param) {
                 mode: 'javascript',
                 indentUnit: 4,
                 lineNumbers: true,
-                lineWrapping: true,
                 autoCloseBrackets: true,
                 styleActiveLine: true,
-                extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
                 foldGutter: true,
+                matchBrackets: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
                 keyword: {
                     "import": "special",
-                    "export": "export",
-                    "async": "export",
-                    "await": "export",
+                    "export": "special",
+                    "default": "special",
+                    "await": "special",
                 }
             });
             editor.foldCode(CodeMirror.Pos(0, 0));
@@ -112,16 +110,13 @@ export async function ModifyFile(param) {
                 'Alt-W'(cm) {
                     console.log('close');
                     modal.close();
-                },
-                'Ctrl-Q'(cm) {
-                    console.log('close file, check if saved');
                 }
             });
 
             let fileValueRequest;
             let requestDigest;
 
-            if (App.get('mode') === 'prod') {
+            if (App.isProd()) {
                 const sourceSiteUrl = `${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${path}')/Files('${file}')/$value`;
 
                 requestDigest = await GetRequestDigest();
@@ -158,12 +153,11 @@ export async function ModifyFile(param) {
 
             // FIXME: Remember initial codemirorr doc value
             // compare this with current doc value
-            let docValue;
+            let docValue = '';
 
             function setEditor() {
-                editor.setSize('auto', 'auto');
+                editor.setSize('100%', '100%');
                 editor.setOption('viewportMargin', Infinity);
-                // editor.setOption('theme', 'material-palenight');
                 editor.setOption('theme', 'vscode-dark');
                 editor.getDoc().setValue(value);
                 editor.focus();
@@ -199,7 +193,10 @@ export async function ModifyFile(param) {
 
             $(modal.get()).on('hide.bs.modal', checkIfSaved);
 
-            function checkIfSaved(event) {
+            async function checkIfSaved(event) {
+                // Don't close just yet
+                event.preventDefault();
+
                 console.log('check if saved');
                 console.log('param:', param);
                 console.log('value:', value);
@@ -225,27 +222,33 @@ export async function ModifyFile(param) {
 
                         loading.add();
 
-                        // Wait 5 seconds to make sure changes to list.js are committed
-                        console.log('Wait 5s');
-                        setTimeout(() => {
-                            // Remove checkIfSaved before closing
-                            $(modal.get()).off('hide.bs.modal', checkIfSaved);
+                        // Wait 5 seconds to make sure changes are committed
+                        if (App.isProd()) {
+                            await Wait(5000);
+                        }
 
-                            // Remove dialog box
-                            $(modal.get()).on('hide.bs.modal', event => {
-                                Store.get('appcontainer').find('.dialog-container').remove();
-                            });
+                        // Remove checkIfSaved before closing
+                        $(modal.get()).off('hide.bs.modal', checkIfSaved);
 
-                            // Reload
-                            $(modal.get()).on('hidden.bs.modal', event => {
-                                location.reload(true);
-                            });
+                        // Remove dialog box
+                        $(modal.get()).on('hide.bs.modal', event => {
+                            Store.get('appcontainer').find('.dialog-container').remove();
+                        });
 
-                            // Close modal (DOM node will be destroyed)
-                            modal.close();
-                        }, 5000);
+                        // Reload
+                        $(modal.get()).on('hidden.bs.modal', event => {
+                            location.reload(true);
+                        });
+
+                        // Close modal (DOM node will be destroyed)
+                        modal.close();
                         return false;
                     } else {
+                        // FIXME: Why doesn't reuturn false/true work?
+                        // Remove checkIfSaved before closing
+                        $(modal.get()).off('hide.bs.modal', checkIfSaved);
+                        modal.close();
+                        
                         return true;
                     }
                 } else {
@@ -336,7 +339,7 @@ export async function ModifyFile(param) {
                 // TODO: Move to SetFile action
                 let setFile;
 
-                if (App.get('mode') === 'prod') {
+                if (App.isProd()) {
                     setFile = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${path}')/Files/Add(url='${file}',overwrite=true)`, {
                         method: 'POST',
                         body: currentValue,

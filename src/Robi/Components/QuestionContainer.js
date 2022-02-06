@@ -41,7 +41,7 @@ export function QuestionContainer(param) {
                     footer: [
                         {
                             value: 'Cancel',
-                            classes: 'btn-secondary',
+                            classes: '',
                             data: [
                                 {
                                     name: 'dismiss',

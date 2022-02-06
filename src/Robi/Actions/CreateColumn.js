@@ -1,6 +1,7 @@
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
 import { GetRequestDigest } from './GetRequestDigest.js'
+import { GetListGuid } from './GetListGuid.js'
 import { UpdateColumn } from './UpdateColumn.js'
 import { AddColumnToView } from './AddColumnToView.js'
 import { Post } from './Post.js'
@@ -51,7 +52,7 @@ export async function CreateColumn(param) {
     }
 
     // Robi reserves some column names as well
-    const robiFields = [ 'Files' ];
+    const robiFields = ['Files'];
 
     if (robiFields.includes(name)) {
         await reserved();
@@ -123,47 +124,54 @@ export async function CreateColumn(param) {
     }
 
     let data = {};
+    let url;
 
     if (type === 'choice') {
-        data = { 
-            __metadata: { 
-                "type": "SP.FieldChoice" 
+        data = {
+            __metadata: {
+                "type": "SP.FieldChoice"
             },
             FieldTypeKind: 6,
             Title: name,
             DefaultValue: value,
-            Choices: { 
+            Choices: {
                 // __metadata: { 
                 //     "type": "Collection(Edm.String)" 
                 // }, 
-                results: choices 
+                results: choices
             }
         };
     } else if (type === 'multichoice') {
-        data = { 
-            __metadata: { 
-                "type": "SP.FieldChoice" 
+        data = {
+            __metadata: {
+                "type": "SP.FieldChoice"
             },
             FieldTypeKind: 15,
             Title: name,
             FillInChoice: fillIn,
             DefaultValue: value,
-            Choices: { 
-                results: choices 
+            Choices: {
+                results: choices
             }
         };
     } else if (type === 'lookup') {
-        const listGuid = await GetListGuid(lookupList);
+        const listGuid = await GetListGuid({
+            listName: lookupList
+        });
 
-        data = { 
-            __metadata: { 
-                "type": "SP.FieldCreationInformation" 
-            }, 
-            FieldTypeKind: 7,
-            Title: title, 
-            LookupListId: listGuid,
-            LookupFieldName: lookupField
-        };
+        url = `${App.get('site')}/_api/web/lists/GetByTitle('${list}')/Fields/addfield`;
+
+        data = {
+            parameters: {
+                __metadata: { 
+                    'type': 'SP.FieldCreationInformation' 
+                },
+                FieldTypeKind: 7,
+                Title: name, 
+                LookupListId: listGuid,
+                LookupFieldName: lookupField
+            }
+        }
     } else {
         data = {
             __metadata: {
@@ -176,7 +184,7 @@ export async function CreateColumn(param) {
     }
 
     const postOptions = {
-        url: `${App.get('site')}/_api/web/lists/GetByTitle('${list}')/Fields`,
+        url: url || `${App.get('site')}/_api/web/lists/GetByTitle('${list}')/Fields`,
         data,
         headers: {
             "Content-Type": "application/json;odata=verbose",

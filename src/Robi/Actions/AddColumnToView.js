@@ -26,7 +26,7 @@ export async function AddColumnToView(param) {
         headers: {
             "Content-Type": "application/json;odata=verbose",
             "Accept": "application/json;odata=verbose",
-            "X-RequestDigest": requestDigest,
+            "X-RequestDigest": requestDigest
         }
     }
 

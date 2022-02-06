@@ -9,7 +9,7 @@ import { App } from '../Core/App.js';
  */
 export function DateField(param) {
     const {
-        label, description, parent, position, margin, value
+        label, description, parent, position, margin, value, onChange
     } = param;
 
     const component = Component({
@@ -39,26 +39,16 @@ export function DateField(param) {
                 font-size: 14px;
                 margin-bottom:  0.5rem;
             }
-
-            /* #id .form-field-date {
-                margin-top: 2px;
-                margin-bottom: 4px;
-                padding: 10px;
-                background: white;
-                border-radius: 4px;
-                border: ${App.get('defaultBorder')};
-            }
-
-            #id .form-field-date:active,
-            #id .form-field-date:focus {
-                outline: none;
-                border: solid 1px transparent;
-                box-shadow: 0px 0px 0px 2px ${App.get('primaryColor')};
-            } */
         `,
         parent: parent,
         position,
-        events: []
+        events: [
+            {
+                selector: '#id input',
+                event: 'change',
+                listener: onChange
+            }
+        ]
     });
 
     component.value = (param) => {
@@ -67,7 +57,8 @@ export function DateField(param) {
         if (param) {
             field.value = new Date(param).toISOString().split('T')[0];
         } else {
-            return field.value;
+            // NOTE: Dates are hard: https://stackoverflow.com/a/31732581
+            return new Date(field.value.replace(/-/g, '\/')).toLocaleDateString();
         }
     };
 

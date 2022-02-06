@@ -38,7 +38,7 @@ export function FoldingCube(param) {
             /** Label */
             .folding-cube-label {
                 font-weight: 400;
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
 
             /** Folding cube1 */
@@ -68,7 +68,7 @@ export function FoldingCube(param) {
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: ${App.get('primaryColor')};
+                background-color: var(--primary);
                 -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
                 animation: sk-foldCubeAngle 2.4s infinite linear both;
                 -webkit-transform-origin: 100% 100%;

@@ -18,7 +18,7 @@ import { CreateItem } from './CreateItem.js'
  * @param {*} event
  */
 export function ReinstallApp() {
-    if (App.get('mode') === 'dev') {
+    if (App.isDev()) {
         const modal = Modal({
             title: false,
             centered: true,
@@ -162,7 +162,7 @@ export function ReinstallApp() {
                         width: '100%',
                         height: '100%',
                         radius: '10px',
-                        background: App.get('backgroundColor')
+                        background: 'var(--background)'
                     });
 
                     deleteContainer.add();

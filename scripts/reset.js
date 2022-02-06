@@ -1,7 +1,9 @@
 import { writeFile } from 'fs';
-import lists from '../src/lists.js'
+import { readdir } from 'fs/promises'
 
 let db = {
+    "Actions": [],
+    "Searches": [],
     "Comments": [],
     "Errors": [],
     "Log": [],
@@ -26,26 +28,39 @@ let db = {
         {
             "Id": 1,
             "Key": "QuestionTypes",
-            // "Value": "[{\"title\":\"General\"]"
             "Value": JSON.stringify([
                 {
                     "title": "General",
                     "path": "General"
                 }
             ])
+        },
+        {
+            "Id": 2,
+            "Key": "Build",
+            "Value": "1.0.0"
+        },
+        {
+            "Id": 3,
+            "Key": "Version",
+            "Value": "1.0.0"
         }
     ]
 }
 
-lists.forEach(item => {
-    const { list, options } = item;
+const lists = await readdir('./src/Lists', { withFileTypes: true });
+const listInfo = lists.filter(list => list.isDirectory()).map(list => list.name)
+
+for (let info of listInfo) {
+    const module = await import(`../src/Lists/${info}/Schema.js`);
+    const { list, options } = module.default;
 
     db[list] = [];
 
     if (options?.files) {
         db[list + 'Files'] = [];
     }
-});
+}
 
 writeFile('./json-server/db.json', JSON.stringify(db), err => {
     if (err) {
@@ -54,4 +69,4 @@ writeFile('./json-server/db.json', JSON.stringify(db), err => {
     }
 })
 
-console.log('db.json reset');
+console.log('reset db.json');

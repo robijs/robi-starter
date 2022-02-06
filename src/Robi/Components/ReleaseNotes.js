@@ -26,12 +26,12 @@ export function ReleaseNotes(param) {
 
             #id .release-notes-version {
                 font-size: 1.4em;
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
                 margin-bottom: 10px;
             }
 
             #id .release-notes-version strong {
-                color: ${App.get('primaryColor')};
+                color: var(--primary);
             }
         `,
         parent: parent,

@@ -20,7 +20,7 @@ export function BlurOnSave({ message }) {
             modal.find('.modal-content').style.width = 'unset';
 
             const loading = LoadingSpinner({
-                message: `<span style='color: ${App.get('primaryColor')};'>${message}<span>`,
+                message: `<span style='color: var(--primary);'>${message}<span>`,
                 type: 'robi',
                 classes: ['p-4'],
                 parent: modalBody

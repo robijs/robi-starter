@@ -1,6 +1,6 @@
 import { Get } from '../Actions/Get.js'
 import { Alert } from './Alert.js'
-import { BootstrapDropdown } from './BootstrapDropdown.js'
+import { ChoiceField } from './ChoiceField.js'
 import { NameField } from './NameField.js'
 import { SingleLineTextField } from './SingleLineTextField.js'
 
@@ -132,7 +132,7 @@ export async function NewUser(param) {
     });
 
     /** Role */
-    const roleField = BootstrapDropdown({
+    const roleField = ChoiceField({
         label: 'Role',
         value: 'User',
         options: roles.map(item => {
@@ -145,11 +145,6 @@ export async function NewUser(param) {
     });
 
     roleField.add();
-
-    // Focus name field
-    setTimeout(() => {
-        nameField.focus();
-    }, 200);
 
     return {
         async onCreate(event) {

@@ -1,4 +1,5 @@
 import { Component } from '../Actions/Component.js'
+import { Alert } from '../Components/Alert.js'
 import { App } from '../Core/App.js';
 
 // @START-File
@@ -7,9 +8,22 @@ import { App } from '../Core/App.js';
  * @param {*} param
  * @returns
  */
-export function Files(param) {
+export function FilesField(param) {
     const {
-        allFiles, description, itemId, width, onUndo, onUpload, onChange, padding, margin, parent, position
+        allowDelete,
+        beforeChange,
+        description,
+        itemId,
+        width,
+        library,
+        multiple,
+        onUndo,
+        onUpload,
+        onChange,
+        padding,
+        margin,
+        parent,
+        position
     } = param;
 
     let {
@@ -21,22 +35,28 @@ export function Files(param) {
             <div>
                 ${description ? /*html*/ `<div class="form-field-description text-muted">${description}</div>` : ''}
                 <div class='files-list'>
-                    <input type='file' multiple style='display: none;' id='drop-zone-files'>
+                    <input type='file' style='display: none;' id='drop-zone-files' ${multiple !== false ? 'multiple' : ''}>
                     <div class='drop-zone'>
                         <!-- Hidden files input -->
                         <div class='files-list-container'>
                             ${renderFiles()}
                         </div>
-                        <div class='count-undo-container'>
-                            <div class='count-container'>
-                                <span class='count'>${files?.length || 0}</span>
-                                <span>${files?.length === 1 ? 'file' : 'files'}</span>
-                                <span class='pending-count hidden'></span>
-                            </div>
-                            <!-- <span class='undo-all'>Delete all</span> -->
-                        </div>
+                        ${
+                            multiple !== false ?
+                            /*html*/ `
+                                <div class='count-undo-container'>
+                                    <div class='count-container'>
+                                        <span class='count'>${files?.length || 0}</span>
+                                        <span>${files?.length === 1 ? 'file' : 'files'}</span>
+                                        <span class='pending-count hidden'></span>
+                                    </div>
+                                    <!-- <span class='undo-all'>Delete all</span> -->
+                                </div>
+                            ` : ''
+                        }
                     </div>
                 </div>
+                <button type='button' class='clear btn btn-robi-light ${files?.length === 0 || allowDelete === false ? 'd-none' : ''}' style='position: absolute; bottom: -20px; right: 0px;'>Clear</div>
             </div>
         `,
         style: /*css*/ `
@@ -54,7 +74,7 @@ export function Files(param) {
             #id .files-list {
                 width: ${width || '100%'};
                 border-radius: 20px;
-                background: ${App.get('backgroundColor')};
+                background: var(--background);
                 transition: all 300ms ease-in-out;
             }
 
@@ -63,15 +83,6 @@ export function Files(param) {
                 position: relative;
                 background: rgba(${App.get('primaryColorRGB')}, .15);
             }
-
-            /* #id .drag-over::after {
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                height: 100%;
-                width: 100%;
-                content: 'Drop files here'
-            } */
 
             /* Hidden */
             #id .hidden {
@@ -107,6 +118,7 @@ export function Files(param) {
 
             /* File Drop Zone */
             #id .drop-zone {
+                min-height: 136.75px;
                 position: relative;
                 transition: all 150ms;
                 margin: ${margin || '10px'};
@@ -122,7 +134,7 @@ export function Files(param) {
                 cursor: pointer;
                 display: inline-block;
                 padding: 5px 10px;
-                background: ${App.get('primaryColor')};
+                background: var(--primary);
                 color: white;
                 font-weight: bold;
                 text-align: center;
@@ -146,15 +158,17 @@ export function Files(param) {
             }
 
             #id .file-icon-container {
+                width: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                ${itemId ? 'cursor: pointer;' : ''}
             }
 
             #id .file-name-container {
+                width: 100%;
                 display: flex;
                 flex-direction: column;
-                ${itemId ? 'cursor: pointer;' : ''}
             }
 
             #id .file-icon {
@@ -162,13 +176,17 @@ export function Files(param) {
             }
 
             #id .remove-container {
-                cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: flex-end;
                 min-width: 105px;
             }
 
+            #id .remove-container .remove-icon {
+                display: flex;
+                cursor: pointer;
+            }
+            
             #id .removed {
                 transform: scale(0);
                 display: none;
@@ -226,10 +244,10 @@ export function Files(param) {
                 align-items: center;
                 justify-content: space-between;
                 width: 100%;
-                /* padding: 9px 12px; */
-                padding: 9px 0px;
+                padding: 9px 12px;
+                /* padding: 9px 0px; */
                 border-radius: 15px;
-                /* background: white; */
+                background: var(--secondary);
                 transition: all 200ms;
             }
 
@@ -250,7 +268,7 @@ export function Files(param) {
 
             #id .file-icon .type {
                 font-size: 1.5em;
-                fill: ${App.get('defaultColor')};
+                fill: var(--color);
             }
 
             #id .file-icon .bs-file-earmark-word {
@@ -270,7 +288,7 @@ export function Files(param) {
             }
 
             #id .file-icon .bs-file-earmark {
-                fill: ${App.get('defaultColor')};
+                fill: var(--color);
             }
 
             #id .remove-label {
@@ -299,7 +317,7 @@ export function Files(param) {
             }
 
             #id .icon.remove {
-                fill: gray;
+                fill: var(--primary);
             }
 
             #id .icon.undo {
@@ -345,6 +363,30 @@ export function Files(param) {
                     transform: scale(1.0);
                 }
             }
+
+            /* https://codepen.io/sdras/pen/aOgMON */
+            #id .shake {
+                animation: shake 820ms cubic-bezier(.36,.07,.19,.97) both;
+            }
+
+            /* Shake */
+            @keyframes shake {
+                10%, 90% {
+                  transform: translate3d(-1px, 0, 0);
+                }
+                
+                20%, 80% {
+                  transform: translate3d(2px, 0, 0);
+                }
+              
+                30%, 50%, 70% {
+                  transform: translate3d(-4px, 0, 0);
+                }
+              
+                40%, 60% {
+                  transform: translate3d(4px, 0, 0);
+                }
+            }
         `,
         parent: parent,
         position,
@@ -369,18 +411,17 @@ export function Files(param) {
                 event: 'drop',
                 listener: drop
             },
-            // {
-            //     selector: '.undo-all',
-            //     event: 'click',
-            //     listener(event) {
-            //         reset();
-            //     }
-            // },
-            /**  */
             {
                 selector: '.remove-container:not(.delete-on-remove)',
                 event: 'click',
                 listener: removeFilePreview
+            },
+            {
+                selector: '.remove-container.delete-on-remove .remove-icon',
+                event: 'click',
+                listener(event) {
+                    component.delete(event);
+                }
             },
             {
                 selector: `input[type='file']`,
@@ -392,14 +433,30 @@ export function Files(param) {
             {
                 selector: `#id .file-name-container`,
                 event: 'click',
-                listener(event) {
-                    window.open(files.find(file => file.name = this.dataset.filename).url, '_self');
+                listener() {
+                    const name = files.find(file => file.name = this.dataset.filename).name;
+                    const link = `${App.get('site')}/${library}/${name}`;
+
+                    console.log('Open file:', link);
+
+                    window.open(link);
+                }
+            },
+            {
+                selector: `#id .clear`,
+                event: 'click',
+                listener() {
+                    files = [];
+
+                    component.find('.files-list-container').innerHTML = '';
+
+                    event.target.classList.add('d-none');
                 }
             }
         ]
     });
 
-    /** START: Drag and drop */
+    // Drag and drop
     function preventFileOpen(event) {
         event.preventDefault();
 
@@ -429,48 +486,119 @@ export function Files(param) {
     }
 
     function drop(event) {
-        addFiles(event.dataTransfer.files);
-    }
+        let canAdd = true;
 
-    /*** END: Drag and Drop */
-    let newFiles = [];
+        if (beforeChange) {
+            canAdd = beforeChange([...event.dataTransfer.files])
+        }
 
-    function addFiles(fileList) {
-        // Use DataTransferItemList interface to access the file(s)
-        [...fileList].forEach(file => {
-            const alreadyDropped = allFiles.find(droppedFile => droppedFile.name === file.name);
+        console.log(canAdd);
 
-            if (!alreadyDropped) {
-                newFiles.push(file);
-                addPreview(file);
-
-                // If item already created, upload right away
-                // console.log(itemId);
-                if (itemId) {
-                    onUpload(file); // Waiting for update
-                } else {
-                    onChange(newFiles);
-                }
-            }
-        });
-
-        if (newFiles.length) {
-            component.find('.pending-count').innerText = `(${newFiles.length} pending)`;
-            component.find('.pending-count').classList.remove('hidden');
+        if (canAdd) {
+            addFiles(event.dataTransfer.files);
         }
     }
 
-    /** Reset */
-    function reset() {
-        // component.find('.upload').classList.add('hidden');
-        component.find('.reset').classList.add('hidden');
-        component.find('.pending-count').classList.remove('hidden');
+    // Files
+    function addFiles(fileList) {
+        console.log(multiple, fileList.length);
+        
+        if (multiple === false) {
+            files = [];
+    
+            component.find('.files-list-container').innerHTML = '';
 
-        newFiles = [];
-        component.find(`input[type='file']`).value = null;
+            if (fileList.length > 1) {
+                component.find('.files-list').classList.add('shake');
+    
+                setTimeout(() => {
+                    const message = Alert({
+                        type: 'robi-reverse',
+                        text: `Only one file can be uploaded at a time`,
+                        classes: ['alert-in', 'shadow', 'w-100'],
+                        top: component.get().offsetHeight - 5,
+                        delay: 3000,
+                        parent: component
+                    });
+        
+                    message.add();
+    
+                    setTimeout(() => {
+                        message.remove();
+                    }, 3400);
+                }, 410);
+    
+                setTimeout(() => {
+                    component.find('.files-list').classList.remove('shake');
+                }, 820);
+    
+                return;
+            }
+        }
 
-        /** Empty preview container */
-        component.find('.files-list-container').innerHTML = '';
+        // Use DataTransferItemList interface to access the file(s)
+        const newFiles = [...fileList]
+        .filter(file => {
+            const { name } = file;
+            const exists = files.find(file => file.name === name);
+
+            if (!exists) {
+                return file;
+            } else {
+                console.log('Toast: File already added/uploaded.');
+
+                const message = Alert({
+                    type: 'danger',
+                    text: `File already added`,
+                    classes: ['alert-in', 'w-100'],
+                    top: component.get().offsetHeight - 5,
+                    parent: component
+                });
+
+                message.add();
+
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            } 
+        })
+        .map(file => {
+            addPreview(file);
+
+            // If item already created, upload right away
+            if (itemId) {
+                onUpload(file);
+            }
+
+            return file;
+        });
+
+        files = files.concat(newFiles);
+
+        if (onChange) {
+            onChange(files);
+        }
+
+        if (multiple !== false) {
+            if (newFiles.length) {
+                if (fileList.length) {
+                    component.find('.pending-count').innerText = `(${fileList.length} pending)`;
+                    component.find('.pending-count').classList.remove('hidden');
+                } 
+            } else {
+                console.log('Toast: no new files added.');
+            }
+        }
+
+        toggleClearButton();
+    }
+
+    function toggleClearButton() {
+        if (files?.length) {
+            component.find('.clear').classList.remove('d-none');
+        } else {
+            component.find('.clear').classList.add('d-none');
+        }
     }
 
     function returnFileSize(number) {
@@ -502,6 +630,8 @@ export function Files(param) {
         const ext = name.split('.').pop();
         const icon = selectIcon(ext);
 
+        console.log('allow delete', allowDelete);
+
         // TODO: add event listener for deleting items that have already been uploaded
         return /*html*/ `
             <div class='file-preview' data-filename='${name}'>
@@ -514,38 +644,45 @@ export function Files(param) {
                         <div class='file-size'>${returnFileSize(size)}</div>
                     </div>
                 </div>
-                <div class='remove-container ${created ? 'delete-on-remove' : ''}' data-filename='${name}'>
-                    <div class='remove-label'>
-                        <div class='status'>${created ? `Added on ${new Date(created).toLocaleDateString()} By ${author.split(' ').slice(0, 2).join(' ')}` : 'Pending'}</div>
-                        <div class='tip'>${created ? `${'ontouchstart' in window ? 'tap' : 'click'} to delete` : `remove`}</div>
-                    </div>
-                    <div class='remove-icon'>
-                        <svg class='icon remove'><use href='#icon-bs-${created ? 'x-circle-fill' : 'dash-circle-fill'}'></use></svg>
-                    </div>
+                <div class='remove-container ${created && allowDelete !== false ? 'delete-on-remove' : ''}' data-filename='${name}'>
+                    ${
+                        allowDelete !== false ?
+                        /*html*/ `
+                            <div class='remove-label'>
+                                <div class='status'>${created ? `Added on ${new Date(created).toLocaleDateString()} By ${author.split(' ').slice(0, 2).join(' ')}` : 'Pending'}</div>
+                                <div class='tip'>${created ? `${'ontouchstart' in window ? 'tap' : 'click'} to delete` : `remove`}</div>
+                            </div>
+                            <div class='remove-icon'>
+                                <svg class='icon remove'><use href='#icon-bs-${created ? 'x-circle-fill' : 'dash-circle-fill'}'></use></svg>
+                            </div>
+                        ` : ''
+                    }
                 </div>
             </div>
         `;
     }
 
+    // Remove file node
     function removeFilePreview(event) {
         const fileName = this.dataset.filename;
-        const file = newFiles.find(file => file.name === fileName);
-        const index = newFiles.indexOf(file);
+        const file = files.find(file => file.name === fileName);
+        const index = files.indexOf(file);
 
-        console.log(fileName, file, newFiles, index);
+        console.log(fileName, file, files, index);
 
-        newFiles.splice(index, 1);
+        files.splice(index, 1);
 
-        // if (onUndo) {
-        //     onUndo(this.dataset.itemid);
-        // }
-        console.log(newFiles);
+        if (onChange) {
+            onChange(files);
+        }
 
-        if (!newFiles.length) {
-            component.find('.pending-count').classList.remove('hidden');
-            component.find('.pending-count').innerText = '';
-        } else {
-            component.find('.pending-count').innerText = `(${newFiles.length} pending)`;
+        if (multiple !== false) {
+            if (!files.length) {
+                component.find('.pending-count').classList.remove('hidden');
+                component.find('.pending-count').innerText = '';
+            } else {
+                component.find('.pending-count').innerText = `(${files.length} pending)`;
+            }
         }
 
         this.closest('.file-preview').classList.add('removed');
@@ -553,6 +690,8 @@ export function Files(param) {
         setTimeout(() => {
             this.closest('.file-preview').remove();
         }, 150);
+
+        toggleClearButton();
     }
 
     function selectIcon(ext) {
@@ -577,8 +716,55 @@ export function Files(param) {
         }
     }
 
+    component.delete = async (event) => {
+        const container = event.target.closest('.remove-container');
+        const file = files.find(file => file.name === container.dataset.filename);
+        const name = file.name;
+        const index = files.indexOf(file);
+
+        console.log(name, file, files, index);
+
+        files.splice(index, 1);
+
+        if (onChange) {
+            onChange(files);
+        }
+
+        const countContainer = component.find('.count-container');
+        
+        if (countContainer) {
+            countContainer.innerHTML = /*html*/ `
+                <div class="count-container">
+                    <span class="count">${files.length}</span>
+                    <span>${files.length === 1 ? 'file' : 'files'}</span>
+                    <span class="pending-count hidden"></span>
+                </div>
+            `;
+        }
+
+        container.closest('.file-preview').classList.add('removed');
+
+        setTimeout(() => {
+            container.closest('.file-preview').remove();
+        }, 150);
+
+        const digest = await GetRequestDigest();
+        const response = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${library}')/Files('${name}')`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json;odata=verbose;charset=utf-8',
+                'X-RequestDigest': digest,
+                'If-Match': '*'
+            }
+        });
+
+        console.log(response);
+
+        toggleClearButton();
+    };
+
     component.upload = () => {
-        newFiles.forEach(file => {
+        files.forEach(file => {
             onUpload(file);
         });
     };

@@ -1,4 +1,3 @@
-import { Title } from './Title.js'
 import { Alert } from './Alert.js'
 
 // @START-File
@@ -6,19 +5,10 @@ import { Alert } from './Alert.js'
  * 
  * @param {*} param 
  */
-export async function Missing(param) {
-    const { parent } = param;
-
-    const viewTitle = Title({
-        title: '404',
-        parent
-    });
-
-    viewTitle.add();
-
+export async function Missing({ parent }) {
     const alertBanner = Alert({
-        type: 'info',
-        text: `Sorry! That page doesn't appear to exist. Please choose an option from the sidebar on the left.`,
+        type: 'robi-primary',
+        text: `Sorry! That page doesn't exist.`,
         parent,
         margin: '20px 0px 0px 0px'
     });

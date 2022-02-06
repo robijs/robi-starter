@@ -60,9 +60,9 @@ export function NewReply(param) {
             #id .new-comment:active,
             #id .new-comment:focus{
                 outline: none;
-                border-left: solid 3px ${App.get('primaryColor') + '6b'};
-                border-top: solid 3px ${App.get('primaryColor') + '6b'};
-                border-bottom: solid 3px ${App.get('primaryColor') + '6b'};
+                border-left: solid 3px var(--primary-6b);
+                border-top: solid 3px var(--primary-6b);
+                border-bottom: solid 3px var(--primary-6b);
             }
 
             #id .new-comment-button-container {
@@ -77,9 +77,9 @@ export function NewReply(param) {
             #id .new-comment:active ~ .new-comment-button-container,
             #id .new-comment:focus ~ .new-comment-button-container {
                 border-radius: 0px 20px 20px 0px;
-                border-right: solid 3px ${App.get('primaryColor') + '6b'};
-                border-top: solid 3px ${App.get('primaryColor') + '6b'};
-                border-bottom: solid 3px ${App.get('primaryColor') + '6b'};
+                border-right: solid 3px var(--primary-6b);
+                border-top: solid 3px var(--primary-6b);
+                border-bottom: solid 3px var(--primary-6b);
             }
 
             /* Button */
@@ -92,11 +92,11 @@ export function NewReply(param) {
                 text-align: center;
                 border-radius: 50%;
                 color: white;
-                background: #e9ecef;
+                background: var(--button-background);
             }
 
             #id .new-comment-button .icon {
-                fill: ${App.get('primaryColor')};
+                fill: var(--primary);
             }
 
             /* Label */

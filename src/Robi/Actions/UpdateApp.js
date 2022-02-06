@@ -22,7 +22,7 @@ import { Store } from '../Core/Store.js'
  * @param {*} param
  */
 export function UpdateApp() {
-    if (App.get('mode') === 'dev') {
+    if (App.isDev()) {
         const modal = Modal({
             title: false,
             centered: true,
@@ -313,7 +313,7 @@ export function UpdateApp() {
                             width: '100%',
                             height: '100%',
                             radius: '10px',
-                            background: App.get('backgroundColor')
+                            background: 'var(--background)'
                         });
 
                         deleteContainer.add();
@@ -478,15 +478,15 @@ export function UpdateApp() {
                                 </div>
                                 <div class='console-line'>
                                     <!-- <code class='line-number'>0</code> -->
-                                    <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                                    <code style='color: var(--primary) !important;'>${spacers}</code>
                                 </div>
                                 <div class='console-line'>
                                     <!-- <code class='line-number'>0</code> -->
-                                    <code style='color: ${App.get('primaryColor')} !important;'>| Columns created |</code>
+                                    <code style='color: var(--primary) !important;'>| Columns created |</code>
                                 </div>
                                 <div class='console-line'>
                                     <!-- <code class='line-number'>0</code> -->
-                                    <code style='color: ${App.get('primaryColor')} !important;'>${spacers}</code>
+                                    <code style='color: var(--primary) !important;'>${spacers}</code>
                                 </div>
                                 ${checkedDelete.length || checkedSchemaDelete.length ?
                                     /*html*/ `
@@ -594,15 +594,15 @@ export function UpdateApp() {
                                 </div>
                                 <div class='console-line'>
                                     <!-- <code class='line-number'>0</code> -->
-                                    <code style='color: ${App.get('primaryColor')} !important;'>=================</code>
+                                    <code style='color: var(--primary) !important;'>=================</code>
                                 </div>
                                 <div class='console-line'>
                                     <!-- <code class='line-number'>0</code> -->
-                                    <code style='color: ${App.get('primaryColor')} !important;'>| Lists deleted |</code>
+                                    <code style='color: var(--primary) !important;'>| Lists deleted |</code>
                                 </div>
                                 <div class='console-line'>
                                     <!-- <code class='line-number'>0</code> -->
-                                    <code style='color: ${App.get('primaryColor')} !important;'>=================</code>
+                                    <code style='color: var(--primary) !important;'>=================</code>
                                 </div>
                                 ${checkedSchemaDelete.length ?
                                 /*html*/ `
@@ -662,7 +662,7 @@ export function UpdateApp() {
                         const returnBtn = BootstrapButton({
                             type: 'robi',
                             value: 'Close',
-                            classes: ['w-100'],
+                            classes: ['w-100', 'mt-2'],
                             action(event) {
                                 // Bootstrap uses jQuery .trigger, won't work with .addEventListener
                                 $(modal.get()).on('hidden.bs.modal', event => {

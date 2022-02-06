@@ -1,11 +1,14 @@
 // @START-File
 const store = {
     elementIdCounter: 0,
+    rowIdCounter: 0,
+    cellIdCounter: 0,
     viewScrollTop: 0,
     data: {},
     abortControllers: [],
     workers: [],
     components: {},
+    rows: {},
     models: {},
     lists: {},
     user: {},
@@ -81,7 +84,13 @@ const Store = {
         }
     },
     getNextId() {
-        return `App-${store.elementIdCounter++}`; 
+        return `component-${store.elementIdCounter++}`; 
+    },
+    getNextRow() {
+        return `row-${store.rowIdCounter++}`;
+    },
+    getNextCell() {
+        return `cell-${store.cellIdCounter++}`;
     },
     remove(name) {
         store.components[name].component.remove();
@@ -101,6 +110,7 @@ const Store = {
     // },
     empty() {
         store.components = {};
+        store.rows = {};
         // TODO: Do we want to persist data when routing?
         // store.data = [];
     },
@@ -138,7 +148,31 @@ const Store = {
     },
     routes() {
         return store.routes;
-    }
+    },
+    // addRow({ id, component }) {
+    //     store.rows[id] = component;
+    // },
+    // addCell({ rowId, id, component }) {
+    //     store.rows[rowId][id] = component;
+    // },
+    // removeCell({ rowId, id }) {
+    //     delete store.rows[rowId][id];
+    // },
+    // removeRow({ id }) {
+    //     delete store.rows[id];
+    // },
+    // resetRows() {
+    //     store.rows = {};
+    // },
+    // getRow(id) {
+    //     return store.rows[id];
+    // },
+    // getCell({ rowId, id }) {
+    //     return store.rows[rowId][id];
+    // },
+    // getRows() {
+    //     return store.rows
+    // }
 }
 
 Object.freeze(Store);

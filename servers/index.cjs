@@ -8,7 +8,7 @@ var fs = require('fs'),
 	http = require('http'),
 	send = require('send'),
 	open = require('open'),
-	es = require("event-stream"),
+	es = require('event-stream'),
 	os = require('os'),
 	chokidar = require('chokidar');
 require('colors');
