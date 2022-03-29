@@ -1,4 +1,5 @@
 import { Component } from '../Actions/Component.js'
+import { Shimmer } from '../Actions/Shimmer.js'
 import { Store } from '../Core/Store.js'
 
 // @START-File
@@ -34,8 +35,44 @@ export function Row(render, options = {}) {
         // FIXME: Do I like this? Does it assume too much?
         parent: parent || Store.get('viewcontainer'),
         events: [],
-        onAdd() {
-            render(component);
+        async onAdd() {
+            // NOTE: This is awfully imperative. Is there a better way?
+            if (render.constructor.name === 'AsyncFunction') {
+                const viewcontainer = Store.get('viewcontainer').get();
+                
+                if (viewcontainer) {
+                    viewcontainer.style.display = 'flex';
+                    viewcontainer.style.flexDirection = 'column';
+                }
+
+                if (component) {
+                    component.get().style.flex = '1';
+                    component.get().style.background = 'var(--background)';
+                    // component.get().style.display = 'flex';
+                    // component.get().style.justifyContent = 'center';
+                    // component.get().style.alignItems = 'center';
+
+                    const unsubscribeShimmer = Shimmer(component, { background: 'var(--background)' });
+
+                    // NOTE: Testing
+                    // const loadingMsg = LoadingSpinner({
+                    //     message: 'Loading Dashboard', 
+                    //     parent: component, 
+                    // });
+
+                    // loadingMsg.add();
+                    
+                    await render(component);
+
+                    component.get().style.flex = 'unset';
+                    component.get().style.background = 'var(--secondary)';
+
+                    // loadingMsg.remove();
+                    unsubscribeShimmer.off();
+                }
+            } else {
+                render(component);
+            }
 
             if (responsive) {
                 const node = component.get();

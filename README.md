@@ -1,6 +1,4 @@
-# Robi Starter
-
-Clone this repo to when starting a new robi app.
+# Robi
 
 ## Local Development
 ```console

@@ -1,7 +1,7 @@
 import { Get } from '../Actions/Get.js'
 import { Route } from '../Actions/Route.js'
 import { Alert } from './Alert.js'
-import { BootstrapButton } from './BootstrapButton.js'
+import { Button } from './Button.js'
 import { Container } from './Container.js'
 import { FoldingCube } from './FoldingCube.js'
 import { SingleLineTextField } from './SingleLineTextField.js'
@@ -61,7 +61,7 @@ export async function Logs(param) {
 
     /** Add Errors to Alert */
     logs.forEach((item, index) => {
-        const goToErrorButton = BootstrapButton({
+        const goToErrorButton = Button({
             action(event) {
                 Route(`Developer/Logs/${item.Id}`);
             },

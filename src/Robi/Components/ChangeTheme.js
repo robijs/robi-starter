@@ -1,5 +1,5 @@
 import { App } from '../Core/App.js'
-import { BootstrapButton } from './BootstrapButton.js'
+import { Button } from './Button.js'
 import { Card } from './Card.js'
 import { LoadingSpinner } from './LoadingSpinner.js'
 import { Modal } from './Modal.js'
@@ -37,7 +37,7 @@ export function ChangeTheme(param) {
     themeField.add();
 
     // Button
-    const updateThemeBtn = BootstrapButton({
+    const updateThemeBtn = Button({
         type: 'robi',
         value: 'Change theme',
         classes: ['w-100'],
@@ -123,7 +123,7 @@ export function ChangeTheme(param) {
             if (App.isProd()) {
                 // Wait additional 2s
                 console.log('Waiting...');
-                await Wait(3000);
+                await Wait(5000);
                 location.reload();
             } else { 
                 location.reload();

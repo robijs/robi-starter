@@ -1,4 +1,5 @@
 import { AppContainer } from '../Components/AppContainer.js'
+import { SvgDefs } from '../Components/SvgDefs.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
 import { AddLinks } from './AddLinks.js'
@@ -21,8 +22,7 @@ export function Start(param) {
         beforeInit,
         links,
         name,
-        theme,
-        usersList
+        theme
     } = settings;
 
     // Set app settings
@@ -88,6 +88,16 @@ export function Start(param) {
         // Add appcontainer
         const appContainer = AppContainer();
 
+        // Add SVG symbol defs
+        const svgDefs = SvgDefs({});
+
+        svgDefs.add();
+
+        Store.add({
+            name: 'svgdefs',
+            component: svgDefs
+        });
+
         Store.add({
             name: 'appcontainer',
             component: appContainer
@@ -95,14 +105,13 @@ export function Start(param) {
 
         appContainer.add();
 
-        // Get/Set User
-        Store.user(await GetCurrentUser({
-            list: usersList
-        }));
-
         // Before load
         if (beforeInit) {
-            beforeInit();
+            await new Promise((resolve) => {
+                beforeInit({
+                    resolve
+                });
+            });
         }
 
         // Pass start param to InstallApp

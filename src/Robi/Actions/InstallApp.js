@@ -1,5 +1,5 @@
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
+import { Button } from '../Components/Button.js'
 import { ProgressBar } from '../Components/ProgressBar.js'
 import { InstallConsole } from '../Components/InstallConsole.js'
 import { Container } from '../Components/Container.js'
@@ -20,7 +20,7 @@ import { Store } from '../Core/Store.js'
  * @param {*} param
  */
 export function InstallApp(param) {
-    const { settings, loadingBar, isInstalled } = param;
+    const { settings, isInstalled } = param;
     const { questionTypes } = settings;
     const coreLists = Lists();
     const lists = App.lists();
@@ -41,7 +41,7 @@ export function InstallApp(param) {
                 </div>
             `);
 
-            const installBtn = BootstrapButton({
+            const installBtn = Button({
                 action: installApp,
                 classes: ['w-100 mt-5'],
                 width: '100%',
@@ -557,7 +557,7 @@ export function InstallApp(param) {
                 installConsole.get().scrollTop = installConsole.get().scrollHeight;
 
                 // Show launch button
-                const launchBtn = BootstrapButton({
+                const launchBtn = Button({
                     type: 'robi',
                     value: 'Launch app',
                     classes: ['mt-3', 'w-100'],
@@ -571,7 +571,6 @@ export function InstallApp(param) {
                         });
 
                         modal.close();
-                        loadingBar.showLoadingBar();
                     },
                     parent: modalBody
                 });
@@ -582,7 +581,7 @@ export function InstallApp(param) {
                 installConsole.get().scrollTop = installConsole.get().scrollHeight;
             }
 
-            const modifyBtn = BootstrapButton({
+            const modifyBtn = Button({
                 action(event) {
                     window.open(`${App.get('site')}/${App.get('library') || 'App'}/src`);
                 },
@@ -595,7 +594,7 @@ export function InstallApp(param) {
 
             modifyBtn.add();
 
-            const cancelBtn = BootstrapButton({
+            const cancelBtn = Button({
                 action(event) {
                     console.log('Cancel install');
 

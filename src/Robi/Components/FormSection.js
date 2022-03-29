@@ -63,6 +63,7 @@ export function FormSection(param) {
     }
 
     // TODO: Pass form name in, this is supposed to be generic
+    const formType = item ? 'Edit' : 'New';
     const formData = item ? Store.getData(`edit measure ${item.Id}`) : Store.getData('new measure');
 
     // console.log('Form Data:', formData);
@@ -125,8 +126,16 @@ export function FormSection(param) {
         });
 
         rowFields?.forEach(field => {
-            const { name, label, style, component: customComponent, description: customDescription } = field;
-            // const label = label || display || name;
+            const { 
+                name,
+                label,
+                style,
+                onKeyup,
+                onKeydown,
+                onPaste,
+                component: customComponent,
+                description: customDescription
+            } = field;
             const parent = fieldRow;
             let fieldMargin = '0px';
             let component = {};
@@ -134,6 +143,7 @@ export function FormSection(param) {
             // Render passed in component
             if (customComponent) {
                 component = customComponent({
+                    formType,
                     item,
                     parent,
                     formData,
@@ -152,6 +162,7 @@ export function FormSection(param) {
                     value: formData.Files,
                     list,
                     itemId: item?.Id,
+                    path: item ? `${list}Files/${item.Id}` : undefined,
                     parent,
                     fieldMargin,
                     onChange(files) {
@@ -191,6 +202,8 @@ export function FormSection(param) {
                         } else if (name.toLowerCase().includes('office')) {
                             // placeholder = 'Example: J-5 AED'
                         }
+                        
+                        const originalData = formData[name];
 
                         component = SingleLineTextField({
                             label: label || display || name,
@@ -202,9 +215,15 @@ export function FormSection(param) {
                             parent,
                             fieldMargin,
                             // TODO: Complete compare against published measures
+                            onPaste,
+                            onKeydown,
                             async onKeyup(event) {
                                 // Set form data
                                 formData[name] = component.value();
+
+                                if (onKeyup) {
+                                    onKeyup(event);
+                                }
 
                                 // // Drop down Menu
                                 // const query = event.target.value;
@@ -244,6 +263,20 @@ export function FormSection(param) {
                                 //         // console.log('menu already removed');
                                 //     }
                                 // }
+                            },
+                            onFocusout(event) {
+                                if (formType === 'Edit') {
+                                    // console.clear();
+                                    console.log('original:', originalData);
+                                    console.log('current:', formData[name]);
+    
+                                    if (formData[name] !== originalData) {
+                                        console.log('changed');
+                                        Store.setData('canRoute', false);
+                                    } else {
+                                        console.log('not changed');
+                                    }
+                                }
                             }
                         });
                         break;
@@ -288,9 +321,15 @@ export function FormSection(param) {
                                 description,
                                 parent,
                                 fieldMargin,
+                                onPaste,
+                                onKeydown,
                                 onKeyup(event) {
                                     // Set form data
                                     formData[name] = component.value();
+
+                                    if (onKeyup) {
+                                        onKeyup(event);
+                                    }
                                 }
                             });
                         }

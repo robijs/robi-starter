@@ -88,6 +88,7 @@ export function SetTheme() {
                 --button-background: ${buttonBackgroundColor};
                 --color: ${color};
                 --inputBackground: ${App.get('prefersColorScheme') === 'dark' ? background : secondary};
+                --input-border-color: ${App.get('prefersColorScheme') === 'dark' ? 'dimgray' : '#adb5bd'};
                 --primary: ${primary};
                 --primary-hex: ${hex};
                 --primary-hsl: hsl(${hsl});

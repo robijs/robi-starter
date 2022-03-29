@@ -75,6 +75,8 @@ export function TaggleField(param) {
                 white-space: nowrap;
                 font-weight: 500;
                 height: 29.5px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             
             .taggle_list .taggle {

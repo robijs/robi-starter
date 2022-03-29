@@ -12,11 +12,13 @@ export function Cell(render, options = {}) {
         parent,
         height,
         minHeight,
+        maxWidth,
         display,
         flex,
         background,
         radius,
         padding,
+        type,
         narrowPadding,
         narrowWidth,
         responsive
@@ -26,21 +28,26 @@ export function Cell(render, options = {}) {
 
     const component = Component({
         html: /*html*/ `
-            <div class='robi-cell' data-row='${id}'></div>
+            <div class='robi-cell ${type}' data-row='${id}'></div>
         `,
         style: /*css*/ `
             #id.robi-cell {
                 display: ${display || 'block'};
                 ${height ? `height: ${height};` : ''}
                 ${minHeight ? `min-height: ${minHeight};` : ''}
+                ${maxWidth ? `max-width: ${maxWidth};` : ''}
                 ${flex ? `flex: ${flex};` : ''}
                 ${background ? `background: ${background};` : ''}
                 ${radius ? `border-radius: ${radius};` : ''}
                 ${padding ? `padding: ${padding};` : ''}
             }
 
-            .robi-cell:not(:last-child) {
-                margin-right: 30px;
+            /* NOTE: Testing */
+            #id.robi-cell.bordered {
+                padding: 30px;
+                border: solid 1px var(--border-color);
+                box-shadow: 4px 4px 0px 0px var(--border-color);
+                border-radius: 30px;
             }
         `,
         parent: parent || Store.get('viewcontainer'),
@@ -49,21 +56,11 @@ export function Cell(render, options = {}) {
             render(component);
 
             if (responsive) {
-                const node = component.get();
+                resize();
 
-                if (!node) {
-                    return;
-                }
+                window.addEventListener('resize', resize);
 
-                if (window.innerWidth <= 1600) {
-                    node.style.padding = narrowPadding || '0px';
-                    node.style.margin = '0px';
-                } else {
-                    node.style.padding = padding || '0px';
-                    node.style.margin = '0px';
-                }
-
-                window.addEventListener('resize', event => {
+                function resize() {
                     const node = component.get();
 
                     if (!node) {
@@ -71,14 +68,52 @@ export function Cell(render, options = {}) {
                     }
 
                     if (window.innerWidth <= 1600) {
-                        node.style.padding = narrowPadding || '0px';
-                        node.style.margin = '0px';
+                        node.style.maxWidth = '100%';
+                        node.style.marginBottom = '30px';
+                        node.style.marginRight = '0px';
                     } else {
-                        node.style.padding = padding || '0px';
-                        node.style.margin = '0px';
+                        node.style.maxWidth = maxWidth || 'fit-content';
+                        node.style.marginBottom = '0px';
+                        node.style.marginRight = '30px';
                     }
-                });
+                }
             }
+
+            // if (responsive) {
+            //     const node = component.get();
+
+            //     if (!node) {
+            //         return;
+            //     }
+
+            //     if (window.innerWidth <= 1600) {
+            //         node.style.padding = narrowPadding || '0px';
+            //         node.style.maxWidth = 'unset';
+            //         node.style.margin = '0px';
+            //     } else {
+            //         node.style.padding = padding || '0px';
+            //         node.style.margin = '0px';
+            //         node.style.maxWidth = maxWidth || 'unset';
+            //     }
+
+            //     window.addEventListener('resize', event => {
+            //         const node = component.get();
+
+            //         if (!node) {
+            //             return;
+            //         }
+
+            //         if (window.innerWidth <= 1600) {
+            //             node.style.padding = narrowPadding || '0px';
+            //             node.style.maxWidth = 'unset';
+            //             node.style.margin = '0px';
+            //         } else {
+            //             node.style.padding = padding || '0px';
+            //             node.style.maxWidth = 'unset';
+            //             node.style.maxWidth = maxWidth || 'unset';
+            //         }
+            //     });
+            // }
         }
     });
 

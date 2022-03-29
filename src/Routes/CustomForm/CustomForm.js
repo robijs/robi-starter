@@ -3,15 +3,13 @@
 // Just be sure to put @START and @END sigils in the right places.
 // Otherwise, changes made with GUI tools will not render properly.
 
-import { App } from '../../Robi/Robi.js'
+import {  } from '../../Robi/Robi.js'
 import { Row, Table } from '../../Robi/RobiUI.js'
 
 // @START-CustomForm
 export default async function CustomForm({ parent }) {
     // @START-Rows
     Row(async (parent) => {
-        console.log(App.lists());
-
         await Table({
             list: 'AllTypes',
             parent,

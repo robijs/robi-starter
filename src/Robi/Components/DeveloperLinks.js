@@ -63,7 +63,8 @@ export async function DeveloperLinks(param) {
             return {
                 value: list,
                 url: `${App.get('site')}/Lists/${list}`,
-                files: options?.files
+                files: options?.files,
+                bin: options?.recyclebin
             };
         })
     });
@@ -92,7 +93,8 @@ export async function DeveloperLinks(param) {
             return {
                 value: list,
                 url: `${App.get('site')}/Lists/${list}`,
-                files: options?.files
+                files: options?.files,
+                bin: options?.recyclebin
             };
         })
     });
@@ -106,7 +108,6 @@ export async function DeveloperLinks(param) {
             return;
         }
 
-        /** Pages */
         const card = Card({
             title,
             width: '100%',
@@ -118,21 +119,22 @@ export async function DeveloperLinks(param) {
 
         buttons.forEach(button => {
             const {
-                value, url, files
+                value, url, files, bin
             } = button;
 
 
-            if (files) {
+            if (files || bin) {
                 const buttonContainer = Container({
+                    classes: ['mt-2'],
                     parent: card
                 });
 
                 buttonContainer.add();
 
                 const settingsButton = Button({
-                    type: 'normal',
+                    type: 'robi',
                     value,
-                    margin: '10px 0px 0px 0px',
+                    classes: ['mr-2'],
                     parent: buttonContainer,
                     async action(event) {
                         window.open(url);
@@ -141,22 +143,38 @@ export async function DeveloperLinks(param) {
     
                 settingsButton.add();
 
-                const filesButton = Button({
-                    type: 'normal',
-                    value: `${value}Files`,
-                    margin: '10px 0px 0px 10px',
-                    parent: buttonContainer,
-                    async action(event) {
-                        window.open(`${App.get('site')}/${value}Files`);
-                    }
-                });
-    
-                filesButton.add();
+                if (files) {
+                    const filesButton = Button({
+                        type: 'robi',
+                        value: `${value}Files`,
+                        classes: ['mr-2'],
+                        parent: buttonContainer,
+                        async action(event) {
+                            window.open(`${App.get('site')}/${value}Files`);
+                        }
+                    });
+        
+                    filesButton.add();
+                }
+
+                if (bin) {
+                    const binBtn = Button({
+                        type: 'robi',
+                        value: `${value}RecycleBin`,
+                        classes: ['mr-2'],
+                        parent: buttonContainer,
+                        async action(event) {
+                            window.open(`${App.get('site')}/Lists/${value}RecycleBin`);
+                        }
+                    });
+        
+                    binBtn.add();
+                }
             } else {
                 const settingsButton = Button({
-                    type: 'normal',
+                    type: 'robi',
                     value,
-                    margin: '10px 0px 0px 0px',
+                    classes: ['mt-2', 'w-fc'],
                     parent: card,
                     async action(event) {
                         window.open(url);

@@ -1,4 +1,5 @@
 import { Component } from '../Actions/Component.js'
+import { CreateApp } from '../Actions/CreateApp.js'
 import { DeleteApp } from '../Actions/DeleteApp.js'
 import { UpdateApp } from '../Actions/UpdateApp.js'
 import { ResetApp } from '../Actions/ResetApp.js'
@@ -74,6 +75,16 @@ export function DevConsole(param) {
                         </div>
                         <div class='d-flex align-items-center ml-5'>
                             <button class='btn btn-robi-reverse dev-console-button delete'>Delete all lists and data</button>
+                        </div>
+                    </div>
+                    <hr class='w-100' style='margin-bottom: 40px;'>
+                    <div class='dev-console-row alert-robi-primary' style='margin-bottom: 100px;'>
+                        <div class='dev-console-text'>
+                            <div class='dev-console-label'>Create Subsite</div>
+                            <div class='dev-console-description'></div>
+                        </div>
+                        <div class='d-flex align-items-center ml-5'>
+                            <button class='btn btn-robi-reverse dev-console-button create-subsite'>Create Subsite</button>
                         </div>
                     </div>
                 </div>
@@ -177,18 +188,6 @@ export function DevConsole(param) {
         position,
         events: [
             {
-                selector: '#id .modify-lists',
-                event: 'click',
-                async listener(event) {
-                    console.log('Button:', event.target.innerText);
-
-                    ModifyFile({
-                        path: 'App/src',
-                        file: 'lists.js'
-                    });
-                }
-            },
-            {
                 selector: '#id .modify-app',
                 event: 'click',
                 async listener(event) {
@@ -234,6 +233,15 @@ export function DevConsole(param) {
                     console.log('Button:', event.target.innerText);
 
                     DeleteApp();
+                }
+            },
+            {
+                selector: '#id .create-subsite',
+                event: 'click',
+                async listener(event) {
+                    console.log('Button:', event.target.innerText);
+
+                    CreateApp();
                 }
             }
         ],

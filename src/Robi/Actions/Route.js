@@ -5,6 +5,7 @@ import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
 import { History } from './History.js'
 import { Log } from './Log.js'
+import { SaveDialog } from './SaveDialog.js'
 
 // @START-File
 /**
@@ -15,6 +16,34 @@ import { Log } from './Log.js'
  */
 export function Route(path = App.get('defaultRoute'), options = {}) {
     const { scrollTop, title } = options;
+
+    // NOTE: Experimental
+    if (App.isDev()) {
+        const canRoute = Store.getData('canRoute');
+
+        // console.log('Can Route?', canRoute);
+    
+        if (canRoute === false) {
+            SaveDialog({ 
+                async no() {
+                    Store.setData('canRoute', true);
+                    await Store.getData('do not save action')(path, options);
+                },
+                async save() {
+                    Store.setData('canRoute', true);
+                    await Store.getData('save action')(path, options);
+                }
+            });
+    
+            return;
+        } else {
+            // Reset stored save dialog functions
+            Store.setData('save funcion', undefined);
+            Store.setData('do not save funcion', undefined);
+            Store.setData('cancel funcion', undefined);
+        }
+    }
+    // NOTE: END
 
     // Get references to core app components
     const appContainer = Store.get('appcontainer');
@@ -90,13 +119,18 @@ export function Route(path = App.get('defaultRoute'), options = {}) {
 
     if (!route) {
         // TODO: Reset history state?
+        // History({
+        //     url: location.href.split('#')[0],
+        //     title: App.get('title')
+        // });
+
         Route('404');
 
         return;
     }
 
     // Add tools
-    if (route.type !== 'system' && Store.user().Roles.results.includes('Developer')) {
+    if (route.type !== 'system' && Store.user().hasRole('Developer')) {
         const viewTools = ViewTools({
             route,
             parent: viewContainer

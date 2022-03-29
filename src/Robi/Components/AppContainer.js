@@ -17,11 +17,22 @@ export function AppContainer() {
         style: /*css*/ `
             /* Override html prefers-color-scheme media query in app.aspx */
             /* TODO: Move to style or css file that loads sooner */
+
+            /* NOTE: Testing */
+
+            .custom-control-label::before {
+                background-color: var(--secondary);
+                border: solid 1px var(--input-border-color);
+            }
+
+            /* NOTE: END */
+
             html {
                 background: var(--secondary);
             }
 
             .appcontainer {
+                /* FIXME: show immediately */
                 display: none;
                 background: var(--secondary);
             }
@@ -69,6 +80,10 @@ export function AppContainer() {
             table {
                 border-collapse: collapse;
             }
+
+            .smooth-tranisition {
+                transition: all 300ms ease-in-out;
+            }
             
             /* Stop Chrome from changing input background color when autocomplete enabled */
             input:-webkit-autofill,
@@ -77,16 +92,13 @@ export function AppContainer() {
             input:-webkit-autofill:active  {
                 box-shadow: 0 0 0 30px white inset !important;
             }
-            
-            .highlight {
-                background: #fff3d4 !important;
-                border-right: solid 3px #f6b73c !important;
-            }
-            
-            .smooth-tranisition {
-                transition: all 300ms ease-in-out;
+
+            /* Font Weight */
+            .font-weight-500 {
+                font-weight: 500;
             }
 
+            /* Icon */
             .icon {
                 display: inline-block;
                 width: 1em;
@@ -94,7 +106,7 @@ export function AppContainer() {
                 stroke-width: 0;
             }
 
-            /** Wait */
+            /* Wait */
             .appcontainer.wait,
             .appcontainer.wait * {
                 pointer-events: none;
@@ -695,8 +707,12 @@ export function AppContainer() {
 
             /* Row */
             .robi-row {
-                transition: background-color 250ms ease, padding 250ms ease, margin 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+                /* transition: background-color 250ms ease, padding 250ms ease, margin 250ms ease, transform 250ms ease, box-shadow 250ms ease; */
                 border-radius: 20px !important;
+            }
+
+            .robi-row-transition {
+                transition: background-color 250ms ease, padding 250ms ease, margin 250ms ease, transform 250ms ease, box-shadow 250ms ease;
             }
 
             .robi-row.ui-sortable-handle {
@@ -749,6 +765,21 @@ export function AppContainer() {
 
             .dropdown-divider {
                 border-color: var(--border-color);
+            }
+
+            /* hr */
+            .alert-robi-primary hr, .alert-robi-primary-high-contrast hr {
+                border-top: 1px solid var(--primary-30);
+            }
+            
+            hr {
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+                border: 0;
+                border-top: 1px solid rgba(0,0,0,.1);
+                height: 0;
+                overflow: visible;
+                box-sizing: content-box;
             }
         `,
         position: 'afterbegin',

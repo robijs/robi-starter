@@ -12,12 +12,16 @@ export async function CheckLists() {
     const listsToIgnore = ['App', 'Composed Looks', 'Documents', 'Master Page Gallery', 'MicroFeed', 'Site Assets', 'Site Pages'];
     const coreLists = Lists();
     const appLists = App.lists();
-    const allLists = coreLists.concat(appLists);
+    // NOTE: Ignore 'Utility' App 
+    // FIXME: Create Utility as standard lib during install (make API)
+    const allLists = coreLists.concat(appLists)
     const filesLists = allLists.filter(item => item.options?.files).map(item => { return { list: `${item.list}Files` } }); // Don't include ListNameFiles if options.files is true
+    const binLists = allLists.filter(item => item.options?.recyclebin).map(item => { return { list: `${item.list}RecycleBin` } }); // Don't include ListNameRecycleBin if options.recyclebin is true
     const webLists = await GetWebLists();
     const installedLists = webLists.map(item => item.Title).filter(x => allLists.map(item => item.list).includes(x));
     const diffToCreate = allLists.map(item => item.list).filter(x => !webLists.map(item => item.Title).includes(x));
-    const diffToDelete = webLists.map(item => item.Title).filter(x => !allLists.concat(filesLists).map(item => item.list).includes(x) && !listsToIgnore.includes(x));
+    const diffToDelete = webLists.map(item => item.Title).filter(x => !allLists.concat(filesLists).concat(binLists).concat([{list: 'Utility'}]).map(item => item.list).includes(x) && !listsToIgnore.includes(x)); // NOTE: TESTING
+    // const diffToDelete = webLists.map(item => item.Title).filter(x => !allLists.concat(filesLists).map(item => item.list).includes(x) && !listsToIgnore.includes(x));
     console.log('All Lists:', allLists);
     console.log('Files Lists:', filesLists);
     console.log('Web Lists:', webLists);

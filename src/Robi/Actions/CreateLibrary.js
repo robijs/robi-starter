@@ -10,12 +10,14 @@ import { CreateList } from './CreateList.js'
 export async function CreateLibrary(param) {
     const {
         name,
+        options,
         web,
         fields
     } = param;
 
     const newLibrary = await CreateList({
         list: name,
+        options,
         web,
         fields,
         template: 101

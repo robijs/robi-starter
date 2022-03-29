@@ -20,6 +20,7 @@ export async function CreateItem(param) {
     const {
         type,
         list,
+        schema,
         select,
         expand,
         data,
@@ -76,7 +77,7 @@ export async function CreateItem(param) {
         // have schemas.
         // Append fields from lists.js with value null.
         const lists = App.lists();
-        const { fields } = Lists().concat(lists).find(item => item.list === list);
+        const { fields } = Lists().concat(lists).find(item => item.list === (schema || list ));
 
         for (let field in fields) {
             const { name } = fields[field];

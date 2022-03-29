@@ -82,6 +82,7 @@ export function Alert(param) {
                 position: absolute;
                 top: ${top || 0}px;
                 animation: alert-in 200ms ease-in-out forwards, alert-in 200ms ease-in-out ${delay || 5000}ms reverse forwards;
+                z-index: 10000;
             }
         `,
         parent,

@@ -15,14 +15,17 @@ import { CreateItem } from './CreateItem.js';
  */
 export async function UploadFile(param) {
     const {
-        file, name, data, library
+        file, name, data, library, path
     } = param;
 
     if (App.isProd()) {
         // Get new request digest
         const requestDigest = await GetRequestDigest();
         const fileBuffer = await getFileBuffer(file);
-        const upload = await fetch(`${App.get('site')}/_api/web/folders/GetByUrl('${library}')/Files/add(overwrite=true,url='${name || file.name}')`, {
+        const url = path ? 
+            `${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${path}')/Files/add(url='${name || file.name}')` : 
+            `${App.get('site')}/_api/web/folders/GetByUrl('${library}')/Files/add(overwrite=true,url='${name || file.name}')`
+        const upload = await fetch(url, {
             method: 'POST',
             headers: {
                 "Accept": "application/json;odata=verbose",

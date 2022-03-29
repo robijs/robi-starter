@@ -14,6 +14,7 @@ export function FilesField(param) {
         beforeChange,
         description,
         itemId,
+        label,
         width,
         library,
         multiple,
@@ -22,6 +23,7 @@ export function FilesField(param) {
         onChange,
         padding,
         margin,
+        path,
         parent,
         position
     } = param;
@@ -33,6 +35,7 @@ export function FilesField(param) {
     const component = Component({
         html: /*html*/ `
             <div>
+                ${label ? /*html*/ `<label class='field-label'>${label}</label>` : ''}
                 ${description ? /*html*/ `<div class="form-field-description text-muted">${description}</div>` : ''}
                 <div class='files-list'>
                     <input type='file' style='display: none;' id='drop-zone-files' ${multiple !== false ? 'multiple' : ''}>
@@ -64,6 +67,10 @@ export function FilesField(param) {
                 width: ${width || '100%'};
                 min-width: 350px;
                 position: relative;
+            }
+
+            #id label {
+                font-weight: 500;
             }
 
             #id .form-field-description {
@@ -118,6 +125,10 @@ export function FilesField(param) {
 
             /* File Drop Zone */
             #id .drop-zone {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
                 min-height: 136.75px;
                 position: relative;
                 transition: all 150ms;
@@ -749,7 +760,7 @@ export function FilesField(param) {
         }, 150);
 
         const digest = await GetRequestDigest();
-        const response = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${library}')/Files('${name}')`, {
+        const response = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('${path || library}')/Files('${name}')`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json;odata=verbose;charset=utf-8',

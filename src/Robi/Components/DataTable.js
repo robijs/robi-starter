@@ -37,7 +37,8 @@ export function DataTable(param) {
         createdRow,
         width,
         parent,
-        position
+        position,
+        pageLength
     } = param;
 
     const component = Component({
@@ -115,8 +116,6 @@ export function DataTable(param) {
                 display: flex;
                 justify-content: space-between;
                 flex-wrap: nowrap;
-                /* min-height: 33.33px; */
-                /* overflow: auto; */
             }
 
             #id_wrapper .datatable-toolbar .cell {
@@ -174,12 +173,12 @@ export function DataTable(param) {
             }
 
             /** Add Item Button */
-            #id_wrapper .datatable-toolbar .add-item {
+            #id_wrapper .datatable-toolbar .plus-icon {
                 background: var(--button-background);
                 margin-right: 20px;
             }
 
-            #id_wrapper .datatable-toolbar .add-item span {
+            #id_wrapper .datatable-toolbar .plus-icon span {
                 font-weight: 500;
                 white-space: nowrap;
                 display: flex;
@@ -188,10 +187,9 @@ export function DataTable(param) {
                 color: var(--primary);
             }
 
-            #id_wrapper .datatable-toolbar .add-item .icon {
-                font-size: 16pt;
-                margin-right: 5px;
-                margin-left: -5px;
+            #id_wrapper .datatable-toolbar .plus-icon .icon {
+                font-size: 19px;
+                margin-right: 6px;
                 fill: var(--primary);;
             }
 
@@ -203,7 +201,7 @@ export function DataTable(param) {
 
             /** Delete Item Button */
             #id_wrapper .datatable-toolbar .delete-item {
-                font-size: 20px;
+                font-size: 19px;
                 background: ${buttonColor || 'var(--button-background)'} !important;
             }
 
@@ -211,7 +209,6 @@ export function DataTable(param) {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                color: firebrick;
             }
 
             #id_wrapper .datatable-toolbar .delete-item .icon {
@@ -287,11 +284,11 @@ export function DataTable(param) {
             }
 
             #id_wrapper .buttons-collection span .icon {
-                font-size: 20px;
+                font-size: 19px;
                 fill: var(--primary);
             }
 
-            /** Select and Search */
+            /* Select and Search */
             #id_wrapper .custom-select,
             #id_wrapper input[type='search'] {
                 background: ${buttonColor || 'var(--button-background)'} !important;
@@ -389,13 +386,22 @@ export function DataTable(param) {
             }
 
             #id_wrapper :not(.table-border) thead th {
-                vertical-align: bottom;
+                vertical-align: top;
                 border-bottom-width: 1px;
             }
 
             #id_wrapper .table-striped:not(.table-border) thead th {
-                vertical-align: bottom;
+                vertical-align: top;
                 border-bottom-width: 0px;
+            }
+
+            /* Select all */
+            #id_wrapper thead th .custom-control-label::before {
+                border: solid 2px ${App.get('prefersColorScheme') === 'dark' ? '#444' : 'lightgray' };
+            }
+
+            #id_wrapper thead th .custom-control-input:checked ~ .custom-control-label::before {
+                border: solid 2px var(--primary);
             }
 
             /** Cells */
@@ -727,6 +733,10 @@ export function DataTable(param) {
             pagination.toggle(this.api().page.info().pages > 1);
         };
 
+        if (pageLength && pageLength > 0) {
+            options.pageLength = pageLength
+        } 
+
         /** Create table. */
         const table = $(tableId).DataTable(options)
             .on('click', 'tr', function (rowData) {
@@ -803,6 +813,8 @@ export function DataTable(param) {
         table.rows.add(data).draw();
 
         /** Adjust columns */
+        // NOTE: Is this still necessary?
+        // FIXME: Redraw runs render functions again
         table.columns.adjust().draw();
 
         /** Header filter */

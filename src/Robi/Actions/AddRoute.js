@@ -1,5 +1,5 @@
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
+import { Button } from '../Components/Button.js'
 import { IconField } from '../Components/IconField.js'
 import { LoadingSpinner } from '../Components/LoadingSpinner.js'
 import { Alert } from '../Components/Alert.js'
@@ -85,7 +85,7 @@ export async function AddRoute(event) {
 
             routeIcon.add();
 
-            const addRouteBtn = BootstrapButton({
+            const addRouteBtn = Button({
                 async action() {
                     // TODO: Generalize show save modal and blur background
                     // Update app.js first or live-server will reload when
@@ -265,7 +265,7 @@ export async function AddRoute(event) {
 
             addRouteBtn.add();
 
-            const cancelBtn = BootstrapButton({
+            const cancelBtn = Button({
                 action(event) {
                     console.log('Cancel add route');
 

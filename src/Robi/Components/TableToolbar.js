@@ -2,14 +2,15 @@ import { Component } from '../Actions/Component.js'
 import { UpdateItem } from '../Actions/UpdateItem.js'
 import { CustomNewForm } from '../Actions/CustomNewForm.js'
 import { CustomEditForm } from '../Actions/CustomEditForm.js'
+import { GenerateUUID } from '../Actions/GenerateUUID.js'
 import { ModifyForm } from '../Actions/ModifyForm.js'
 import { Alert } from './Alert.js'
-import { BootstrapButton } from './BootstrapButton.js'
+import { Button } from './Button.js'
 import { Modal } from './Modal.js'
 import { SingleLineTextField } from './SingleLineTextField.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
-import { GenerateUUID, Lists } from '../Robi.js';
+import { Lists } from '../Models/Lists.js'
 
 // @START-File
 // TODO: Compute advanced search container and row heights in onAdd()
@@ -30,7 +31,7 @@ export function TableToolbar(param) {
         search
     } = param;
 
-    const listInfo = App.lists().find(item => item.list === list);
+    const listInfo = Lists().concat(App.lists()).find(item => item.list === list);
     
     let userSettings = JSON.parse(Store.user().Settings);
     let searches = userSettings.searches[list] || [];
@@ -42,7 +43,7 @@ export function TableToolbar(param) {
             <div class='btn-toolbar w-100' role='toolbar'>
                 <div class='text'>${heading}</div>
                 ${
-                    listInfo?.options?.menu !== false && Store.user().Roles.results.includes('Developer') ?
+                    listInfo?.options?.menu !== false && Store.user().hasRole('Developer') ?
                     (() => {
                         const id = GenerateUUID();
 
@@ -128,6 +129,7 @@ export function TableToolbar(param) {
 
             #id .btn {
                 font-size: 13px;
+                font-weight: 500;
             }
 
             #id .btn:focus,
@@ -157,7 +159,7 @@ export function TableToolbar(param) {
 
             /* Search */
             #id .advanced-search {
-                width: 126px;
+                width: 135px;
                 transition: 300ms opacity ease;
                 text-align: right;
             }
@@ -350,7 +352,7 @@ export function TableToolbar(param) {
 
                 searchName.add();
 
-                const saveSearchBtn = BootstrapButton({
+                const saveSearchBtn = Button({
                     action: save,
                     classes: ['w-100 mt-3'],
                     width: '100%',
@@ -361,7 +363,7 @@ export function TableToolbar(param) {
 
                 saveSearchBtn.add();
 
-                const cancelBtn = BootstrapButton({
+                const cancelBtn = Button({
                     action(event) {
                         console.log('Cancel save search');
 
@@ -514,14 +516,14 @@ export function TableToolbar(param) {
                     <h4 class='mb-3'>Delete <strong>${loaded}</strong>?</h4>
                 `);
 
-                const deleteSearchBtn = BootstrapButton({
+                const deleteSearchBtn = Button({
                     async action() {
                         console.log('Update Store.user().Settings.searches');
     
                         // Disable button
                         deleteSearchBtn.get().disabled = true;
                         deleteSearchBtn.get().innerHTML = /*html*/ `
-                            <span class="spinner-border" role="status" aria-hidden="true" style="width: 20px; height: 20px; border-width: 3px"></span> Deleting search
+                            <span class="spinner-border" role="status" aria-hidden="true" style="width: 18px; height: 18px; border-width: 3px"></span> Deleting search
                         `;
     
                         // Find loaaded search by name and remove from searches
@@ -565,7 +567,7 @@ export function TableToolbar(param) {
 
                 deleteSearchBtn.add();
 
-                const cancelBtn = BootstrapButton({
+                const cancelBtn = Button({
                     action(event) {
                         console.log('Cancel delete search');
 

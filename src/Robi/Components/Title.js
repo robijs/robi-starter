@@ -43,7 +43,7 @@ export function Title(param) {
                     }
                     <h1 class='app-title'>${title}</h1>
                     <!-- ${subTitle !== undefined ? `<h2>${subTitle}</h2>` : ''} -->
-                    <h2>${subTitle || ''}</h2>
+                    ${subTitle ? /*html*/`<h2>${subTitle}</h2>` : ''}
                     ${breadcrumb !== undefined ?
                     /*html*/ `
                         <h2 ${dropdownGroups && dropdownGroups.length ? `style='margin-right: 0px;'` : ''}>
@@ -86,7 +86,7 @@ export function Title(param) {
 
             #id.title h2 {
                 width: 100%;
-                font-size: 1.1rem;
+                font-size: 18px;
                 font-weight: 500;
                 margin: 0px;
                 color: ${subTitleColor || 'var(--color)'};
@@ -110,7 +110,7 @@ export function Title(param) {
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: baseline;
-                flex-wrap: wrap;
+                /* flex-wrap: wrap; */
                 white-space: nowrap;
             }
 
@@ -141,7 +141,6 @@ export function Title(param) {
 
             /** Dropdown */
             #id .dropdown-menu {
-                margin-top: 5px;
                 max-height: 75vh;
                 overflow-y: auto;
             }
@@ -159,8 +158,10 @@ export function Title(param) {
                 padding: 0px;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                /** max-width: ${maxTextWidth || '455px'}; **/
+                min-width: max-content;
+                font-size: inherit;
                 line-height: normal;
+                border: none;
             }
 
             #id .nav-pills .show > .nav-link {
@@ -186,10 +187,6 @@ export function Title(param) {
             }
 
             @media (max-width: 1024px) {
-                #id.across h2 {
-                    margin: 0px 45px;
-                }
-
                 #id .nav-link {
                     max-width: 200px;
                 }
@@ -317,7 +314,14 @@ export function Title(param) {
     component.setSubtitle = (text) => {
         const title = component.find('h2');
 
-        title.innerHTML = text;
+        if (title) {
+            title.innerHTML = text;
+        } else {
+            component.find('.app-title').insertAdjacentHTML('afterend', /*html*/ `
+                <h2>${text}</h2>
+            `);
+        }
+
     };
 
     component.setDate = (text) => {

@@ -21,10 +21,12 @@ import { BlurOnSave } from './Actions/BlurOnSave.js'
 import { CheckLists } from './Actions/CheckLists.js'
 import { Colors } from './Actions/Colors.js'
 import { Component } from './Actions/Component.js'
+import { Confirm } from './Actions/Confirm.js'
 import { CopyFile } from './Actions/CopyFile.js'
 import { CopyRecurse } from './Actions/CopyRecurse.js'
 import { CreateApp } from './Actions/CreateApp.js'
 import { CreateColumn } from './Actions/CreateColumn.js'
+import { CreateDocSet } from './Actions/CreateDocSet.js'
 import { CreateFolder } from './Actions/CreateFolder.js'
 import { CreateItem } from './Actions/CreateItem.js'
 import { CreateLibrary } from './Actions/CreateLibrary.js'
@@ -76,10 +78,12 @@ import { ModifyRoutes } from './Actions/ModifyRoutes.js'
 import { NameToHex } from './Actions/NameToHex.js'
 import { OrderRoutes } from './Actions/OrderRoutes.js'
 import { Post } from './Actions/Post.js'
+import { RecurrencePattern } from './Actions/RecurrencePattern.js'
 import { ReinstallApp } from './Actions/ReinstallApp.js'
 import { RemoveLocal } from './Actions/RemoveLocal.js'
 import { ResetApp } from './Actions/ResetApp.js'
 import { Route } from './Actions/Route.js'
+import { SaveDialog } from './Actions/SaveDialog.js'
 import { SendEmail } from './Actions/SendEmail.js'
 import { SetHomePage } from './Actions/SetHomePage.js'
 import { SetLocal } from './Actions/SetLocal.js'
@@ -120,10 +124,12 @@ export {
     CheckLists,
     Colors,
     Component,
+    Confirm,
     CopyFile,
     CopyRecurse,
     CreateApp,
     CreateColumn,
+    CreateDocSet,
     CreateFolder,
     CreateItem,
     CreateLibrary,
@@ -175,10 +181,12 @@ export {
     NameToHex,
     OrderRoutes,
     Post,
+    RecurrencePattern,
     ReinstallApp,
     RemoveLocal,
     ResetApp,
     Route,
+    SaveDialog,
     SendEmail,
     SetHomePage,
     SetLocal,

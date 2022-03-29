@@ -21,28 +21,35 @@ export async function InitializeApp(param) {
         const isInstalled = await GetAppSetting('Installed');
 
         if (!isInstalled || isInstalled.Value === 'No') {
-            // Start loading bar animation
-            const loadingBar = LoadingBar({
-                displayLogo: App.get('logoLarge'),
-                displayTitle: App.get('title'),
-                totalCount: preLoadLists?.length || 0,
-                loadingBar: 'hidden',
-                async onReady() {
-                    InstallApp({
-                        isInstalled,
-                        settings,
-                        loadingBar,
-                        routes
-                    });
-                }
+            InstallApp({
+                isInstalled,
+                settings,
+                routes
             });
 
-            loadingBar.add();
+            // FIXME: Need loading bar for pre loaded listss
+            // // Start loading bar animation
+            // const loadingBar = LoadingBar({
+            //     displayLogo: App.get('logoLarge'),
+            //     displayTitle: App.get('title'),
+            //     totalCount: preLoadLists?.length || 0,
+            //     loadingBar: 'hidden',
+            //     async onReady() {
+            //         InstallApp({
+            //             isInstalled,
+            //             settings,
+            //             loadingBar,
+            //             routes
+            //         });
+            //     }
+            // });
 
-            Store.add({
-                name: 'app-loading-bar',
-                component: loadingBar
-            });
+            // loadingBar.add();
+
+            // Store.add({
+            //     name: 'app-loading-bar',
+            //     component: loadingBar
+            // });
             return;
         } else {
             LaunchApp(param);

@@ -22,7 +22,8 @@ export function DropZone(param) {
         beforeChange,
         onUpload,
         library,
-        multiple
+        multiple,
+        path,
     } = param;
 
     let { value } = param;
@@ -46,28 +47,20 @@ export function DropZone(param) {
 
     card.add();
 
-    const heading = Heading({
-        text: label,
-        margin: '0px 0px .5rem 0px',
-        weight: '500',
-        size: '16px',
-        color: 'var(--color)',
-        parent: card
-    });
-
-    heading.add();
-
     const filesContainer = FilesField({
+        label,
         allowDelete,
         description,
         multiple,
         beforeChange,
         onChange,
+        path,
         files: itemId ? value?.map(item => {
             if (item.url) {
                 return item;
             }
 
+            // FIXME: Passed in object should only contain this props
             return {
                 url: item.OData__dlc_DocIdUrl.Url,
                 name: item.File.Name,
@@ -80,6 +73,10 @@ export function DropZone(param) {
         library: library || `${list}Files`,
         async onUpload(file) {
             if (onUpload === false) {
+                return;
+            }
+
+            if (!itemId) {
                 return;
             }
 
@@ -99,8 +96,10 @@ export function DropZone(param) {
                 <div class='spinner-grow text-secondary' role='status' style='width: 22px; height: 22px;'></div>
             `;
 
+            // FIXME: DropZone, FilesField, FormSection, and UploadFile are too tightly coupled
             const testUpload = await UploadFile({
                 library: library || `${list}Files`,
+                path,
                 file,
                 data: {
                     ParentId: itemId
@@ -109,7 +108,7 @@ export function DropZone(param) {
 
             console.log(testUpload);
             console.log(`Measure #${itemId} Files`, value);
-            value.push(testUpload)
+            value.push(testUpload);
 
             onChange(value);
 

@@ -9,9 +9,9 @@ import { App } from '../Core/App.js';
  */
 export function DateField(param) {
     const {
-        label, description, parent, position, margin, value, onChange
+        label, labelStyle, description, parent, position, margin, value, onChange
     } = param;
-
+ 
     const component = Component({
         html: /*html*/ `
             <div class='form-field'>
@@ -29,6 +29,15 @@ export function DateField(param) {
             /* Labels */
             #id label {
                 font-weight: 500;
+            }
+
+            ${
+                labelStyle ? 
+                /*css*/ `
+                    #id label {
+                        ${labelStyle.whiteSpace ? `white-space: ${labelStyle.whiteSpace}` : ''}
+                    }
+                ` : ''
             }
 
             #id .form-field-date {

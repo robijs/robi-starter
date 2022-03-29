@@ -1,6 +1,6 @@
 import { Alert } from '../Components/Alert.js'
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
+import { Button } from '../Components/Button.js'
 import { ProgressBar } from '../Components/ProgressBar.js'
 import { InstallConsole } from '../Components/InstallConsole.js'
 import { Container } from '../Components/Container.js'
@@ -229,7 +229,7 @@ export function UpdateApp() {
             }
 
             if (toCreate.length || toDelete.length || schemaAdd.length || schemaDelete.length) {
-                const installBtn = BootstrapButton({
+                const installBtn = Button({
                     async action(event) {
                         // Get checked lists
                         const checkedCreate = [...modal.findAll('.create-lists input:checked')].map(node => allLists.find(item => item.list === node.dataset.list));
@@ -286,6 +286,14 @@ export function UpdateApp() {
                                 // Field +2 (add column to list and view)
                                 progressCount = progressCount + 2;
                             });
+
+                            // NOTE: Testing
+                            if (options?.recyclebin) {
+                                fields.forEach(() => {
+                                    // Field +2 (add column to list and view)
+                                    progressCount = progressCount + 2;
+                                });
+                            }
                         });
 
                         // TODO: Refactor to MAP => REDUCE
@@ -659,7 +667,7 @@ export function UpdateApp() {
                         modal.find('.console-title').innerHTML = `${App.get('title')} <strong>updated</strong>`;
 
                         // Close modal button
-                        const returnBtn = BootstrapButton({
+                        const returnBtn = Button({
                             type: 'robi',
                             value: 'Close',
                             classes: ['w-100', 'mt-2'],
@@ -698,7 +706,7 @@ export function UpdateApp() {
                 `);
             }
 
-            const cancelBtn = BootstrapButton({
+            const cancelBtn = Button({
                 action(event) {
                     console.log('Cancel install');
 

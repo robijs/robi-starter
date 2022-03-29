@@ -8,7 +8,7 @@ import { Route } from './Route.js'
  * @param {(String|Object)} param most likely a View name as a string
  * @param {string} param.view if param is a object, view is a required property
  * @param {string} param.role if param is a object, role is an optional propety
- * @returns {(undefied|false|true)}
+ * @returns {(undefined|false|true)}
  */
 export function Authorize(param) {
     let role, view;
@@ -38,7 +38,7 @@ export function Authorize(param) {
         // if (roles.includes(role)) {
         // TODO: Use .Roles.results instead
         // https://stackoverflow.com/a/39893636
-        if (roles.some(r => Store.user().Roles.results.includes(r))) {
+        if (roles.some(r => Store.user().hasRole(r))) {
             /** Authorized if role is included in roles array */
             console.log(`${Store.user().Title} authorized to access '${view}' as a '${role}'`)
             return true;

@@ -1,6 +1,6 @@
 import { Alert } from '../Components/Alert.js'
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
+import { Button } from '../Components/Button.js'
 import { ProgressBar } from '../Components/ProgressBar.js'
 import { InstallConsole } from '../Components/InstallConsole.js'
 import { Container } from '../Components/Container.js'
@@ -97,7 +97,7 @@ export function DeleteApp() {
                 </div>
             `);
 
-            const deleteBtn = BootstrapButton({
+            const deleteBtn = Button({
                 async action(event) {
                     console.log('Delete');
 
@@ -299,7 +299,7 @@ export function DeleteApp() {
                     `);
 
                     // Show return button
-                    const returnBtn = BootstrapButton({
+                    const returnBtn = Button({
                         type: 'robi',
                         value: 'Site Contents',
                         classes: ['w-100'],
@@ -332,7 +332,7 @@ export function DeleteApp() {
 
             deleteBtn.add();
 
-            const cancelBtn = BootstrapButton({
+            const cancelBtn = Button({
                 action(event) {
                     console.log('Cancel delete');
 

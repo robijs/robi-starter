@@ -31,7 +31,7 @@ export function Sidebar({ parent, path }) {
                     </span>
                     <!-- Developer options --> 
                     ${
-                        Store.user().Roles.results.includes('Developer') ?
+                        Store.user().hasRole('Developer') ?
                         (() => {
                             const id = GenerateUUID();
 
@@ -72,9 +72,10 @@ export function Sidebar({ parent, path }) {
                 <div class='nav-container'>
                     ${buildNav()}
                 </div>
-                <div style='padding: 0px 15px; overflow: hidden;'>
+                <!-- <div style='padding: 0px 15px; overflow: hidden;'> -->
+                <div style='padding: 0px 15px;'>
                 ${
-                    Store.user().Roles.results.includes('Developer') ?
+                    Store.user().hasRole('Developer') ?
                     /*html*/ `
                         <span class='nav add-route'>
                             <span class='icon-container' style='padding: 0px;'>
@@ -132,6 +133,9 @@ export function Sidebar({ parent, path }) {
                 padding: 0px 15px;
                 overflow-x: hidden;
                 transition: height 300ms ease;
+                /* NOTE: had to add height after hiding questions: why? */
+                /* FIXME: What affect will this have? */
+                height: 100%;
             }
 
             /* Settings */
@@ -999,9 +1003,7 @@ export function Sidebar({ parent, path }) {
             } = route;
 
             if (roles) {
-                //  Store.user().Roles.results.includes('Developer')
-                //if (roles.includes(Store.user().Role)) {
-                if (roles.some(r => Store.user().Roles.results.includes(r))) {
+                if (roles.some(r => Store.user().hasRole(r))) {
                     return navTemplate(path, icon, type, title);
                 } else {
                     return '';
@@ -1199,7 +1201,7 @@ export function Sidebar({ parent, path }) {
                 `);
             }
 
-            if (Store.user().Roles.results.includes('Developer')) {
+            if (Store.user().hasRole('Developer')) {
                 // Fade out Edit
                 component.find('.dev-buttons-container').style.opacity = '0';
                 component.find('.dev-buttons-container').style.pointerEvents = 'none';
@@ -1234,7 +1236,7 @@ export function Sidebar({ parent, path }) {
                 event.target.classList.remove('fade-in-right');
             });
 
-            if (Store.user().Roles.results.includes('Developer')) {
+            if (Store.user().hasRole('Developer')) {
                 // Fade in Edit
                 component.find('.dev-buttons-container').style.opacity = '1';
                 component.find('.dev-buttons-container').style.pointerEvents = 'auto';
@@ -1262,7 +1264,7 @@ export function Sidebar({ parent, path }) {
                 } = route;
 
                 if (roles) {
-                    if (roles.some(r => Store.user().Roles.results.includes(r))) {
+                    if (roles.some(r => Store.user().hasRole(r))) {
                         return navTemplate(path, icon, type, title, hide);
                     } else {
                         return '';

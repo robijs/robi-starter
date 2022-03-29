@@ -1,8 +1,8 @@
 import { GenerateUUID } from './GenerateUUID.js'
+import { GetCurrentUser } from './GetCurrentUser.js'
 import { SetSessionStorage } from './SetSessionStorage.js'
 import { Route } from './Route.js'
 import { Log } from './Log.js'
-import { SvgDefs } from '../Components/SvgDefs.js'
 import { Sidebar } from '../Components/Sidebar.js'
 import { MainContainer } from '../Components/MainContainer.js'
 import { FixedToast } from '../Components/FixedToast.js'
@@ -19,28 +19,39 @@ import { Feedback } from '../Components/Feedback.js'
  */
 export async function LaunchApp(param) {
     const {
-        releaseNotes, routes, settings
+        releaseNotes,
+        routes,
+        settings
     } = param;
 
     const {
-        title, svgSymbols, sessionStorageData, sidebar, maincontainer, allowFeedback
+        title,
+        sessionStorageData,
+        sidebar,
+        maincontainer,
+        allowFeedback,
+        beforeLaunch,
+        usersList
     } = settings;
+    
+    // Get/Set User
+    Store.user(await GetCurrentUser({
+        list: usersList
+    }));
+
+    // Before load
+    if (beforeLaunch) {
+        await new Promise((resolve) => {
+            beforeLaunch({
+                user: Store.user(),
+                resolve
+            });
+        });
+    }
 
     /** Set sessions storage */
     SetSessionStorage({
         sessionStorageData
-    });
-
-    /** Load svg definitions */
-    const svgDefs = SvgDefs({
-        svgSymbols
-    });
-
-    svgDefs.add();
-
-    Store.add({
-        name: 'svgdefs',
-        component: svgDefs
     });
 
     /** Get current route */

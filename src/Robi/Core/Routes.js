@@ -32,6 +32,7 @@ const Routes = [
             Missing(param);
         }
     },
+    // FIXME: Add switch in app.js init obj
     {
         path: 'Questions',
         title: 'Questions',

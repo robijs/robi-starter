@@ -1,6 +1,6 @@
 import { Alert } from '../Components/Alert.js'
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
+import { Button } from '../Components/Button.js'
 import { ProgressBar } from '../Components/ProgressBar.js'
 import { InstallConsole } from '../Components/InstallConsole.js'
 import { Container } from '../Components/Container.js'
@@ -82,7 +82,7 @@ export function ResetApp() {
             // App lists
             // const appLists = lists;
             const appLists = App.lists();
-            console.log(lists);
+            console.log(appLists);
 
             // All Lists
             const allLists = Lists().concat(appLists);
@@ -121,7 +121,7 @@ export function ResetApp() {
                 </div>
             `);
 
-            const deleteBtn = BootstrapButton({
+            const deleteBtn = Button({
                 async action(event) {
                     console.log('Reinstall');
 
@@ -142,7 +142,7 @@ export function ResetApp() {
                     modalBody.style.overflowY = 'unset';
                     modalBody.style.display = 'flex';
                     modalBody.style.flexDirection = 'column',
-                        modalBody.style.transition = 'all 300ms ease-in-out';
+                    modalBody.style.transition = 'all 300ms ease-in-out';
                     modalBody.innerHTML = '';
                     modalBody.style.height = '80vh';
                     modalBody.style.width = '80vw';
@@ -154,16 +154,25 @@ export function ResetApp() {
                     let progressCount = 0;
 
                     checkedLists.forEach(item => {
-                        const { fields } = item;
+                        const { fields, options } = item;
 
-                        // List + 1 for delete
+                        // List + 1 for delete // FIXME: Still need this?
                         // List + 1 for reinstall
-                        progressCount = progressCount + 2;
+                        // progressCount = progressCount + 2;
+                        progressCount = progressCount + 1;
 
-                        fields.forEach(field => {
+                        fields.forEach(() => {
                             // Field +2 (add column to list and view)
                             progressCount = progressCount + 2;
                         });
+
+                        // NOTE: Testing
+                        if (options?.recyclebin) {
+                            fields.forEach(() => {
+                                // Field +2 (add column to list and view)
+                                progressCount = progressCount + 2;
+                            });
+                        }
                     });
 
                     const progressBar = ProgressBar({
@@ -357,7 +366,7 @@ export function ResetApp() {
                         reinstallConsole.get().scrollTop = reinstallConsole.get().scrollHeight;
                     }
 
-                    if (lists.length) {
+                    if (appLists.length) {
                         // Add Release Notes
                         const releaseNoteExists = await Get({
                             list: 'ReleaseNotes',
@@ -381,7 +390,7 @@ export function ResetApp() {
                                 list: 'ReleaseNotes',
                                 data: {
                                     Summary: `${App.get('name')} lists created`,
-                                    Description: lists.map(item => item.list).join(', ') + '.',
+                                    Description: appLists.map(item => item.list).join(', ') + '.',
                                     Status: 'Published',
                                     MajorVersion: '0',
                                     MinorVersion: '1',
@@ -390,13 +399,13 @@ export function ResetApp() {
                                 }
                             });
 
-                            console.log(`Added Release Note: ${App.get('name')} lists created - ${lists.map(item => item.list).join(', ')}.`);
+                            console.log(`Added Release Note: ${App.get('name')} lists created - ${appLists.map(item => item.list).join(', ')}.`);
 
                             // Add to console
                             reinstallConsole.append(/*html*/ `
                                 <div class='console-line'>
                                     <!-- <code class='line-number'>0</code> -->
-                                    <code>'${App.get('name')} lists created - ${lists.map(item => item.list).join(', ')}.' added to 'releaseNotes'</code>
+                                    <code>'${App.get('name')} lists created - ${appLists.map(item => item.list).join(', ')}.' added to 'releaseNotes'</code>
                                 </div>
                             `);
 
@@ -455,7 +464,11 @@ export function ResetApp() {
                                 Title: response.d.Title,
                                 Email: response.d.Email,
                                 LoginName: response.d.LoginName.split('|')[2],
-                                Role: 'Developer',
+                                Roles: {
+                                    results: [
+                                        App.get('userDefaultRole')
+                                    ]
+                                },
                                 Settings: App.get('userSettings')
                             }
                         });
@@ -512,7 +525,7 @@ export function ResetApp() {
                     `);
 
                     // Show return button
-                    const returnBtn = BootstrapButton({
+                    const returnBtn = Button({
                         type: 'robi-light',
                         value: 'Close',
                         classes: ['w-100'],
@@ -544,7 +557,7 @@ export function ResetApp() {
 
             deleteBtn.add();
 
-            const cancelBtn = BootstrapButton({
+            const cancelBtn = Button({
                 action(event) {
                     console.log('Cancel delete');
 

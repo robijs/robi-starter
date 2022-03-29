@@ -36,26 +36,35 @@ export function LinksField(param) {
                     <!-- Formatted links go here -->
                     ${
                         links ?
-                        JSON.parse(links).map(link => {
-                            const { url, display } = link;
-
-                            return /*html*/ `
-                                <div class='link' data-display='${display}' data-url='${url}'>
-                                    <a href='${url}' target='_blank'>${display}</a>
-                                    <button type="button" class="close remove-link" data-dismiss="modal" aria-label="Close">
-                                        <span class="icon-container">
-                                            <svg class="icon x-circle-fill">
-                                                <use href="#icon-bs-x-circle-fill"></use>
-                                            </svg>
-                                            <svg class="icon circle-fill">
-                                                <use href="#icon-bs-circle-fill"></use>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                </div>
-                            `;
-                        }).join('\n') : ''
+                        (() => {
+                            try {
+                                return JSON.parse(links).map(link => {
+                                    const { url, display } = link;
+        
+                                    return /*html*/ `
+                                        <div class='link' data-display='${display}' data-url='${url}'>
+                                            <a href='${url}' target='_blank'>${display}</a>
+                                            <button type="button" class="close remove-link" data-dismiss="modal" aria-label="Close">
+                                                <span class="icon-container">
+                                                    <svg class="icon x-circle-fill">
+                                                        <use href="#icon-bs-x-circle-fill"></use>
+                                                    </svg>
+                                                    <svg class="icon circle-fill">
+                                                        <use href="#icon-bs-circle-fill"></use>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    `;
+                                }).join('\n')
+                            } catch (e) {
+                                return links;
+                            }
+                        })() : ''
                 }
+                </div>
+                <div class='mt-2 d-flex justify-content-end align-items-center'>
+                    <button type='button' class='btn btn-robi-light'>Reset</button>
                 </div>
             </div>
         `,

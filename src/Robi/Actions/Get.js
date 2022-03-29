@@ -92,7 +92,8 @@ export async function Get(param) {
         const fetchAll = await Promise.all(queries.map( async query => {
             const queryFilterString = [
                 formatFilter(query),
-                formatOrder(orderby)
+                formatOrder(orderby),
+                formatTop(top)
             ]
             .filter(x => x)
             .join('&');
@@ -121,12 +122,19 @@ export async function Get(param) {
             }
         }
 
-        /** GET /posts?_sort=views&_order=asc */
+        // GET /posts?_sort=views&_order=asc
         function formatOrder(value) {
             if (value) {
                 const [field, order] = value.split(' ');
 
                 return `_sort=${field}&_order=${order}`;
+            }
+        }
+
+        // GET /posts?_page=7&_limit=20
+        function formatTop(value) {
+            if (value) {
+                return `_limit=${value}`;
             }
         }
 

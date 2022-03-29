@@ -87,14 +87,10 @@ export async function CreateList(param) {
     }
 
     // Turn on major versions by default
-    if (options) {
-        const { versioning } = options;
-
-        if (versioning === false) {
-            data.EnableVersioning = false;
-        } else {
-            data.EnableVersioning = true;
-        }
+    if (options?.versioning === false) {
+        data.EnableVersioning = false;
+    } else {
+        data.EnableVersioning = true;
     }
 
     const postOptions = {
@@ -143,7 +139,7 @@ export async function CreateList(param) {
         if (options?.files) {
             console.log(`Files enabled. Create '${list}Files' doc lib.`);
             const filesLib = await CreateLibrary({
-                name: `${list}Files`
+                name: `${list}Files`,
             });
 
             await CreateColumn({
@@ -157,6 +153,22 @@ export async function CreateList(param) {
             });
             
             console.log(`${list}Files:`, filesLib);
+        }
+
+        // If recyclebin, create second list
+        if (options?.recyclebin) {
+            console.log(`Recycle bin enabled. Create '${list}RecycleBin' list.`);
+
+            // FIXME: Breaks progress bar count
+            // TODO: Need way to add to progress bar in real time
+            const binList = await CreateList({
+                list: `${list}RecycleBin`,
+                web,
+                fields,
+                template
+            });
+
+            console.log(`${list}RecycleBin:`, binList);
         }
 
         // Create fields

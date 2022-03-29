@@ -3,7 +3,7 @@
 // Just be sure to put @START, @END, and @[Spacer Name] sigils in the right places.
 // Otherwise, changes made from CLI and GUI tools won't work properly.
 
-import { Modal, SingleLineTextField, MultiLineTextField, BootstrapButton } from '../../Robi/RobiUI.js'
+import { Modal, SingleLineTextField, MultiLineTextField, Button } from '../../Robi/RobiUI.js'
 import { Store, Style, App, CreateItem, UploadFile } from '../../Robi/Robi.js'
 import { RecordScreen } from './RecordScreen.js'
 
@@ -29,15 +29,15 @@ export async function Feedback() {
                 background: var(--primary);
                 box-shadow: var(--box-shadow);
                 border-radius: 62px;
-                height: 52px;
-                width: 52px;
-                transition: all 350ms;
+                height: 44px;
+                width: 44px;
+                transition: all 450ms;
             }
 
             .show-feedback-form:hover {
                 border-radius: 62px;
                 justify-content: start;
-                width: 200px;
+                width: 180px;
             }
 
             .show-feedback-form-label {
@@ -45,14 +45,14 @@ export async function Feedback() {
                 width: 0px;
                 color: var(--secondary);
                 white-space: nowrap;
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: 500;
-                transition: all 350ms;
+                transition: all 450ms;
             }
 
             .show-feedback-form:hover .show-feedback-form-label {
+                margin-left: 10px;
                 opacity: 1;
-                width: 149px;
             }
         `
     });
@@ -60,7 +60,7 @@ export async function Feedback() {
     Store.get('appcontainer').append(/*html*/ `
         <div class='feedback-button-container'>
             <button type='buton' class='show-feedback-form'>
-                <svg class="icon" style='font-size: 40px; fill: var(--secondary);'>
+                <svg class="icon" style='font-size: 32px; fill: var(--secondary);'>
                     <use href="#icon-bs-emoji-laughing"></use>
                 </svg>
                 <span class='show-feedback-form-label'>Share feedback?</span>
@@ -249,7 +249,7 @@ export async function Feedback() {
                     });
                 }
 
-                const submitBtn = BootstrapButton({
+                const submitBtn = Button({
                     async action() {
                         submitBtn.disable();
                         submitBtn.get().innerHTML = /*html*/ `
@@ -273,7 +273,7 @@ export async function Feedback() {
                         
                         // Upload video
                         if (newFeedbackRecording) {
-                            const file = new File([newFeedbackRecording.blob], `Recording.webm`, { type: 'video/webm' });
+                            const file = new File([newFeedbackRecording.blob], `${newItem.Id}-Recording.webm`, { type: 'video/webm' });
                             console.log(file);
 
                             const newRecording = await UploadFile({
@@ -325,7 +325,7 @@ export async function Feedback() {
     
                 submitBtn.add();
     
-                const cancelBtn = BootstrapButton({
+                const cancelBtn = Button({
                     action(event) {
                         console.log('Cancel add route');
     

@@ -67,6 +67,14 @@ export async function DeleteList(param) {
                 updateProgressCount: false
             });
         }
+
+        // Delete files
+        if (options?.recycleBin) {
+            await DeleteList({
+                list: `${list}RecycleBin`,
+                updateProgressCount: false
+            });
+        }
     } else if (App.isDev()) {
         const options = {
             method: 'DELETE',

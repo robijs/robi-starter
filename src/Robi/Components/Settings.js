@@ -1,22 +1,21 @@
-import { Table } from './Table.js'
-import { Title } from './Title.js'
-import { Timer } from './Timer.js'
-import { Container } from './Container.js'
-import { SectionStepper } from './SectionStepper.js'
-import { DevConsole } from './DevConsole.js'
 import { AccountInfo } from './AccountInfo.js'
-import { BuildInfo } from './BuildInfo.js'
-import { DeveloperLinks } from './DeveloperLinks.js'
-import { ReleaseNotesContainer } from './ReleaseNotesContainer.js'
-import { SiteUsageContainer } from './SiteUsageContainer.js'
-import { RequestAssitanceInfo } from './RequestAssitanceInfo.js'
-import { Store } from '../Core/Store.js'
-import { ChangeTheme } from './ChangeTheme.js'
-import { CreateItem } from '../Actions/CreateItem.js'
-import { Route } from '../Actions/Route.js'
 import { ActionsCards } from './ActionsCards.js'
+import { Alerts } from './Alerts.js'
+import { BuildInfo } from './BuildInfo.js'
+import { ChangeTheme } from './ChangeTheme.js'
+import { Container } from './Container.js'
+import { DevConsole } from './DevConsole.js'
+import { DeveloperLinks } from './DeveloperLinks.js'
 import { LogsContainer } from './LogsContainer.js'
 import { Preferences } from './Preferences.js'
+import { ReleaseNotesContainer } from './ReleaseNotesContainer.js'
+import { RequestAssitanceInfo } from './RequestAssitanceInfo.js'
+import { Route } from '../Actions/Route.js'
+import { SectionStepper } from './SectionStepper.js'
+import { SiteUsageContainer } from './SiteUsageContainer.js'
+import { Store } from '../Core/Store.js'
+import { Table } from './Table.js'
+import { Title } from './Title.js'
 
 // @START-File
 /**
@@ -38,9 +37,8 @@ export async function Settings({ parent, pathParts, title }) {
         'Theme'
     ];
 
-    // console.log(Store.user().Roles, Store.user().Roles.results.includes('Developer'));
-
-    if (devPaths.includes(path) && !Store.user().Roles.results.includes('Developer')) {
+    // FIXME: Refactor hasRole to accept multiple args
+    if (devPaths.includes(path) && (!Store.user().hasRole('Developer') && !Store.user().hasRole('Administrator'))) {
         Route('403');
     }
 
@@ -66,19 +64,23 @@ export async function Settings({ parent, pathParts, title }) {
 
     // Developers can see additional options
     // TODO: API for checking user roles
-    if ( Store.user().Roles.results.includes('Developer')) {
+    if ( Store.user().hasRole('Developer')) {
         sections = sections.concat([
             {
                 name: 'Actions',
                 path: 'Actions'
             },
             {
-                name: 'Build',
-                path: 'Build'
-            },
-            {
                 name: 'App',
                 path: 'App'
+            },
+            {
+                name: 'Alerts',
+                path: 'Alerts'
+            },
+            {
+                name: 'Build',
+                path: 'Build'
             },
             {
                 name: 'Logs',
@@ -242,6 +244,11 @@ export async function Settings({ parent, pathParts, title }) {
         
             devConsole.add();
             break;
+        case 'Alerts':
+            Alerts({
+                parent: planContainer
+            });
+            break;
         case 'Build':
             BuildInfo({
                 parent: planContainer
@@ -303,133 +310,13 @@ export async function Settings({ parent, pathParts, title }) {
                 view: 'Users',
                 formView: 'All',
                 width: '100%',
-                toolbar: [],
+                advancedSearch: true,
                 parent: planContainer
             });
             break;
         default:
             Route('404');
             break;
-    }
-
-    // Actions
-    function actions() {
-        // Toggle update
-        let run = false;
-
-        // Update clock and buttons
-        const timer = Timer({
-            parent: planContainer,
-            classes: ['w-100'],
-            start() {
-                run = true;
-                console.log(`Run: ${run}`);
-
-                // create(25);
-                // update();
-            },
-            stop() {
-                run = false;
-                console.log(`Run: ${run}`);
-            },
-            reset() {
-                console.log('reset');
-            }
-        });
-
-        timer.add();
-
-        const items = []; // Get({ list: 'ListName' })
-
-        async function create(limit) {
-            /** Set items */
-            for (let i = 0; i < limit; i++) {
-
-                if (run) {
-                    // Create Item
-                    const newItem = await CreateItem({
-                        list: '',
-                        data,
-                        wait: false
-                    });
-
-                    console.log(`Id: ${newItem.Id}.`);
-
-                    if (i === limit - 1) {
-                        timer.stop();
-                    }
-                } else {
-                    console.log('stoped');
-
-                    break;
-                }
-            }
-        }
-
-        async function update() {
-            /** Set items */
-            for (let i = 0; i < items.length; i++) {
-                if (run) {
-
-                    // update item
-                    if (i === items.length - 1) {
-                        timer.stop();
-                    }
-                } else {
-                    console.log('stoped');
-
-                    break;
-                }
-            }
-        }
-
-        // /** Test Attach Files Button */
-        // const attachFilesButton = UploadButton({
-        //     async action(files) {
-        //         console.log(files);
-        //         const uploadedFiles = await AttachFiles({
-        //             list: 'View_Home',
-        //             id: 1,
-        //             files
-        //         });
-        //         console.log(uploadedFiles);
-        //     },
-        //     parent: planContainer,
-        //     type: 'btn-outline-success',
-        //     value: 'Attach file',
-        //     margin: '20px 0px 20px 0px'
-        // });
-        // attachFilesButton.add();
-
-        // /** Test Send Email */
-        // const sendEmailButton = BootstrapButton({
-        //     async action(event) {
-        //         await SendEmail({
-        //             From: 'stephen.a.matheis.ctr@mail.mil',
-        //             To: 'stephen.a.matheis.ctr@mail.mil',
-        //             CC: [
-        //                 'stephen.a.matheis.ctr@mail.mil'
-        //             ],
-        //             Subject: `Test Subject`,
-        //             Body: /*html*/ `
-        //                 <div style="font-family: 'Calibri', sans-serif; font-size: 11pt;">
-        //                     <p>
-        //                         Test body. <strong>Bold</strong>. <em>Emphasized</em>.
-        //                     </p>
-        //                     <p>
-        //                         <a href='https://google.com'>Google</a>
-        //                     </p>
-        //                 </div>
-        //             `
-        //         });
-        //     },
-        //     parent: planContainer,
-        //     classes: ['mt-5'],
-        //     type: 'outline-success',
-        //     value: 'Send Email',
-        //     margin: '0px 0px 0px 20px'
-        // });
-        // sendEmailButton.add();
     }
 }
 // @END-File

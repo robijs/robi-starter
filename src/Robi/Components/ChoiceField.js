@@ -296,20 +296,7 @@ export function ChoiceField(param) {
             {
                 selector: `#id .dropdown-item`,
                 event: 'click',
-                listener(event) {
-                    if (valueType === 'html') {
-                        // component.find('.dropdown-toggle').innerHTML = this.querySelector('[data-target="true"').innerHTML;
-                        component.find('.dropdown-toggle').innerHTML = this.innerHTML;
-                    } else {
-                        component.find('.dropdown-toggle').innerText = event.target.innerText;
-                    }
-
-                    component.find('.dropdown-toggle').dataset.id = this.dataset.id;
-
-                    if (onChange) {
-                        onChange(event);
-                    }
-                }
+                listener: selectOption
             },
             {
                 selector: `#id .dropdown-toggle`,
@@ -335,11 +322,26 @@ export function ChoiceField(param) {
         `;
     }
 
-    component.setDropdownMenu = (list) => {
+    function selectOption(event) {
+        if (valueType === 'html') {
+            // component.find('.dropdown-toggle').innerHTML = this.querySelector('[data-target="true"').innerHTML;
+            component.find('.dropdown-toggle').innerHTML = this.innerHTML;
+        } else {
+            component.find('.dropdown-toggle').innerText = event.target.innerText;
+        }
+
+        component.find('.dropdown-toggle').dataset.id = this.dataset.id;
+
+        if (onChange) {
+            onChange(event);
+        }
+    }
+
+    component.setDropdownMenu = (list) => { // Edited by LBunker on 2022-03-21
         component.find('.dropdown-menu').innerHTML = buildDropdown(list);
 
         component.findAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', onChange);
+            item.addEventListener('click', selectOption);
         });
     };
 

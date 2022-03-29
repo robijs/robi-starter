@@ -9,7 +9,7 @@ import { NewForm } from './NewForm.js'
 import { TableToolbar } from './TableToolbar.js'
 import { App } from '../Core/App.js'
 import { Lists } from '../Models/Lists.js'
-import { Wait } from '../Robi.js'
+import { GenerateUUID, Store } from '../Robi.js'
 
 // @START-File
 /**
@@ -41,6 +41,7 @@ export async function Table(param) {
         margin,
         newForm,
         newFormTitle,
+        nowrap,
         onRowClick,
         onDelete,
         openInModal,
@@ -53,7 +54,8 @@ export async function Table(param) {
         toolbar,
         top,
         view,
-        width
+        width,
+        pageLength,
     } = param;
 
     let {
@@ -80,9 +82,19 @@ export async function Table(param) {
     // Columns
     const headers = [];
     const columns = [];
-
+    
+    let selectAllId;
+    
     if (checkboxes !== false) {
-        headers.push('');
+        // headers.push('');
+        selectAllId = `select-all-${GenerateUUID()}`;
+
+        headers.push(/*html*/ `
+            <div class='custom-control custom-checkbox' style='min-height: unset; text-align: center; padding-left: 32.5px'>
+                <input type='checkbox' class='custom-control-input' id='${selectAllId}'>
+                <label class='custom-control-label' for='${selectAllId}'></label>
+            </div>
+        `)
         columns.push({
             data: null,
         });
@@ -94,10 +106,6 @@ export async function Table(param) {
     let schema;
 
     if (list) {
-        if (App.isDev()) {
-            await Wait(1000);
-        }
-
         // TODO: Only select fields from view
         items = items || await Get({
             path,
@@ -137,6 +145,7 @@ export async function Table(param) {
                             // FIXME: Set default SharePoint Fields (won't be listed in schema)
                             // TODO: Only set 'Name' as an option if schema?.template === 101
                             const spFields = ['Created', 'Modified', 'Author', 'Editor', 'Name'];
+
                             if (spFields.includes(name)) {
                                 return { name };
                             } else {
@@ -321,11 +330,11 @@ export async function Table(param) {
         buttons.push({
             text: /*html*/ `
                 <svg class='icon'>
-                    <use href='#icon-bs-plus'></use>
+                    <use href='#icon-bs-plus-circle-fill'></use>
                 </svg>
                 <span>${addButtonValue || 'Add item'}</span>
             `,
-            className: 'add-item',
+            className: 'add-item plus-icon',
             name: 'add',
             action: function (e, dt, node, config) {
                 if (openInModal) {
@@ -391,9 +400,11 @@ export async function Table(param) {
                                         }
 
                                         // Disable button - Prevent user from clicking this item more than once
+                                        console.log($(event.target));
+                                        
                                         $(event.target)
                                             .attr('disabled', '')
-                                            .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating');
+                                            .html(`<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Creating`);
 
                                         if (Array.isArray(newItem)) {
                                             items.concat(newItem);
@@ -446,7 +457,7 @@ export async function Table(param) {
                     const selected = table.selected();
                     const button = tableContainer.find('.delete-item');
                     button.disabled = true;
-                    button.innerHTML = /*html*/ `<span class="spinner-border" role="status" aria-hidden="true" style="width: 20px; height: 20px; border-width: 3px"></span>`;
+                    button.innerHTML = /*html*/ `<span class='spinner-border' role='status' aria-hidden='true' style='width: 18px; height: 18px; border-width: 3px'></span>`;
 
                     // Delete items
                     for (let row in selected) {
@@ -468,8 +479,8 @@ export async function Table(param) {
 
                     button.innerHTML = /*html*/ `
                         <span>
-                            <svg class="icon">
-                                <use href="#icon-bs-trash"></use>
+                            <svg class='icon'>
+                                <use href='#icon-bs-trash'></use>
                             </svg>
                         </span>
                     `;
@@ -484,8 +495,8 @@ export async function Table(param) {
                 background: false,
                 fade: 0,
                 text: /*html*/ `
-                    <svg class="icon">
-                        <use href="#icon-bs-arrow-down-circle-fill"></use>
+                    <svg class='icon'>
+                        <use href='#icon-bs-arrow-down-circle-fill'></use>
                     </svg>
                 `,
                 buttons: [
@@ -523,9 +534,12 @@ export async function Table(param) {
             });
         }
 
+        // NOTE: Experimental
+        // NOTE: Off for now
+        // TODO: Replace with DynaView
         let show = true;
 
-        if (editButton !== false) {
+        if (editButton !== false && Store.user().hasRole('Developer')) {
             buttons.push({
                 text: 'Edit',
                 className: 'btn-robi-light',
@@ -622,7 +636,7 @@ export async function Table(param) {
                 // Disable button
                 button.disabled = true;
                 button.innerHTML = /*html*/ `
-                    <span class="spinner-border" role="status" aria-hidden="true" style="width: 20px; height: 20px; border-width: 3px"></span>
+                    <span class='spinner-border' role='status' aria-hidden='true' style='width: 18px; height: 18px; border-width: 3px'></span>
                 `;
 
                 // TODO: wrap preceding fields in ( ) if operator is OR
@@ -681,19 +695,21 @@ export async function Table(param) {
 
     // DataTable component
     const table = DataTable({
-        headers,
-        headerFilter,
-        buttonColor,
-        checkboxes: checkboxes !== false ? true : false,
-        striped: true,
         border: border || false,
-        width: '100%',
-        columns,
-        data: items,
-        rowId: idProperty,
-        order: order || [[1, 'asc']], /** Sort by 1st column (hidden Id field at [0]) {@link https://datatables.net/reference/api/order()} */
+        buttonColor,
         buttons,
+        checkboxes: checkboxes !== false ? true : false,
+        columns,
         createdRow,
+        data: items,
+        headerFilter,
+        headers,
+        nowrap,
+        order: order || [[1, 'asc']], /** Sort by 1st column (hidden Id field at [0]) {@link https://datatables.net/reference/api/order()} */
+        pageLength: pageLength || 25,
+        rowId: idProperty,
+        striped: true,
+        width: '100%',
         onRowClick: onRowClick || function (param) {
             const {
                 row, item
@@ -721,6 +737,8 @@ export async function Table(param) {
                             selectedForm = await EditForm(formParam);
                         }
 
+                        // TODO: if selectedForm.label, change button value
+
                         if (formFooter !== false) {
                             rowModal.showFooter();
                         }
@@ -739,7 +757,6 @@ export async function Table(param) {
                             },
                             {
                                 value: 'Update',
-                                // disabled: true,
                                 classes: 'btn-robi',
                                 async onClick(event) {
                                     // Call newForm.onUpdate() and wait for it to complete
@@ -751,22 +768,22 @@ export async function Table(param) {
                                         return;
                                     }
 
-                                    /** Disable button - Prevent user from clicking this item more than once */
+                                    // Disable button - Prevent user from clicking this item more than once
                                     $(event.target)
                                         .attr('disabled', '')
-                                        .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating');
+                                        .html(`<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Updating`);
 
                                     table.updateRow({
                                         row: selectedRow,
                                         data: updatedItem
                                     });
 
-                                    /** Enable button */
+                                    // Enable button
                                     $(event.target)
                                         .removeAttr('disabled')
                                         .text('Updated');
 
-                                    /** Hide modal */
+                                    // Hide modal
                                     rowModal.getModal().modal('hide');
                                 }
                             },
@@ -775,22 +792,22 @@ export async function Table(param) {
                                 // disabled: true,
                                 classes: 'btn-robi-light',
                                 async onClick(event) {
-                                    /** Disable button - Prevent user from clicking this item more than once */
+                                    // Disable button - Prevent user from clicking this item more than once
                                     $(event.target)
                                         .attr('disabled', '')
-                                        .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleteing');
+                                        .html(`<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Deleteing`);
 
                                     // Call newForm.onDelete() and wait for it to complete
                                     await selectedForm?.onDelete(event);
 
                                     table.removeRow(selectedItem.Id);
 
-                                    /** Enable button */
+                                    // Enable button
                                     $(event.target)
                                         .removeAttr('disabled')
                                         .text('Deleted');
 
-                                    /** Hide modal */
+                                    // Hide modal
                                     rowModal.getModal().modal('hide');
                                 }
                             }
@@ -841,11 +858,34 @@ export async function Table(param) {
 
     table.add();
 
+    // Add select all change handler
+    table.find(`#${selectAllId}`)?.addEventListener('change', event => {
+        if (event.target.checked) {
+            table.DataTable().rows().select();
+        } else {
+            table.DataTable().rows().deselect();
+        }
+    });
+
+    // Filter by first toolbar if toolbar exists
+    if (toolbar) {
+        const { filter } = toolbar[0];
+
+        // Clear
+        table.DataTable().clear().draw();
+        
+        // Filter
+        table.DataTable().rows.add(filter(items)).draw();
+        
+        // Adjust
+        table.DataTable().columns.adjust().draw();
+    }
+
     // Shimmer off
     tableContainer.shimmerOff();
 
     // FIXME: This only works if selected rows are grouped together
-    // TODO: Handle one or more groups of selected rows (ex: rows [1, 2, 3] and [4,5] and [8,9])
+    // TODO: Handle one or more groups of selected rows (ex: rows [0, 1, 2], [5,6], [8,9], and [12])
     function setSelectedRadius() {
         // Find all rows
         const rows = table.findAll('tbody tr.selected');

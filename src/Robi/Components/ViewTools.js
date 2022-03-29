@@ -259,6 +259,8 @@ export function ViewTools(param) {
 
                     // Turn off sortable
                     function turnOfSortable() {
+                        $(`#${parent.get().id} .robi-row`).removeClass('robi-row-transition');
+
                         // Reset order
                         [...parent.findAll('.robi-row')]
                         .sort((a, b) => parseInt(a.dataset.row.split('row-')[1]) - parseInt(b.dataset.row.split('row-')[1]))
@@ -280,6 +282,7 @@ export function ViewTools(param) {
                     }
 
                     // Turn on sortable
+                    $(`#${parent.get().id} .robi-row`).addClass('robi-row-transition');
                     $(`#${parent.get().id}`).sortable({ items: '.robi-row' });
                     $(`#${parent.get().id} .robi-row > *`).css({'pointer-events': 'none', 'user-select': 'none'});
                 }

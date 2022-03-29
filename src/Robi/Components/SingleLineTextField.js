@@ -23,6 +23,7 @@ export function SingleLineTextField(param) {
         onKeydown,
         onKeypress,
         onKeyup,
+        onPaste,
         optional,
         padding,
         parent,
@@ -128,6 +129,11 @@ export function SingleLineTextField(param) {
                 selector: '#id .form-control',
                 event: 'focusout',
                 listener: onFocusout
+            },
+            {
+                selector: '#id .form-control',
+                event: 'paste',
+                listener: onPaste
             }
         ]
     });

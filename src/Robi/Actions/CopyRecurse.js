@@ -71,7 +71,8 @@ export async function CopyRecurse(param) {
         // 3 Create dirs
         await CreateFolder({
             web: targetWeb,
-            path: `${path}/${Name}`
+            path,
+            name: Name
         });
 
         console.log(`Folder '${Name}' copied.`);

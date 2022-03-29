@@ -15,7 +15,17 @@ export async function UpdateColumn(param) {
     } = param;
 
     const {
-        name, description, type, choices, fillIn, title, required, lookupList, lookupField, value
+        name,
+        description,
+        type,
+        choices,
+        fillIn,
+        title,
+        required,
+        lookupList,
+        lookupField,
+        value,
+        readOnly
     } = field;
 
     // Get new request digest
@@ -68,6 +78,10 @@ export async function UpdateColumn(param) {
 
     if (value !== undefined) {
         data.DefaultValue = value;
+    }
+
+    if (readOnly !== undefined) {
+        data.ReadOnlyField = readOnly;
     }
 
     const postOptions = {

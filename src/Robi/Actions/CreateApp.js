@@ -1,6 +1,6 @@
 import { Container } from '../Components/Container.js'
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
+import { Button } from '../Components/Button.js'
 import { BootstrapTextarea } from '../Components/BootstrapTextarea.js'
 import { SingleLineTextField } from '../Components/SingleLineTextField.js'
 import { ThemeField } from '../Components/ThemeField.js'
@@ -77,7 +77,7 @@ export async function CreateApp() {
             themeField.add();
 
             // Install
-            const installBtn = BootstrapButton({
+            const installBtn = Button({
                 action: createNewSite,
                 classes: ['w-100 mt-5'],
                 width: '100%',
@@ -290,7 +290,7 @@ export async function CreateApp() {
                 modal.find('.console-title').innerHTML = `${modal.find('.console-title').innerHTML.replace('Creating', 'Created')}`
 
                 // Show launch button
-                const installAppBtn = BootstrapButton({
+                const installAppBtn = Button({
                     type: 'robi',
                     value: 'Install app',
                     classes: ['mt-3', 'w-100'],
@@ -307,7 +307,7 @@ export async function CreateApp() {
 
                 installAppBtn.add();
 
-                const modifyBtn = BootstrapButton({
+                const modifyBtn = Button({
                     action(event) {
                         window.open(`${App.get('site')}/${url}/${App.get('library') || 'App'}/src`);
                     },
@@ -320,7 +320,7 @@ export async function CreateApp() {
 
                 modifyBtn.add();
 
-                const cancelBtn = BootstrapButton({
+                const cancelBtn = Button({
                     action(event) {
                         console.log('Cancel install');
 
@@ -344,7 +344,7 @@ export async function CreateApp() {
             }
 
             // Close modal
-            const cancelBtn = BootstrapButton({
+            const cancelBtn = Button({
                 action(event) {
                     console.log('Cancel create site');
 

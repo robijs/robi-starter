@@ -1,6 +1,6 @@
 import { Alert } from '../Components/Alert.js'
 import { Modal } from '../Components/Modal.js'
-import { BootstrapButton } from '../Components/BootstrapButton.js'
+import { Button } from '../Components/Button.js'
 import { ProgressBar } from '../Components/ProgressBar.js'
 import { InstallConsole } from '../Components/InstallConsole.js'
 import { Container } from '../Components/Container.js'
@@ -95,7 +95,7 @@ export function ReinstallApp() {
                 </div>
             `);
 
-            const deleteBtn = BootstrapButton({
+            const deleteBtn = Button({
                 async action(event) {
                     console.log('Reinstall');
 
@@ -675,7 +675,7 @@ export function ReinstallApp() {
                     `);
 
                     // Show return button
-                    const returnBtn = BootstrapButton({
+                    const returnBtn = Button({
                         type: 'primary',
                         value: 'Reload',
                         classes: ['w-100'],
@@ -707,7 +707,7 @@ export function ReinstallApp() {
 
             deleteBtn.add();
 
-            const cancelBtn = BootstrapButton({
+            const cancelBtn = Button({
                 action(event) {
                     console.log('Cancel delete');
 

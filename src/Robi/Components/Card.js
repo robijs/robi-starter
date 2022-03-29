@@ -42,7 +42,7 @@ export function Card(param) {
                 display: inline-flex;
                 flex-direction: column;
                 background: ${background ||'var(--secondary)'};
-                padding: ${padding || '20px'};
+                padding: ${padding || title ? '20px' : '0px 20px'};
                 margin: ${margin || '0px'};
                 min-width: ${minWidth || 'initial'};
                 min-height: ${minHeight || 'initial'};

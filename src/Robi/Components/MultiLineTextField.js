@@ -9,7 +9,22 @@ import { Component } from '../Actions/Component.js'
  */
 export function MultiLineTextField(param) {
     const {
-        label, description, optional, value, readOnly, placeHolder, parent, position, minHeight, width, fieldMargin, padding, onKeydown, onKeyup, onFocusout
+        label,
+        description,
+        optional,
+        value,
+        readOnly,
+        placeHolder,
+        parent,
+        position,
+        minHeight,
+        width,
+        fieldMargin,
+        padding,
+        onKeydown,
+        onKeyup,
+        onFocusout,
+        onPaste
     } = param;
 
     const component = Component({
@@ -93,6 +108,11 @@ export function MultiLineTextField(param) {
                 selector: '#id .form-field-multi-line-text.editable',
                 event: 'keyup',
                 listener: onKeyup
+            },
+            {
+                selector: '#id .form-field-multi-line-text.editable',
+                event: 'paste',
+                listener: onPaste
             }
         ]
     });

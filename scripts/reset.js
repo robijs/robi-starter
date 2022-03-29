@@ -60,6 +60,10 @@ for (let info of listInfo) {
     if (options?.files) {
         db[list + 'Files'] = [];
     }
+
+    if (options?.recyclebin) {
+        db[list + 'RecycleBin'] = [];
+    }
 }
 
 writeFile('./json-server/db.json', JSON.stringify(db), err => {

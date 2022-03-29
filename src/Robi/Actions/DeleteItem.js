@@ -45,18 +45,35 @@ export async function DeleteItem(param) {
             return Post(postOptions);
         }));
     } else if (App.isDev()) {
-        const options = {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json;odata=verbose",
-                "Accept": "application/json;odata=verbose",
+        const getItems = await Get({
+            list,
+            filter: `Id eq ${itemId}`
+        });
+
+        const item = getItems[0];
+
+        if (item) {
+            console.log(`Delete Item: ${list} #${itemId} found. Safe to delete.`);
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json;odata=verbose",
+                    "Accept": "application/json;odata=verbose",
+                }
             }
+    
+            try {
+                const response = await fetch(`http://localhost:3000/${list}/${itemId}`, options);
+                const deletedItem = await response.json();
+        
+                return deletedItem;    
+            } catch (error) {
+                console.log(error);
+            }
+            
+        } else {
+            console.log('Delete Item: Missng item?');
         }
-
-        const response = await fetch(`http://localhost:3000/${list}/${itemId}`, options);
-        const deletedItem = await response.json();
-
-        return deletedItem;
     }
 }
 // @END-File
