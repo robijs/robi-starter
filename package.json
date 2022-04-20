@@ -1,7 +1,7 @@
 {
   "name": "robi-starter",
-  "version": "0.1.0",
-  "description": "Starter app made with Robi - https://github.com/robijs/robi",
+  "version": "1.0.0",
+  "description": "Starter Robi app clone template.",
   "keywords": [
     "SharePoint",
     "JavScript",

@@ -90,9 +90,9 @@ import { QuestionBoard } from './Components/QuestionBoard.js'
 import { QuestionCard } from './Components/QuestionCard.js'
 import { QuestionCards } from './Components/QuestionCards.js'
 import { QuestionContainer } from './Components/QuestionContainer.js'
-import { QuestionsToolbar } from './Components/QuestionsToolbar.js'
 import { QuestionType } from './Components/QuestionType.js'
 import { QuestionTypes } from './Components/QuestionTypes.js'
+import { QuestionsToolbar } from './Components/QuestionsToolbar.js'
 import { RecordScreen } from './Components/RecordScreen.js'
 import { RecurrenceMenu } from './Components/RecurrenceMenu.js'
 import { ReleaseNotes } from './Components/ReleaseNotes.js'
@@ -203,9 +203,9 @@ export {
     QuestionCard,
     QuestionCards,
     QuestionContainer,
-    QuestionsToolbar,
     QuestionType,
     QuestionTypes,
+    QuestionsToolbar,
     RecordScreen,
     RecurrenceMenu,
     ReleaseNotes,
