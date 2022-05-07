@@ -1,4 +1,6 @@
-# Robi
+# Robi Starter
+
+Example [Robi](https://github.com/robijs/robi) app. [Generate](https://github.com/stephenmatheis/robi-starter/generate) a new repo from this GitHub template. Follow the instructions below to run the offline devlopment enviornment and deploy to SharePoint when ready.
 
 ## Local Development
 ```console
@@ -9,9 +11,9 @@ npm run dev
 ## Deploy to SharePoint
 1. Create a build of your app.
 ```console
-npm run build-sp min
+npm run build-sp m
 ```
-2. Create a new SharePoint site (if one doesn't already exist). We recommend deploying only one app per site.
+2. Create a new SharePoint subsite (if it doesn't already exist). You can use the root web of a site collection. Deploy only one app per web.
 3. Create a new document library named App.
 4. Copy single /src directory from /dist to App, including the /src directory.
 5. Launch App/src/Pages/app.aspx
