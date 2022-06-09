@@ -1,6 +1,6 @@
 import { writeFile } from 'fs/promises'
 import { readfiles } from './readfiles.js'
-import { getfiles } from './getfiles.js'
+import { getFiles } from './getFiles.js'
 
 export async function buildFile({ license, paths, dir, imports, importFile, file }) {
     let output = license.join('\n');
@@ -15,7 +15,7 @@ export async function buildFile({ license, paths, dir, imports, importFile, file
     // FIXME: Don't add files from src/Robi/Templates yet, will trip false positive below
     // EX: Title() is only  found in RouteTemplate.
     for (const path of paths) {
-        body += await getfiles(path);
+        body += await getFiles(path);
     }
 
     output += [

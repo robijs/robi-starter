@@ -133,10 +133,12 @@ import { Store } from '../Core/Store.js'
         add(localParent) {
             const didAdd = addElement(localParent);
 
-            if (didAdd && onAdd) {
-                onAdd();
-            } else {
-                console.log(`Component '${id}' not added. Can't run onAdd.`)
+            if (onAdd) {
+                if (didAdd) {
+                    onAdd();
+                } else {
+                    console.log(`Component '${id}' not added. Can't run onAdd.`)
+                }
             }
         },
         addClass(name) {

@@ -1,6 +1,3 @@
-import NewForm from './NewForm.js'
-import EditForm from './EditForm.js'
-
 export default {
     list: 'AllTypes',
     display: 'All Types',
@@ -92,7 +89,5 @@ export default {
                 }
             }
         }
-    ],
-    newForm: NewForm,
-    editForm: EditForm
+    ]
 }

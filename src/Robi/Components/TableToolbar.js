@@ -43,7 +43,7 @@ export function TableToolbar(param) {
             <div class='btn-toolbar w-100' role='toolbar'>
                 <div class='text'>${heading}</div>
                 ${
-                    listInfo?.options?.menu !== false && Store.user().hasRole('Developer') ?
+                    listInfo?.options?.menu !== false && App.isDev() ?
                     (() => {
                         const id = GenerateUUID();
 

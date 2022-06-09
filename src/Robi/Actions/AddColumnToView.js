@@ -9,7 +9,6 @@ import { Post } from './Post.js'
  * @param {Object}   param          Interface to UpdateItem() module.   
  * @param {string}   param.list     SharePoint list Name.
  */
-// Hello world!
 export async function AddColumnToView(param) {
     const {
         list,

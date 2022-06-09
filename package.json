@@ -45,6 +45,7 @@
     "build": "node ./scripts/build.js",
     "build-dev": "node ./scripts/build-dev.js",
     "build-sp": "node ./scripts/build-sp.js",
+    "cleanup": "node ./scripts/cleanup.js",
     "mkc": "node ./scripts/create-component.js",
     "create-route": "node ./scripts/create-route.js",
     "watch-robi": "npm-watch build",

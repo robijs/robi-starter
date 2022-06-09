@@ -5,7 +5,7 @@ import { LoadingSpinner } from '../Components/LoadingSpinner.js'
 import { Alert } from '../Components/Alert.js'
 import { SingleLineTextField } from '../Components/SingleLineTextField.js'
 import { GetRequestDigest } from './GetRequestDigest.js'
-import { CreateFolder } from '../Actions/CreateFolder.js'
+import { CreateFolder } from './CreateFolder.js'
 import { App } from '../Core/App.js'
 import { Store } from '../Core/Store.js'
 import { Wait } from './Wait.js'
@@ -16,10 +16,7 @@ import { RouteTemplate } from '../Templates/RouteTemplate.js'
  *
  * @param {*} param
  */
-export async function AddRoute(event) {
-    // Show modal
-    console.log('add route');
-
+export async function CreateActionForm({ parent }) {
     const addRouteModal = Modal({
         title: false,
         scrollable: true,
@@ -318,6 +315,7 @@ export async function AddRoute(event) {
                 routeTitle.focus();
             }, 500);
         },
+        parent,
         centered: true,
         showFooter: false,
     });

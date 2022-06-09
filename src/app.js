@@ -7,24 +7,10 @@ import { Start } from './Robi/Robi.js'
 
 // @START-Imports:Lists
 import List_AllTypes from './Lists/AllTypes/Schema.js'
-import List_SLOT from './Lists/SLOT/Schema.js'
-import List_MLOT from './Lists/MLOT/Schema.js'
-import List_Date from './Lists/Date/Schema.js'
-import List_Choice from './Lists/Choice/Schema.js'
-import List_Number from './Lists/Number/Schema.js'
-import List_MultiChoice from './Lists/MultiChoice/Schema.js'
 // @END-Imports:Lists
 
 // @START-Imports:Routes
-import Route_SortTables from './Routes/SortTables/SortTables.js'
-import Route_Test from './Routes/Test/Test.js'
-import Route_LookupField from './Routes/LookupField/LookupField.js'
-import Route_SelectIcon from './Routes/SelectIcon/SelectIcon.js'
-import Route_ChartDemo from './Routes/ChartDemo/ChartDemo.js'
-import Route_ModifyFile from './Routes/ModifyFile/ModifyFile.js'
-import Route_Button from './Routes/Button/Button.js'
-import Route_CustomForm from './Routes/CustomForm/CustomForm.js'
-import Route_NewRoute from './Routes/NewRoute/NewRoute.js'
+import Route_Example from './Routes/Example/Example.js'
 // @END-Imports:Routes
 
 // @START
@@ -36,97 +22,19 @@ Start({
         message: 'View release notes'
     },
     lists: [
-        List_AllTypes,
-        List_SLOT,
-        List_MLOT,
-        List_Choice,
-        List_Date,
-        List_Number,
-        List_MultiChoice
+        List_AllTypes
     ],
     // Routes are directly addressable. Ex: https://site#path.
     routes: [
-        // @START-Routes
-        // @START-CustomForm
+        // @START-Routes        
+        // @START-Example
         {
-            path: 'CustomForm',
-            title: 'Custom Form',
-            icon: 'bs-checks-grid',
-            go: Route_CustomForm
-        }
-        // @END-CustomForm
-        , // @Route
-        // @START-SortTables
-        {
-            path: 'SortTables',
-            title: 'Sort Tables',
-            icon: 'bs-table',
-            go: Route_SortTables
-        }
-        // @END-SortTables
-        , // @Route
-        // @START-Test
-        {
-            path: 'Test',
-            title: 'Test',
-            icon: 'bs-tools',
-            go: Route_Test
-        }
-        // @END-Test
-        , // @Route
-        // @START-LookupField
-        {
-            path: 'LookupField',
-            title: 'Lookup Field',
-            icon: 'bs-file-earmarked-ruled',
-            go: Route_LookupField
-        }
-        // @END-LookupField
-        , // @Route
-        // @START-SelectIcon
-        {
-            path: 'SelectIcon',
-            title: 'Select Icon',
+            path: 'Example',
+            title: 'Example',
             icon: 'bs-app',
-            go: Route_SelectIcon
+            go: Route_Example
         }
-        // @END-SelectIcon
-        , // @Route
-        // @START-ChartDemo
-        {
-            path: 'ChartDemo',
-            title: 'Chart Demo',
-            icon: 'stats-bars',
-            go: Route_ChartDemo
-        }
-        // @END-ChartDemo
-        , // @Route
-        // @START-ModifyFile
-        {
-            path: 'ModifyFile',
-            title: 'Modify File',
-            icon: 'bs-code-slash',
-            go: Route_ModifyFile
-        }
-        // @END-ModifyFile
-        , // @Route
-        // @START-Button
-        {
-            path: 'Button',
-            title: 'Button',
-            icon: 'bs-stop-fill',
-            go: Route_Button
-        }
-        // @END-Button
-        , // @Route
-        // @START-NewRoute
-        {
-            path: 'NewRoute',
-            title: 'New Route',
-            icon: 'bs-bookmark-plus',
-            go: Route_NewRoute
-        }
-        // @END-NewRoute
+        // @END-Example
         // @END-Routes
     ],
     settings: {

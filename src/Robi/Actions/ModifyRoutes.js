@@ -16,7 +16,6 @@ import { Container } from '../Components/Container.js'
  * @param {*} param
  */
 export async function ModifyRoutes(event) {
-    // return;
     const routes = Store.routes().filter(item => item.type !== 'system');
 
     const addRouteModal = Modal({
@@ -152,7 +151,7 @@ export async function ModifyRoutes(event) {
                 }
             });
 
-            const addRouteBtn = Button({
+            const modifyRoutesBtn = Button({
                 async action() {
                     // TODO: Generalize show save modal and blur background
                     // Update app.js first or live-server will reload when
@@ -223,21 +222,24 @@ export async function ModifyRoutes(event) {
                         
                         await Wait(3000);
                         location.reload();
-                    } else {
+                    }
+                    
+                    // @START-Dev
+                    else if (App.isDev()) {
                         // NOTE: Can't update files in /src first, will trigger hot reload
                         for (let field of fields) {
                             const { name, path, title, icon } = field.values();
     
                             if (path || title || icon) {
-                                await updateRoute({ name, path, title, icon });
+                                updateRoute({ name, path, title, icon });
                             } else {
                                 console.log(`${name} not changed`);
                             }
                         }
 
-                        await Wait(1000);
                         location.reload();
                     }
+                    // @END-Dev
 
                     modal.close();
 
@@ -258,7 +260,6 @@ export async function ModifyRoutes(event) {
                             });
                         } else {
                             request = await fetch(`http://127.0.0.1:8080/src/app.js`);
-                            await Wait(1000);
                         }
 
                         let content = await request.text();
@@ -310,10 +311,6 @@ export async function ModifyRoutes(event) {
                             ].join('\n');
                         }).join(', // @Route');
 
-                        return;
-
-                        // console.log(newRoutes);
-                    
                         updated = updated.replace(/\/\/ @START-Routes([\s\S]*?)\/\/ @END-Routes/, `// @START-Routes${newRoutes || '\n        '}// @END-Routes`);
                     
                         // console.log('OLD\n----------------------------------------\n', content);
@@ -323,31 +320,36 @@ export async function ModifyRoutes(event) {
 
                         let setFile;
 
+                        // @START-Prod
                         if (App.isProd()) {
                             // TODO: Make a copy of app.js first
                             // TODO: If error occurs on load, copy ${file}-backup.js to ${file}.js
                             setFile = await fetch(`${App.get('site')}/_api/web/GetFolderByServerRelativeUrl('App/src')/Files/Add(url='app.js',overwrite=true)`, {
                                 method: 'POST',
-                                body: updatedContent, 
+                                body: updated, 
                                 headers: {
                                     'binaryStringRequestBody': 'true',
                                     'Accept': 'application/json;odata=verbose;charset=utf-8',
                                     'X-RequestDigest': digest
                                 }
                             });
-                        } else {
+                        }
+                        // @END-Prod
+                        
+                        // @START-Dev
+                        if (App.isDev()) {
                             setFile = await fetch(`http://127.0.0.1:2035/?path=src&file=app.js`, {
                                 method: 'POST',
                                 body: updated
                             });
-                            await Wait(1000);
                         }
+                        // @END-Dev
 
                         // console.log('Saved:', setFile);
                     }
 
                     async function updateRoute({ name, title, path }) {
-                        // Prod
+                        // @START-Prod
                         if (App.isProd()) {
                             let digest;
                             let request;
@@ -388,7 +390,6 @@ export async function ModifyRoutes(event) {
                                         method: 'POST',
                                         body: updated
                                     });
-                                    await Wait(1000);
                                 }
                             } else {
                                 console.log('Title not changed');
@@ -445,14 +446,13 @@ export async function ModifyRoutes(event) {
                             }
 
                             return;
-                        } 
+                        }
+                        // @END-Prod
                         
-                        // Dev
+                        // @START-Dev
                         if (App.isDev()) {
                             // 1. If title has changed, update file.
                             const request = await fetch(`http://127.0.0.1:8080/src/Routes/${name}/${name}.js`);
-                            await Wait(1000);
-                
                             const value = await request.text();
 
                             // Hold changes;
@@ -478,13 +478,11 @@ export async function ModifyRoutes(event) {
                                 body: updated
                             });
 
-                            await Wait(1000);
-
                             return;
                         }
+                        // @START-Dev
                     }
                 },
-                // disabled: true,
                 classes: ['w-100 mt-5'],
                 width: '100%',
                 parent: modalBody,
@@ -492,7 +490,7 @@ export async function ModifyRoutes(event) {
                 value: 'Save'
             });
 
-            addRouteBtn.add();
+            modifyRoutesBtn.add();
 
             const cancelBtn = Button({
                 action(event) {
@@ -536,9 +534,9 @@ export async function ModifyRoutes(event) {
             // Check if all fields are filled out and path doesn't already exist
             function canEnable() {
                 if (routeTitle.value() && routePath.value() && !paths.includes(routePath.value().toLowerCase())) {
-                    addRouteBtn.enable();
+                    modifyRoutesBtn.enable();
                 } else {
-                    addRouteBtn.disable();
+                    modifyRoutesBtn.disable();
                 }
             }
         },

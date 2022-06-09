@@ -781,6 +781,69 @@ export function AppContainer() {
                 overflow: visible;
                 box-sizing: content-box;
             }
+
+            /* Article */
+            article pre,
+            article p,
+            article ul,
+            article li,
+            article div {
+                font-size: 13px;
+            }
+
+            article pre {
+                margin: 8px 0px;
+                background: var(--background);
+                padding: 8px 12px;
+                border-radius: 8px;
+                color: var(--color);
+            }
+
+            article code {
+                border-radius: 0px 8px;
+            }
+
+            article h1,
+            article h2,
+            article h3,
+            article h4,
+            article h5,
+            article h6 {
+                font-weight: 700;
+            }
+
+            /*
+                h1 | 2em    | 32px
+                h2 | 1.5em  | 24px
+                h3 | 1.17em | 18.72px
+                h4 | 1em    | 16px
+                h5 | 0.83em | 13.28px
+                h6 | 0.67em | 10.72px
+            */
+
+                article h1 {
+                font-size: 24px;
+            }
+
+            article h2 {
+                font-size: 20px;
+            }
+
+            article h3 {
+                font-size: 18px;
+            }
+
+            article h4 {
+                font-size: 16px;
+            }
+
+            article h5 {
+                font-size: 12px;
+            }
+
+            article h6 {
+                font-size: 10px;
+            }
         `,
         position: 'afterbegin',
         events: []

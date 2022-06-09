@@ -270,11 +270,11 @@ export function Modal(param) {
                 !title ?
                 /*css*/ `
                     #id .modal-body::-webkit-scrollbar {
-                        width: 60px;
+                        width: 22px;
                     }
 
                     #id .modal-body::-webkit-scrollbar-thumb {
-                        border: 27px solid transparent;
+                        border: 8px solid transparent;
                         border-radius: 60px;
                     }
 
@@ -306,40 +306,13 @@ export function Modal(param) {
                 addContent(component.getModalBody());
             }
 
-            // Draggable
-            // $('.modal-header').on('mousedown', function(event) {
-            //     const draggable = $(this);
-            //     const extra = contentPadding ? parseInt(contentPadding.replace('px', '')) : 0;
-            //     const x = event.pageX - ( draggable.offset().left - extra);
-            //     const y = event.pageY - ( draggable.offset().top - extra);
-
-            //     $('body').on('mousemove.draggable', function(event) {
-            //         draggable.closest('.modal-content').offset({
-            //             left: event.pageX - x,
-            //             top: event.pageY - y
-            //         });
-            //     });
-
-            //     $('body').one('mouseup', function() {
-            //         $('body').off('mousemove.draggable');
-            //     });
-
-            //     $('body').one('mouseleave', function() {
-            //         $('body').off('mousemove.draggable');
-            //     });
-
-            //     draggable.closest('.modal').one('bs.modal.hide', function() {
-            //         $('body').off('mousemove.draggable');
-            //     });
-            // });
-
-            /** Close listener */
+            // Close listener
             $(component.get()).on('hidden.bs.modal', function (e) {
                 component.remove();
             });
 
             if (title) {
-                /** Scroll listener */
+                // Scroll listener
                 component.find('.modal-body').addEventListener('scroll', event => {
                     if (event.target.scrollTop > 0) {
                         event.target.style.borderTop = `solid 1px ${App.get('sidebarBorderColor')}`;

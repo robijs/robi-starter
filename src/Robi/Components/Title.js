@@ -1,5 +1,4 @@
 import { Component } from '../Actions/Component.js'
-import { App } from '../Core/App.js';
 
 // @START-File
 /**
@@ -16,7 +15,6 @@ export function Title(param) {
         subTitleColor,
         breadcrumb,
         dropdownGroups,
-        maxTextWidth,
         route,
         padding,
         margin,
@@ -35,7 +33,7 @@ export function Title(param) {
                             <div class='d-flex justify-content-center align-items-center' style='width: 62px; height: 35.59px; position: absolute; left: -62px; cursor: pointer;'>
                                 <div class='d-flex justify-content-center align-items-center back-btn' style='' title='Back'>
                                     <svg class='icon' style='fill: var(--primary); font-size: 26px;'>
-                                        <use href='#icon-bs-arrow-left-cirlce-fill'></use>
+                                        <use href='#icon-bs-arrow-left-circle-fill'></use>
                                     </svg>
                                 </div>
                             </div>

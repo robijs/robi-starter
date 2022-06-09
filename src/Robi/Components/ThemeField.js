@@ -29,8 +29,8 @@ export function ThemeField(param) {
             }
 
             #id .themes {
-                display: flex;
-                flex-wrap: wrap;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, 200px);
                 justify-content: space-between;
                 max-width: 995px;
             }

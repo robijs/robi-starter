@@ -68,6 +68,7 @@ import { Logs } from './Components/Logs.js'
 import { LogsContainer } from './Components/LogsContainer.js'
 import { LookupField } from './Components/LookupField.js'
 import { MainContainer } from './Components/MainContainer.js'
+import { ManageLists } from './Components/ManageLists.js'
 import { Missing } from './Components/Missing.js'
 import { Modal } from './Components/Modal.js'
 import { ModalSlideUp } from './Components/ModalSlideUp.js'
@@ -181,6 +182,7 @@ export {
     LogsContainer,
     LookupField,
     MainContainer,
+    ManageLists,
     Missing,
     Modal,
     ModalSlideUp,

@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises'
 import { readfiles } from './readfiles.js'
 
-export async function getfiles(path) {
+export async function getFiles(path) {
     let output = '';
 
     const files = await readfiles(path);
